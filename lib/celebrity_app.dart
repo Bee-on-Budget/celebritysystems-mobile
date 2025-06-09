@@ -1,5 +1,6 @@
 import 'package:celebritysystems_mobile/core/routing/app_router.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
+import 'package:celebritysystems_mobile/core/theming/app_theme.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,9 +20,7 @@ class CelebrityApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Celebrity App',
         // You can use the library anywhere in the app even in theme
-        theme: ThemeData(
-            primaryColor: ColorsManager.mainBlue,
-            scaffoldBackgroundColor: Colors.white),
+        theme: AppTheme.lightTheme,
         initialRoute: Routes
             .loginScreen, //isLoggedInUser ? Routes.homeScreen : Routes.loginScreen,
         onGenerateRoute: appRouter.generateRoute,
