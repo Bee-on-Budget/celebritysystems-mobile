@@ -1,21 +1,14 @@
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
-import 'package:celebritysystems_mobile/core/widgets/custom_text_field.dart';
 import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
+import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
+import 'package:celebritysystems_mobile/features/login/ui/widgets/email_and_password.dart';
+import 'package:celebritysystems_mobile/features/login/ui/widgets/login_bloc_listener.dart';
 import 'package:celebritysystems_mobile/features/login/ui/widgets/login_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,35 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
               // Logo/Header
               LoginHeader(),
               const SizedBox(height: 40),
-
-              // Email Input
-              CustomTextField(
-                label: "Email",
-                icon: Icons.email_outlined,
-                controller: _emailController,
-              ),
-              const SizedBox(height: 20),
-
-              // Password Input
-              CustomTextField(
-                label: "Password",
-                icon: Icons.lock_outline,
-                isPassword: true,
-                obscureText: _obscureText,
-                toggleObscure: () {
-                  setState(() => _obscureText = !_obscureText);
-                },
-                controller: _passwordController,
-              ),
-
-              // Forgot Password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text("Forgot Password?"),
-                ),
-              ),
+              EmailAndPassword(),
               const SizedBox(height: 20),
 
               // Login Button
@@ -66,8 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: "Login",
                 onPressed: () {
                   // Handle login
+                  context.read<LoginCubit>().emitLoginStates();
                 },
               ),
+              const LoginBlocListener(),
             ],
           ),
         ),

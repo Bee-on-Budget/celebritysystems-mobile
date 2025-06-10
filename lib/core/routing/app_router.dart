@@ -1,4 +1,5 @@
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
+import 'package:celebritysystems_mobile/features/home/ui/home_screen.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,13 @@ class AppRouter {
             child: const LoginScreen(),
           ),
         );
-      // case Routes.homeScreen:
-      //   return MaterialPageRoute(
-      //     builder: (_) => BlocProvider(
-      //       create: (context) => HomeCubit(getIt())..getSpecializations(),
-      //       child: const HomeScreen(),
-      //     ),
-      //   );
+      case Routes.homeScreen:
+        return MaterialPageRoute(builder: (_) => const HomeScreen()
+            // BlocProvider(
+            //   create: (context) => HomeCubit(getIt())..getSpecializations(),
+            //   child: const HomeScreen(),
+            // ),
+            );
       default:
         null;
     }

@@ -4,8 +4,6 @@ import 'package:celebritysystems_mobile/features/login/data/apis/login_api_servi
 import 'package:celebritysystems_mobile/features/login/data/models/login_request_body.dart';
 import 'package:celebritysystems_mobile/features/login/data/models/login_response.dart';
 
-import '../apis/login_api_service.dart';
-
 class LoginRepo {
   final LoginApiService _loginApiService;
 
