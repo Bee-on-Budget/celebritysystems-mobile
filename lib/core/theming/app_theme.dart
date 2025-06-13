@@ -6,10 +6,10 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.light,
       scaffoldBackgroundColor: ColorsManager.mistWhite,
-      primaryColor: ColorsManager.royalIndigo,
+      primaryColor: ColorsManager.coralBlaze,
       colorScheme: ColorScheme.light(
-        primary: ColorsManager.royalIndigo,
-        secondary: ColorsManager.coralBlaze,
+        primary: ColorsManager.coralBlaze,
+        secondary: ColorsManager.royalIndigo,
         error: ColorsManager.softCrimson,
         surface: ColorsManager.paleLavenderBlue,
       ),
@@ -27,7 +27,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: ColorsManager.royalIndigo,
+          backgroundColor: ColorsManager.coralBlaze,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

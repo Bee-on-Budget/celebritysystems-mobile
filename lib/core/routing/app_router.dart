@@ -1,4 +1,5 @@
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
+import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/features/home/ui/home_screen.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
@@ -24,12 +25,12 @@ class AppRouter {
           ),
         );
       case Routes.homeScreen:
-        return MaterialPageRoute(builder: (_) => const HomeScreen()
-            // BlocProvider(
-            //   create: (context) => HomeCubit(getIt())..getSpecializations(),
-            //   child: const HomeScreen(),
-            // ),
-            );
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => HomeCubit(getIt()),
+            child: const HomeScreen(),
+          ),
+        );
       default:
         null;
     }

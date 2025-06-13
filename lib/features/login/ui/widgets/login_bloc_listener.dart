@@ -30,9 +30,10 @@ class LoginBlocListener extends StatelessWidget {
             break;
 
           case Success():
-            print("*************************************************");
+            print(
+                "********************   LoginBlocListener   *****************************");
             context.pop(); // remove loading dialog
-            context.pushNamed(Routes.homeScreen);
+            context.pushReplacementNamed(Routes.homeScreen);
             break;
 
           case Error(:final error):

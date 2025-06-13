@@ -2,6 +2,9 @@ class ApiConstants {
   static const String apiBaseUrl = "http://10.0.2.2:8080/api/";
 
   static const String login = "auth/login";
+  //wroker end points
+  static const String workerTickets =
+      "tickets/worker"; //    /api/tickets/worker/{username}
 }
 
 class ApiErrors {
