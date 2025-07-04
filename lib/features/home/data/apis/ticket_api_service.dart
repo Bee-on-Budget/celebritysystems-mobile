@@ -1,3 +1,4 @@
+import 'package:celebritysystems_mobile/features/home/data/models/tickets_count.dart';
 import 'package:celebritysystems_mobile/features/home/data/models/tickets_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -12,4 +13,7 @@ abstract class TicketApiService {
 
   @GET('${ApiConstants.workerTickets}/{username}')
   Future<List<OneTicketResponse>> getTickets(@Path('username') String username);
+
+  @GET('${ApiConstants.workerTickets}/{username}/count')
+  Future<TicketsCount> getTicketsCount(@Path('username') String username);
 }
