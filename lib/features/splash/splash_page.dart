@@ -1,52 +1,35 @@
-// class SplashPage extends StatefulWidget {
-//   const SplashPage({super.key});
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+import 'package:celebritysystems_mobile/core/helpers/token_service.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
+import 'package:celebritysystems_mobile/features/home/ui/home_screen.dart';
+import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-//   @override
-//   State<SplashPage> createState() => _SplashPageState();
-// }
+class SplashPage extends StatefulWidget {
+  const SplashPage({super.key});
 
-// class _SplashPageState extends State<SplashPage> {
-//   @override
-//   void initState() {
-//     super.initState();
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
 
-//     context.read<AuthBloc>().add(AuthGetUserLocalInfo());
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     Future.delayed(const Duration(seconds: 3), () {
-//       print('token ${context.read<AuthBloc>().token}');
-
-//       print('role ${context.read<AuthBloc>().role}');
-
-//       if (context.read<AuthBloc>().token == null) {
-//         Navigator.pushReplacement(
-//             context, MaterialPageRoute(builder: (_) => const LoginPage()));
-//       } else {
-//         if (context.read<AuthBloc>().role ==
-//             ConstManager.warehouseManagerRole) {
-//           Navigator.pushReplacement(context,
-//               MaterialPageRoute(builder: (_) => const WarehouseHomePage()));
-//         } else if (context.read<AuthBloc>().role ==
-//             ConstManager.deliveryManagerRole) {
-//           Navigator.pushReplacement(context,
-//               MaterialPageRoute(builder: (_) => const DeliveryHomePage()));
-//         } else {
-//           Navigator.pushReplacement(context,
-//               MaterialPageRoute(builder: (_) => BottomNavigationBarWidget()));
-//         }
-//       }
-//     });
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: Center(
-//         child: SizedBox(
-//           height: 1200.h,
-//           width: 1200.h,
-//           child: Image.asset(AssetImageManager.logo),
-//         ),
-//       ),
-//     );
-//   }
-// }
+class _SplashPageState extends State<SplashPage> {
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(const Duration(seconds: 3), () {
+      context.pushNamed(Routes.loginScreen);
+    });
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SizedBox(
+          height: 1200.h,
+          width: 1200.h,
+          child: Image.asset('assets/images/logo.png'),
+        ),
+      ),
+    );
+  }
+}

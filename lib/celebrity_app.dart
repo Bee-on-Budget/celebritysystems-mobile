@@ -20,8 +20,8 @@ class CelebrityApp extends StatelessWidget {
         title: 'Celebrity App',
         // You can use the library anywhere in the app even in theme
         theme: AppTheme.lightTheme,
-        initialRoute: Routes
-            .loginScreen, //isLoggedInUser ? Routes.homeScreen : Routes.loginScreen,
+        initialRoute: Routes.splashScreen,
+        // Routes.loginScreen, //isLoggedInUser ? Routes.homeScreen : Routes.loginScreen,
         onGenerateRoute: appRouter.generateRoute,
       ),
     );

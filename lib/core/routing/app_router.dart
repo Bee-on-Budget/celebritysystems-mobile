@@ -3,6 +3,7 @@ import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_cu
 import 'package:celebritysystems_mobile/features/home/ui/home_screen.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
+import 'package:celebritysystems_mobile/features/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../di/dependency_injection.dart';
@@ -17,6 +18,10 @@ class AppRouter {
       //   return MaterialPageRoute(
       //     builder: (_) => const OnboardingScreen(),
       //   );
+      case Routes.splashScreen:
+        return MaterialPageRoute(
+          builder: (_) => const SplashPage(),
+        );
       case Routes.loginScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
