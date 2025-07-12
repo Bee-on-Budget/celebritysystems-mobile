@@ -61,6 +61,8 @@ dependencies:
   shared_preferences: ^2.3.5
   # provides API to store data in secure storage.
   flutter_secure_storage: ^9.2.4
+  #This small library helps you to decode Json Web Tokens, you can also know if a JWT is already expired.
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
