@@ -26,10 +26,11 @@ class _SplashPageState extends State<SplashPage> {
 
       final tokenService = TokenService(token);
 
-      print('tokenService ${tokenService.claims}');
+      // print('tokenService ${tokenService.claims}');
 
-      if (token == null || token.toString().isEmpty || tokenService.isExpired) {
-        print("isExpired: ${tokenService.isExpired}");
+      if (token == null || token.toString().isEmpty) {
+        //|| tokenService.isExpired
+        // print("isExpired: ${tokenService.isExpired}");
         context.pushReplacementNamed(Routes.loginScreen);
       } else {
         if (tokenService.role == Constants.CELEBRITY_SYSTEM_WORKER) {
