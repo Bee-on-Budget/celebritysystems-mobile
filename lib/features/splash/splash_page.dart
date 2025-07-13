@@ -18,8 +18,29 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 3), () {
-      context.pushNamed(Routes.loginScreen);
+    Future.delayed(const Duration(seconds: 3), () async {
+      final token =
+          await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken);
+
+      print('token $token');
+
+      final tokenService = TokenService(token);
+
+      print('tokenService ${tokenService.claims}');
+
+      if (token == null || token.toString().isEmpty || tokenService.isExpired) {
+        print("isExpired: ${tokenService.isExpired}");
+        context.pushReplacementNamed(Routes.loginScreen);
+      } else {
+        if (tokenService.role == Constants.CELEBRITY_SYSTEM_WORKER) {
+          context.pushReplacementNamed(Routes.homeScreen);
+        } else if (tokenService.role == Constants.COMPANY) {
+          context.pushReplacementNamed(Routes.homeScreen);
+        } else {
+          print("there is no implementation for this Role");
+          context.pushReplacementNamed(Routes.loginScreen);
+        }
+      }
     });
     return Scaffold(
       backgroundColor: Colors.white,
