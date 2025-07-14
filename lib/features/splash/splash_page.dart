@@ -3,8 +3,6 @@ import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/helpers/token_service.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
-import 'package:celebritysystems_mobile/features/home/ui/home_screen.dart';
-import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
