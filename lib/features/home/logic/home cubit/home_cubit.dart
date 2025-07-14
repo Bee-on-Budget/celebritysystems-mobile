@@ -14,7 +14,9 @@ class HomeCubit extends Cubit<HomeState> {
   int completedCount = 0;
 
   void getHomeTickets(String username) async {
-    emit(HomeState.loading());
+    emit(Loading<
+        List<
+            OneTicketResponse>>()); //HomeState<List<OneTicketResponse>>.loading()
 
     print("I Am before getHomeTickets request");
     final result.ApiResult<List<OneTicketResponse>> response =
@@ -29,19 +31,18 @@ class HomeCubit extends Cubit<HomeState> {
       case result.Success(:final data):
         print(
             "WE HAVE SUCCESS RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(HomeState.success(data));
+        emit(Success<List<OneTicketResponse>>(data));
 
       case result.Failure(:final errorHandler):
         print(
             "WE HAVE ERROR RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(HomeState.error(
-          error: errorHandler.apiErrorModel.message ?? 'failure happened',
-        ));
+        emit(Error<List<OneTicketResponse>>(
+            error: errorHandler.apiErrorModel.message ?? 'failure'));
     }
   }
 
   void getTicketsCount(String username) async {
-    emit(HomeState.loading());
+    emit(Loading<TicketsCount>());
 
     print("I Am before getTicketsCount request");
     final result.ApiResult<TicketsCount> response =
@@ -58,14 +59,13 @@ class HomeCubit extends Cubit<HomeState> {
         completedCount = data.completedCount!;
         print(
             "WE HAVE SUCCESS RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(HomeState.success(data));
+        emit(Success<TicketsCount>(data));
 
       case result.Failure(:final errorHandler):
         print(
             "WE HAVE ERROR RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(HomeState.error(
-          error: errorHandler.apiErrorModel.message ?? 'failure happened',
-        ));
+        emit(Error<TicketsCount>(
+            error: errorHandler.apiErrorModel.message ?? 'failure'));
     }
   }
 }

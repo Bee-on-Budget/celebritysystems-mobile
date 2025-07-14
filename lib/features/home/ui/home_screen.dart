@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+import '../../login/logic/user cubit/user_cubit.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -19,8 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<HomeCubit>().getHomeTickets("comp"); //TODO
-    context.read<HomeCubit>().getTicketsCount("comp");
+    final user = context.read<UserCubit>().state;
+    print("User in HomeScreen: $user");
+
+    final username = user?.username ?? 'default';
+    context.read<HomeCubit>().getHomeTickets(username);
+    context.read<HomeCubit>().getTicketsCount(username);
   }
 
   String _formatDate(String iso) {
@@ -58,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is Error) {
               return Center(child: Text(state.error));
-            } else if (state is Success) {
+            } else if (state is Success<List<OneTicketResponse>>) {
               final tickets = state.data;
 
               if (tickets.isEmpty) {
@@ -150,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildTicketList(List<OneTicketResponse> tickets) {
     if (tickets.isEmpty) {
+      //TODO
       return const Center(child: Text("No tickets in this tab."));
     }
 

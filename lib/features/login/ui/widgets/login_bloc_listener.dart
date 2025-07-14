@@ -1,8 +1,11 @@
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_state.dart';
+import 'package:celebritysystems_mobile/features/login/logic/user%20cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +19,7 @@ class LoginBlocListener extends StatelessWidget {
         Loading() || Success() || Error() => true,
         _ => false,
       },
-      listener: (context, state) {
+      listener: (context, state) async {
         switch (state) {
           case Loading():
             showDialog(
@@ -31,7 +34,12 @@ class LoginBlocListener extends StatelessWidget {
 
           case Success():
             print(
-                "********************   LoginBlocListener   *****************************");
+                "********************   LoginBlocListener Token   *****************************");
+            final token = await SharedPrefHelper.getSecuredString(
+                SharedPrefKeys.userToken);
+            await context.read<UserCubit>().loadUserFromToken(token ?? '');
+
+            // 2. Navigate to home screen
             context.pop(); // remove loading dialog
             context.pushReplacementNamed(Routes.homeScreen);
             break;

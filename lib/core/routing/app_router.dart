@@ -14,10 +14,6 @@ class AppRouter {
     final arguments = settings.arguments;
 
     switch (settings.name) {
-      // case Routes.onBoardingScreen:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const OnboardingScreen(),
-      //   );
       case Routes.splashScreen:
         return MaterialPageRoute(
           builder: (_) => const SplashPage(),
