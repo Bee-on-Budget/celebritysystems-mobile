@@ -34,7 +34,7 @@ class LoginBlocListener extends StatelessWidget {
 
           case Success():
             print(
-                "********************   LoginBlocListener Token   *****************************");
+                "********************   LoginBlocListener   *****************************");
             final token = await SharedPrefHelper.getSecuredString(
                 SharedPrefKeys.userToken);
             await context.read<UserCubit>().loadUserFromToken(token ?? '');

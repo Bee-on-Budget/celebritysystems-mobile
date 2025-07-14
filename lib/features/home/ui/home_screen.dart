@@ -156,7 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildTicketList(List<OneTicketResponse> tickets) {
     if (tickets.isEmpty) {
-      //TODO
       return const Center(child: Text("No tickets in this tab."));
     }
 
