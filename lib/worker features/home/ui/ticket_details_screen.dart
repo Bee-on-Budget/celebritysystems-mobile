@@ -1,5 +1,5 @@
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

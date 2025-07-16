@@ -1,5 +1,5 @@
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_count.dart';
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_count.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

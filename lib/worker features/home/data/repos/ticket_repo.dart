@@ -1,8 +1,8 @@
 import 'package:celebritysystems_mobile/core/networking/api_error_handler.dart';
 import 'package:celebritysystems_mobile/core/networking/api_result.dart';
-import 'package:celebritysystems_mobile/features/home/data/apis/ticket_api_service.dart';
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_count.dart';
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/apis/ticket_api_service.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_count.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 
 class TicketRepo {
   final TicketApiService _ticketApiService;

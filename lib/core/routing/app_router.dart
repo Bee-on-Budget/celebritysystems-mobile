@@ -1,6 +1,6 @@
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
-import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_cubit.dart';
-import 'package:celebritysystems_mobile/features/home/ui/home_screen.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/ui/home_screen.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
 import 'package:celebritysystems_mobile/features/splash/splash_page.dart';

@@ -1,7 +1,7 @@
 import 'package:celebritysystems_mobile/core/networking/dio_factory.dart';
-import 'package:celebritysystems_mobile/features/home/data/apis/ticket_api_service.dart';
-import 'package:celebritysystems_mobile/features/home/data/repos/ticket_repo.dart';
-import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_cubit.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/apis/ticket_api_service.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/repos/ticket_repo.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/data/apis/login_api_service.dart';
 import 'package:celebritysystems_mobile/features/login/data/repos/login_repo.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';

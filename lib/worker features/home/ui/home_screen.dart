@@ -1,14 +1,14 @@
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_response.dart';
-import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_cubit.dart';
-import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_state.dart';
-import 'package:celebritysystems_mobile/features/ticket/ui/ticket_details_screen.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_state.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/ui/ticket_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
-import '../../login/logic/user cubit/user_cubit.dart';
+import '../../../features/login/logic/user cubit/user_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

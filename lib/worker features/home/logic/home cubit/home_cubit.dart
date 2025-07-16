@@ -1,9 +1,9 @@
 import 'package:celebritysystems_mobile/core/networking/api_result.dart'
     as result;
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_count.dart';
-import 'package:celebritysystems_mobile/features/home/data/models/tickets_response.dart';
-import 'package:celebritysystems_mobile/features/home/data/repos/ticket_repo.dart';
-import 'package:celebritysystems_mobile/features/home/logic/home%20cubit/home_state.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_count.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/data/repos/ticket_repo.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
