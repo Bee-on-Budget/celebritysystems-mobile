@@ -21,12 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    final user = context.read<UserCubit>().state;
-    print("User in HomeScreen: $user");
+    final username = context.read<UserCubit>().state?.username ?? 'default';
 
-    final username = user?.username ?? 'default';
-    context.read<HomeCubit>().getHomeTickets(username);
-    context.read<HomeCubit>().getTicketsCount(username);
+    context.read<HomeCubit>().loadHomeData(username);
   }
 
   String _formatDate(String iso) {

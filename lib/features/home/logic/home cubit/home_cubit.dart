@@ -13,59 +13,41 @@ class HomeCubit extends Cubit<HomeState> {
   int assignedCount = 0;
   int completedCount = 0;
 
-  void getHomeTickets(String username) async {
-    emit(Loading<
-        List<
-            OneTicketResponse>>()); //HomeState<List<OneTicketResponse>>.loading()
+  Future<void> loadHomeData(String username) async {
+    emit(Loading<List<OneTicketResponse>>());
 
-    print("I Am before getHomeTickets request");
-    final result.ApiResult<List<OneTicketResponse>> response =
-        await _ticketRepo.getTickets(username);
+    final ticketsResult = await _ticketRepo.getTickets(username);
+    final countResult = await _ticketRepo.getTicketsCount(username);
 
-    print("I Am after getHomeTickets request");
+    List<OneTicketResponse> tickets = [];
+    TicketsCount? count;
 
-    print("response IS : " + response.toString());
-    print(response);
-
-    switch (response) {
+    // Extract ticket data
+    switch (ticketsResult) {
       case result.Success(:final data):
-        print(
-            "WE HAVE SUCCESS RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(Success<List<OneTicketResponse>>(data));
-
+        tickets = data;
       case result.Failure(:final errorHandler):
-        print(
-            "WE HAVE ERROR RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(Error<List<OneTicketResponse>>(
-            error: errorHandler.apiErrorModel.message ?? 'failure'));
+        final msg =
+            errorHandler.apiErrorModel.message ?? "Failed to load tickets";
+        emit(Error<List<OneTicketResponse>>(error: msg));
+        return;
     }
-  }
 
-  void getTicketsCount(String username) async {
-    emit(Loading<TicketsCount>());
-
-    print("I Am before getTicketsCount request");
-    final result.ApiResult<TicketsCount> response =
-        await _ticketRepo.getTicketsCount(username);
-
-    print("I Am after getTicketsCount request");
-
-    print("response IS : " + response.toString());
-    print(response);
-
-    switch (response) {
+    // Extract count data
+    switch (countResult) {
       case result.Success(:final data):
-        assignedCount = data.assignedCount!;
-        completedCount = data.completedCount!;
-        print(
-            "WE HAVE SUCCESS RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(Success<TicketsCount>(data));
-
+        count = data;
       case result.Failure(:final errorHandler):
-        print(
-            "WE HAVE ERROR RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-        emit(Error<TicketsCount>(
-            error: errorHandler.apiErrorModel.message ?? 'failure'));
+        final msg =
+            errorHandler.apiErrorModel.message ?? "Failed to load counts";
+        emit(Error<List<OneTicketResponse>>(error: msg));
+        return;
     }
+
+    // Assign count values
+    assignedCount = count?.assignedCount ?? 0;
+    completedCount = count?.completedCount ?? 0;
+
+    emit(Success<List<OneTicketResponse>>(tickets));
   }
 }
