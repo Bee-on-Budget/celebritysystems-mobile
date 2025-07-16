@@ -1,3 +1,4 @@
+import 'package:celebritysystems_mobile/company%20features/home/ui/company_home_screen.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/ui/home_screen.dart';
@@ -31,6 +32,10 @@ class AppRouter {
             create: (context) => HomeCubit(getIt()),
             child: const HomeScreen(),
           ),
+        );
+      case Routes.companyHomeScreen:
+        return MaterialPageRoute(
+          builder: (_) => const CompanyHomeScreen(),
         );
       default:
         null;
