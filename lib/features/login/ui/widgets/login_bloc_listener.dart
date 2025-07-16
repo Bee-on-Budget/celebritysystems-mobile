@@ -39,7 +39,33 @@ class LoginBlocListener extends StatelessWidget {
                 SharedPrefKeys.userToken);
             await context.read<UserCubit>().loadUserFromToken(token ?? '');
 
-            // 2. Navigate to home screen
+            final user = context.read<UserCubit>().state;
+
+            if (user == null || !user.isAllowed) {
+              context.pop(); // remove loading dialog if it's shown
+
+              //delete cash
+              await SharedPrefHelper.clearAllData();
+              await SharedPrefHelper.clearAllSecuredData();
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Access Denied"),
+                  content:
+                      const Text("You are not authorized to access this app."),
+                  actions: [
+                    TextButton(
+                      onPressed: () => context.pop(),
+                      child: const Text("OK"),
+                    ),
+                  ],
+                ),
+              );
+
+              return; // stop here, don't navigate
+            }
+
+            // Allowed roles - go to home
             context.pop(); // remove loading dialog
             context.pushReplacementNamed(Routes.homeScreen);
             break;
