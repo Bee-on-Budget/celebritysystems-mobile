@@ -22,6 +22,8 @@ class OneTicketResponse {
   String? companyName;
   String? status;
   String? createdAt;
+  String? location;
+  String? screenType;
 
   OneTicketResponse(
       {this.title,
@@ -31,7 +33,9 @@ class OneTicketResponse {
       this.companyName,
       this.createdAt,
       this.screenName,
-      this.status});
+      this.status,
+      this.location,
+      this.screenType});
 
   factory OneTicketResponse.fromJson(Map<String, dynamic> json) =>
       _$OneTicketResponseFromJson(json);

@@ -1,6 +1,10 @@
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/ui/report.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class TicketDetailsScreen extends StatelessWidget {
@@ -24,6 +28,7 @@ class TicketDetailsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(
+          height: 450.h,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -38,6 +43,7 @@ class TicketDetailsScreen extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _header("🎫 ${ticket.title}", big: true),
               const SizedBox(height: 10),
@@ -54,12 +60,41 @@ class TicketDetailsScreen extends StatelessWidget {
               _info("Created At", _formatDate(ticket.createdAt ?? "")),
               const Divider(height: 30),
               _header("📌 Status"),
-              Chip(
-                label: Text(
-                  ticket.status ?? "",
-                  style: const TextStyle(color: Colors.white),
-                ),
-                backgroundColor: _statusColor(ticket.status ?? ""),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Chip(
+                    label: Text(
+                      ticket.status ?? "",
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: _statusColor(ticket.status ?? ""),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(milliseconds: 300),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  FadeTransition(
+                            opacity: animation,
+                            child: ServiceReportScreen(ticket: ticket),
+                          ),
+                        ),
+                      );
+
+                      // context.pushNamed(Routes.reportScreen);
+                    },
+                    child: Chip(
+                      label: Text(
+                        "Submit Report",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: ColorsManager.slateGray,
+                    ),
+                  ),
+                ],
               ),
               // if (ticket['attachmentFileName'].isNotEmpty) ...[
               //   const SizedBox(height: 30),
