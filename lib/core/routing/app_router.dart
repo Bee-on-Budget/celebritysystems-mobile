@@ -5,7 +5,6 @@ import 'package:celebritysystems_mobile/worker%20features/home/ui/home_screen.da
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
 import 'package:celebritysystems_mobile/features/splash/splash_page.dart';
-import 'package:celebritysystems_mobile/worker%20features/report/ui/report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../di/dependency_injection.dart';

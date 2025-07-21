@@ -17,13 +17,30 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
-    final username = context.read<UserCubit>().state?.username ?? 'default';
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
+    );
 
+    final username = context.read<UserCubit>().state?.username ?? 'default';
     context.read<HomeCubit>().loadHomeData(username);
+    _fadeController.forward();
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
   }
 
   String _formatDate(String iso) {
@@ -33,13 +50,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Color _statusColor(String status) {
     switch (status.toLowerCase()) {
       case 'open':
-        return const Color.fromARGB(255, 57, 127, 167);
+        return const Color(0xFF4A90E2);
       case 'in progress':
-        return ColorsManager.royalIndigo;
+        return const Color(0xFF7B68EE);
       case 'closed':
-        return ColorsManager.coralBlaze;
+        return const Color(0xFF28C76F);
       default:
-        return Colors.grey;
+        return const Color(0xFF8E8E93);
     }
   }
 
@@ -48,86 +65,256 @@ class _HomeScreenState extends State<HomeScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: ColorsManager.mistWhite,
-        appBar: AppBar(
-          title: const Text("  My Tickets"),
-          backgroundColor: ColorsManager.coralBlaze,
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
+        backgroundColor: const Color(0xFFF8F9FA),
         body: BlocBuilder<HomeCubit, HomeState>(
           builder: (context, state) {
             if (state is Loading) {
-              return const Center(child: CircularProgressIndicator());
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      ColorsManager.coralBlaze,
+                      ColorsManager.coralBlaze.withValues(alpha: 0.8),
+                    ],
+                  ),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                ),
+              );
             } else if (state is Error) {
-              return Center(child: Text(state.error));
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      ColorsManager.coralBlaze,
+                      Colors.red.withValues(alpha: 0.8),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        state.error,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              );
             } else if (state is Success<List<OneTicketResponse>>) {
               final tickets = state.data;
 
               if (tickets.isEmpty) {
-                return const Center(child: Text("No tickets found."));
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        ColorsManager.coralBlaze,
+                        ColorsManager.coralBlaze.withValues(alpha: 0.8),
+                      ],
+                    ),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.inbox_outlined,
+                          size: 80,
+                          color: Colors.white70,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          "No tickets found",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               }
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 200.h, // increased height to fit TabBar
-                      color: ColorsManager.coralBlaze,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(height: 20.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      expandedHeight: 280.h,
+                      floating: false,
+                      pinned: true,
+                      elevation: 0,
+                      backgroundColor: ColorsManager.coralBlaze,
+                      foregroundColor: Colors.white,
+                      // Remove the default title and handle it manually in FlexibleSpaceBar
+                      flexibleSpace: FlexibleSpaceBar(
+                        centerTitle: true, // Center the title
+                        titlePadding: EdgeInsets.only(
+                          // top: 5.0,
+                          // left: 16.0,
+                          right: 200.0,
+                          bottom: 250, // Position it just above the TabBar
+                        ),
+                        title: const Text(
+                          "My Tickets",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(0, 1),
+                                blurRadius: 3.0,
+                                color: Color.fromARGB(128, 0, 0, 0),
+                              ),
+                            ],
+                          ),
+                        ),
+                        background: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                ColorsManager.coralBlaze,
+                                ColorsManager.coralBlaze.withValues(alpha: 0.8),
+                              ],
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text(
-                                context
-                                    .read<HomeCubit>()
-                                    .assignedCount
-                                    .toString(),
-                                style: TextStyle(
-                                  color: ColorsManager.mistWhite,
-                                  fontSize: 30.sp,
-                                  fontWeight: FontWeight.w600,
+                              // Stats cards with improved spacing
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 20.w, vertical: 16.h),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildStatsCard(
+                                        "Assigned",
+                                        context
+                                            .read<HomeCubit>()
+                                            .assignedCount
+                                            .toString(),
+                                        Icons.assignment,
+                                        Colors.white.withValues(alpha: 0.2),
+                                      ),
+                                    ),
+                                    SizedBox(width: 16.w),
+                                    Expanded(
+                                      child: _buildStatsCard(
+                                        "Completed",
+                                        context
+                                            .read<HomeCubit>()
+                                            .completedCount
+                                            .toString(),
+                                        Icons.check_circle_outline,
+                                        Colors.white.withValues(alpha: 0.2),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(
-                                height: 50.h,
-                                child: VerticalDivider(
-                                  thickness: 2,
-                                  color: ColorsManager.mistWhite,
-                                  width: 20,
-                                ),
-                              ),
-                              Text(
-                                context
-                                    .read<HomeCubit>()
-                                    .completedCount
-                                    .toString(),
-                                style: TextStyle(
-                                  color: ColorsManager.mistWhite,
-                                  fontSize: 30.sp,
-                                  fontWeight: FontWeight.w600,
+                              // Improved TabBar design
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    bottom: 8.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.2),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: TabBar(
+                                    indicator: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black
+                                              .withValues(alpha: 0.1),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    indicatorSize: TabBarIndicatorSize.tab,
+                                    indicatorPadding: EdgeInsets.all(4),
+                                    labelColor: Colors.white,
+                                    unselectedLabelColor:
+                                        Colors.white.withValues(alpha: 0.7),
+                                    labelStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                    unselectedLabelStyle: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                    ),
+                                    dividerColor: Colors
+                                        .transparent, // Remove the ugly line
+                                    overlayColor: WidgetStateProperty.all(
+                                      Colors.white.withValues(alpha: 0.1),
+                                    ),
+                                    tabs: const [
+                                      Tab(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          child: Text('Active'),
+                                        ),
+                                      ),
+                                      Tab(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          child: Text('Completed'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 10.h),
-                          TabBar(
-                            indicatorColor: Colors.white,
-                            labelColor: Colors.white,
-                            unselectedLabelColor: Colors.white60,
-                            tabs: const [
-                              Tab(text: 'Assigned Count'),
-                              Tab(text: 'Completed Count'),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                    SizedBox(
-                      height: 600.h, // enough height for tab content
+                    SliverFillRemaining(
                       child: TabBarView(
                         children: [
                           _buildTicketList(tickets
@@ -151,88 +338,238 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildStatsCard(
+      String title, String count, IconData icon, Color backgroundColor) {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            color: Colors.white,
+            size: 24,
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            count,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 28.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTicketList(List<OneTicketResponse> tickets) {
     if (tickets.isEmpty) {
-      return const Center(child: Text("No tickets in this tab."));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.assignment_outlined,
+              size: 64,
+              color: Colors.grey[400],
+            ),
+            SizedBox(height: 16),
+            Text(
+              "No tickets in this tab",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.separated(
-      shrinkWrap: true,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       itemCount: tickets.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 20),
+      separatorBuilder: (_, __) => SizedBox(height: 16.h),
       itemBuilder: (context, index) {
         final ticket = tickets[index];
 
-        return Material(
-          elevation: 3,
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              Navigator.of(context).push(
-                PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, animation, secondaryAnimation) =>
-                      FadeTransition(
-                    opacity: animation,
-                    child: TicketDetailsScreen(ticket: ticket),
+        return TweenAnimationBuilder<double>(
+          duration: Duration(milliseconds: 300 + (index * 100)),
+          tween: Tween(begin: 0.0, end: 1.0),
+          builder: (context, value, child) {
+            return Transform.translate(
+              offset: Offset(0, 20 * (1 - value)),
+              child: Opacity(
+                opacity: value,
+                child: child,
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white,
+                  Colors.grey.withValues(alpha: 0.05),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () {
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      transitionDuration: const Duration(milliseconds: 300),
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          FadeTransition(
+                        opacity: animation,
+                        child: TicketDetailsScreen(ticket: ticket),
+                      ),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: ColorsManager.coralBlaze
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.confirmation_number_outlined,
+                              color: ColorsManager.coralBlaze,
+                              size: 20,
+                            ),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              ticket.title ?? "-",
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1A1A1A),
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16.h),
+                      _infoRow(
+                          Icons.business_outlined, ticket.companyName ?? ""),
+                      _infoRow(Icons.person_outline,
+                          "By: ${ticket.assignedBySupervisorName}"),
+                      _infoRow(Icons.monitor_outlined, ticket.screenName ?? ""),
+                      SizedBox(height: 16.h),
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: _statusColor(ticket.status ?? ""),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: _statusColor(ticket.status ?? "")
+                                      .withValues(alpha: 0.3),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              ticket.status ?? "",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 14,
+                                  color: Colors.grey[600],
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  _formatDate(ticket.createdAt ?? ""),
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.confirmation_number_outlined,
-                          color: ColorsManager.coralBlaze),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Text(
-                          ticket.title ?? "-",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: ColorsManager.graphiteBlack,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10.h),
-                  _infoRow(Icons.business, ticket.companyName ?? ""),
-                  _infoRow(
-                      Icons.person, "By: ${ticket.assignedBySupervisorName}"),
-                  _infoRow(Icons.screenshot_monitor_outlined,
-                      ticket.screenName ?? ""),
-                  SizedBox(height: 10.h),
-                  Row(
-                    children: [
-                      Chip(
-                        label: Text(
-                          ticket.status ?? "",
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: _statusColor(ticket.status ?? ""),
-                      ),
-                      const SizedBox(width: 12),
-                      const Icon(Icons.access_time,
-                          size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        _formatDate(ticket.createdAt ?? ""),
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 131, 131, 131),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ),
           ),
@@ -243,17 +580,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _infoRow(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: ColorsManager.slateGray),
-          const SizedBox(width: 8),
+          Icon(
+            icon,
+            size: 18,
+            color: Colors.grey[600],
+          ),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                fontSize: 14,
-                color: ColorsManager.graphiteBlack,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: const Color(0xFF4A4A4A),
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),

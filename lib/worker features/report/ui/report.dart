@@ -237,12 +237,29 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 children: [
                   Icon(Icons.warning, color: Colors.yellow[700], size: 20),
                   const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      'There was a screen offline.',
-                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                  Expanded(
+                      child: TextField(
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.yellow[50],
+                      hintText: 'Ex: There was a screen offline.',
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        // borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        // borderRadius: BorderRadius.circular(25.7),
+                      ),
                     ),
-                  ),
+                  )
+                      // Text(
+                      //   'ex:There was a screen offline.',
+                      //   style: TextStyle(fontSize: 14, color: Colors.black87),
+                      // ),
+                      ),
                 ],
               ),
             ),
@@ -271,12 +288,32 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 children: [
                   Icon(Icons.check_circle, color: Colors.green[600], size: 20),
                   const SizedBox(width: 8),
-                  const Expanded(
-                    child: Text(
-                      'Restart the router and now is showing online.',
-                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                  Expanded(
+                      child: TextField(
+                    maxLines: 2,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.green[50],
+                      hintText:
+                          'Ex: Restart the router and now is showing online.',
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        // borderRadius: BorderRadius.circular(25.7),
+                      ),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        // borderRadius: BorderRadius.circular(25.7),
+                      ),
                     ),
-                  ),
+                  )
+                      //  Text(
+                      //   'Restart the router and now is showing online.',
+                      //   style: TextStyle(fontSize: 14, color: Colors.black87),
+                      // ),
+                      ),
                 ],
               ),
             ),
