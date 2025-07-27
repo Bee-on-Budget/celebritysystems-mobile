@@ -8,6 +8,8 @@ class ApiConstants {
   //wroker end points
   static const String workerTickets =
       "tickets/worker"; //    /api/tickets/worker/{username}
+
+  static const String sendReport = "report"; //{ticket_id}
 }
 
 class ApiErrors {
