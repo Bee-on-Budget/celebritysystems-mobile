@@ -110,7 +110,9 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                               .toString()), // ex: '05/02/2025'
                       const SizedBox(height: 12),
                       _buildInfoRow(
-                          Icons.person, 'Customer Name', 'Not specified'),
+                          Icons.screenshot_monitor_rounded,
+                          'Screen Name',
+                          widget.ticket.screenName ?? 'Not specified'),
                     ],
                   ),
                 ),
@@ -156,11 +158,11 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
 
   Widget _buildServiceDetailsCard() {
     final servicesRendered = [
-      'Checked receiving card',
-      'Power supply',
-      'Data cable',
-      'Patch cord',
-      'They\'re had black areas in the screen',
+      'Control System',
+      'Power Cables',
+      'Data Cables',
+      'Power Supply',
+      'Receiving Cards',
     ];
 
     return Card(

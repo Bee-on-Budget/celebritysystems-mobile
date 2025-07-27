@@ -7,7 +7,7 @@ class MyServicePage extends StatefulWidget {
 
 class _MyServicePageState extends State<MyServicePage> {
   List<Map<String, dynamic>> serviceTypes = [
-    {'name': 'Major Service', 'checked': false},
+    {'name': 'Preventive Maintenance', 'checked': false},
     {'name': 'Regular Service', 'checked': false},
     {'name': 'Call Back Service', 'checked': false},
     {'name': 'Emergency Service', 'checked': false},
@@ -49,6 +49,13 @@ class _MyServicePageState extends State<MyServicePage> {
                     setState(() {
                       serviceTypes[index]['checked'] =
                           !serviceTypes[index]['checked'];
+
+                      for (var element in serviceTypes) {
+                        if (element["checked"] == true &&
+                            element != serviceTypes[index]) {
+                          element["checked"] = false;
+                        }
+                      }
                       print(serviceTypes);
                     });
                   },
