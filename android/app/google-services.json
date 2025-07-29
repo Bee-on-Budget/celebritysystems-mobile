@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "943759980054",
+    "project_id": "celebritysystemsfcm",
+    "storage_bucket": "celebritysystemsfcm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943759980054:android:91be1294a1f11f747e2737",
+        "android_client_info": {
+          "package_name": "com.example.celebritysystems_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC-enmmKqWSDiWTPAcJbfQkR77gacHj_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

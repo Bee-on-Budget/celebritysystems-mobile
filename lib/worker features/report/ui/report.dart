@@ -1,12 +1,19 @@
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
+import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/check_list_card.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/service_type_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+import '../logic/report cubit/report_cubit.dart';
+import 'widgets/info_row_widget.dart';
 
 class ServiceReportScreen extends StatefulWidget {
   const ServiceReportScreen({super.key, required this.ticket});
+
   final OneTicketResponse ticket;
 
   @override
@@ -16,6 +23,8 @@ class ServiceReportScreen extends StatefulWidget {
 class _ServiceReportScreenState extends State<ServiceReportScreen> {
   @override
   Widget build(BuildContext context) {
+    final reportCubit = context.read<ReportCubit>();
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -31,7 +40,6 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
           children: [
             _buildHeaderCard(),
             const SizedBox(height: 16),
-            // _buildServiceTypeCard(),
             MyServicePage(),
             const SizedBox(height: 16),
             CheckListCardWidget(),
@@ -39,6 +47,16 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             _buildServiceDetailsCard(),
             const SizedBox(height: 16),
             _buildSignatureCard(),
+            const SizedBox(height: 8),
+            PrimaryButton(
+              text: "Submit",
+              onPressed: () {
+                final reportRequest = context.read<ReportCubit>().reportRequest;
+                print("onPressed");
+                print(reportRequest?.serviceType ?? "no data");
+                context.read<ReportCubit>().sendReport(reportRequest!);
+              },
+            )
           ],
         ),
       ),
@@ -90,11 +108,15 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildInfoRow(Icons.business, 'Company Name',
-                          widget.ticket.companyName ?? ""),
+                      InfoRowWidget(
+                          icon: Icons.business,
+                          label: 'Company Name',
+                          value: widget.ticket.companyName ?? ""),
                       const SizedBox(height: 12),
-                      _buildInfoRow(Icons.location_on, 'Location',
-                          widget.ticket.location ?? '_'),
+                      InfoRowWidget(
+                          icon: Icons.location_on,
+                          label: 'Location',
+                          value: widget.ticket.location ?? '_'),
                     ],
                   ),
                 ),
@@ -102,17 +124,17 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 Expanded(
                   child: Column(
                     children: [
-                      _buildInfoRow(
-                          Icons.calendar_today,
-                          'Service Date',
-                          DateFormat('dd/MM/yyyy')
+                      InfoRowWidget(
+                          icon: Icons.calendar_today,
+                          label: 'Service Date',
+                          value: DateFormat('dd/MM/yyyy')
                               .format(DateTime.now())
                               .toString()), // ex: '05/02/2025'
                       const SizedBox(height: 12),
-                      _buildInfoRow(
-                          Icons.screenshot_monitor_rounded,
-                          'Screen Name',
-                          widget.ticket.screenName ?? 'Not specified'),
+                      InfoRowWidget(
+                          icon: Icons.screenshot_monitor_rounded,
+                          label: 'Screen Name',
+                          value: widget.ticket.screenName ?? 'Not specified'),
                     ],
                   ),
                 ),
@@ -121,38 +143,6 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, color: Colors.blue[600], size: 20),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: Colors.black87,
-                ),
-              ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 

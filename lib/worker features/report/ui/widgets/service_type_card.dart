@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../logic/report cubit/report_cubit.dart';
 
 class MyServicePage extends StatefulWidget {
   @override
@@ -13,7 +16,7 @@ class _MyServicePageState extends State<MyServicePage> {
     {'name': 'Emergency Service', 'checked': false},
   ];
 
-  Widget _buildServiceTypeCard() {
+  Widget _buildServiceTypeCard(reportCubit) {
     return Card(
       elevation: 4,
       child: Padding(
@@ -57,6 +60,15 @@ class _MyServicePageState extends State<MyServicePage> {
                         }
                       }
                       print(serviceTypes);
+
+                      for (var element in serviceTypes) {
+                        if (element["checked"] == true) {
+                          context
+                              .read<ReportCubit>()
+                              .reportRequest
+                              ?.serviceType = element["name"];
+                        }
+                      }
                     });
                   },
                   child: Container(
@@ -110,7 +122,8 @@ class _MyServicePageState extends State<MyServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildServiceTypeCard();
+    final reportCubit = context.read<ReportCubit>();
+    return _buildServiceTypeCard(reportCubit);
     // Scaffold(
     //   body: SingleChildScrollView(child: _buildServiceTypeCard()),
     // );

@@ -20,12 +20,12 @@ class _ReportApiService implements ReportApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<void> sendReport(ReportRequest reportRequestBody) async {
+  Future<void> sendReport(ReportWrapper reportRequest) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(reportRequestBody.toJson());
+    _data.addAll(reportRequest.toJson());
     final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(

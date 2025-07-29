@@ -1,7 +1,10 @@
+import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20cubit/report_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/report.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
@@ -80,7 +83,10 @@ class TicketDetailsScreen extends StatelessWidget {
                               (context, animation, secondaryAnimation) =>
                                   FadeTransition(
                             opacity: animation,
-                            child: ServiceReportScreen(ticket: ticket),
+                            child: BlocProvider(
+                              create: (context) => ReportCubit(getIt()),
+                              child: ServiceReportScreen(ticket: ticket),
+                            ),
                           ),
                         ),
                       );

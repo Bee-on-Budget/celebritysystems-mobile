@@ -12,6 +12,6 @@ abstract class ReportApiService {
 
   @POST(ApiConstants.sendReport)
   Future<void> sendReport(
-    @Body() ReportRequest reportRequestBody,
+    @Body() ReportWrapper reportRequest,
   );
 }

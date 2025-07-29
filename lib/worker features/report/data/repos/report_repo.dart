@@ -8,7 +8,7 @@ class ReportRepo {
 
   ReportRepo(this._reportApiService);
 
-  Future<ApiResult<void>> sendReport(ReportRequest reportRequest) async {
+  Future<ApiResult<void>> sendReport(ReportWrapper reportRequest) async {
     try {
       final respone = await _reportApiService.sendReport(reportRequest);
       return ApiResult.success(respone);

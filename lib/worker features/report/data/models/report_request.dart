@@ -3,19 +3,58 @@ import 'package:json_annotation/json_annotation.dart';
 part 'report_request.g.dart';
 
 @JsonSerializable()
+class ReportWrapper {
+  ReportRequest? report;
+
+  ReportWrapper({this.report});
+
+  factory ReportWrapper.fromJson(Map<String, dynamic> json) =>
+      _$ReportWrapperFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReportWrapperToJson(this);
+}
+
+@JsonSerializable()
 class ReportRequest {
-  final DateTime dateTime;
-  final String serviceType;
-  final CheckList checkList;
-  final String defectsFound;
-  final String solutionsProvider;
+  String? date;
+
+  @JsonKey(name: 'service_type')
+  String? serviceType;
+
+  @JsonKey(name: 'date_time')
+  DateTime? dateTime;
+
+  CheckList? checklist;
+
+  @JsonKey(name: 'defects_found')
+  String? defectsFound;
+
+  @JsonKey(name: 'solutions_provided')
+  String? solutionsProvided;
+
+  @JsonKey(name: 'service_supervisor_signatures')
+  String? serviceSupervisorSignatures;
+
+  @JsonKey(name: 'technician_signatures')
+  String? technicianSignatures;
+
+  @JsonKey(name: 'authorized_person_Signatures')
+  String? authorizedPersonSignatures;
+
+  @JsonKey(name: 'solution_image')
+  String? solutionImage;
 
   ReportRequest({
-    required this.dateTime,
-    required this.serviceType,
-    required this.checkList,
-    required this.defectsFound,
-    required this.solutionsProvider,
+    this.date,
+    this.serviceType,
+    this.dateTime,
+    this.checklist,
+    this.defectsFound,
+    this.solutionsProvided,
+    this.serviceSupervisorSignatures,
+    this.technicianSignatures,
+    this.authorizedPersonSignatures,
+    this.solutionImage,
   });
 
   factory ReportRequest.fromJson(Map<String, dynamic> json) =>
@@ -26,43 +65,55 @@ class ReportRequest {
 
 @JsonSerializable()
 class CheckList {
-  final String dataCables;
+  @JsonKey(name: "Data Cables (Cat6/RJ45)")
+  String? dataCables;
 
-  final String powerCable;
+  @JsonKey(name: "Power Cable")
+  String? powerCable;
 
-  final String powerSupplies;
+  @JsonKey(name: "Power Supplies")
+  String? powerSupplies;
 
-  final String ledModules;
+  @JsonKey(name: "LED Modules")
+  String? ledModules;
 
-  final String coolingSystems;
+  @JsonKey(name: "Cooling Systems")
+  String? coolingSystems;
 
-  final String serviceLightsSockets;
+  @JsonKey(name: "Service Lights & Sockets")
+  String? serviceLightsSockets;
 
-  final String operatingComputers;
+  @JsonKey(name: "Operating Computers")
+  String? operatingComputers;
 
-  final String software;
+  @JsonKey(name: "Software")
+  String? software;
 
-  final String powerDBs;
+  @JsonKey(name: "Power DBs")
+  String? powerDBs;
 
-  final String mediaConverters;
+  @JsonKey(name: "Media Converters")
+  String? mediaConverters;
 
-  final String controlSystems;
+  @JsonKey(name: "Control Systems")
+  String? controlSystems;
 
-  final String videoProcessors;
+  @JsonKey(name: "Video Processors")
+  String? videoProcessors;
 
   CheckList({
-    required this.dataCables,
-    required this.powerCable,
-    required this.powerSupplies,
-    required this.ledModules,
-    required this.coolingSystems,
-    required this.serviceLightsSockets,
-    required this.operatingComputers,
-    required this.software,
-    required this.powerDBs,
-    required this.mediaConverters,
-    required this.controlSystems,
-    required this.videoProcessors,
+    this.dataCables,
+    this.powerCable,
+    this.powerSupplies,
+    this.ledModules,
+    this.coolingSystems,
+    this.serviceLightsSockets,
+    this.operatingComputers,
+    this.software,
+    this.powerDBs,
+    this.mediaConverters,
+    this.controlSystems,
+    this.videoProcessors,
   });
 
   factory CheckList.fromJson(Map<String, dynamic> json) =>
