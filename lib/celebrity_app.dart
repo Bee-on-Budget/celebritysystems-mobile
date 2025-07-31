@@ -4,9 +4,34 @@ import 'package:celebritysystems_mobile/core/theming/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CelebrityApp extends StatelessWidget {
+class CelebrityApp extends StatefulWidget {
   final AppRouter appRouter;
   const CelebrityApp({super.key, required this.appRouter});
+
+  @override
+  State<CelebrityApp> createState() => _CelebrityAppState();
+}
+
+class _CelebrityAppState extends State<CelebrityApp> {
+  @override
+  void initState() {
+    super.initState();
+    setupOneSignalHandlers();
+  }
+
+  void setupOneSignalHandlers() {
+    // Additional OneSignal setup that might need context
+    // This runs after the widget is built and context is available
+
+    // You can add user identification here if needed
+    // OneSignal.login("user_id"); // Call this after user logs in
+
+    // Set up tags for user segmentation
+    // OneSignal.User.addTags({
+    //   "app_version": "1.0.0",
+    //   "user_type": "premium"
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +46,9 @@ class CelebrityApp extends StatelessWidget {
         // You can use the library anywhere in the app even in theme
         theme: AppTheme.lightTheme,
         initialRoute: Routes.splashScreen,
-        // Routes.loginScreen, //isLoggedInUser ? Routes.homeScreen : Routes.loginScreen,
-        onGenerateRoute: appRouter.generateRoute,
+        // Routes.loginScreen,
+        //isLoggedInUser ? Routes.homeScreen : Routes.loginScreen,
+        onGenerateRoute: widget.appRouter.generateRoute,
       ),
     );
   }
