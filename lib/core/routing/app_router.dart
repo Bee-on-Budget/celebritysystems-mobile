@@ -1,4 +1,3 @@
-import 'package:celebritysystems_mobile/company%20features/home/ui/company_home_screen.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/ui/home_screen.dart';
@@ -7,6 +6,9 @@ import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
 import 'package:celebritysystems_mobile/features/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../company_features/home/logic/company_home_cubit/company_home_cubit.dart';
+import '../../company_features/home/ui/home_screen/company_home_screen.dart';
+import '../../company_features/create_company_ticket/ui/create_company_ticket_screen.dart';
 import '../di/dependency_injection.dart';
 
 class AppRouter {
@@ -35,7 +37,14 @@ class AppRouter {
         );
       case Routes.companyHomeScreen:
         return MaterialPageRoute(
-          builder: (_) => const CompanyHomeScreen(),
+          builder: (_) => BlocProvider(
+            create: (context) => CompanyHomeCubit(getIt()),
+            child: const CompanyHomeScreen(),
+          ),
+        );
+      case Routes.createCompanyTicketScreen:
+        return MaterialPageRoute(
+          builder: (_) => const CreateCompanyTicketScreen(),
         );
       // case Routes.reportScreen:
       //   return MaterialPageRoute(
