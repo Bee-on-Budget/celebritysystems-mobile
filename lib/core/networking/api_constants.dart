@@ -13,6 +13,9 @@ class ApiConstants {
   /* Company User End Points */
   // /api/tickets/company/{companyId}
   static const String companyTickets = "tickets/company";
+
+  static const String sendReport =
+      "tickets/{ticketId}/worker-report"; //{ticket_id}
 }
 
 class ApiErrors {
