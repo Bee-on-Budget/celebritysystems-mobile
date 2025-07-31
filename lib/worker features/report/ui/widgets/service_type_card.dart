@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../logic/report cubit/report_cubit.dart';
 
 class MyServicePage extends StatefulWidget {
   @override
@@ -7,13 +10,13 @@ class MyServicePage extends StatefulWidget {
 
 class _MyServicePageState extends State<MyServicePage> {
   List<Map<String, dynamic>> serviceTypes = [
-    {'name': 'Major Service', 'checked': false},
+    {'name': 'Preventive Maintenance', 'checked': false},
     {'name': 'Regular Service', 'checked': false},
     {'name': 'Call Back Service', 'checked': false},
     {'name': 'Emergency Service', 'checked': false},
   ];
 
-  Widget _buildServiceTypeCard() {
+  Widget _buildServiceTypeCard(reportCubit) {
     return Card(
       elevation: 4,
       child: Padding(
@@ -49,7 +52,23 @@ class _MyServicePageState extends State<MyServicePage> {
                     setState(() {
                       serviceTypes[index]['checked'] =
                           !serviceTypes[index]['checked'];
+
+                      for (var element in serviceTypes) {
+                        if (element["checked"] == true &&
+                            element != serviceTypes[index]) {
+                          element["checked"] = false;
+                        }
+                      }
                       print(serviceTypes);
+
+                      for (var element in serviceTypes) {
+                        if (element["checked"] == true) {
+                          context
+                              .read<ReportCubit>()
+                              .reportRequest
+                              ?.serviceType = element["name"];
+                        }
+                      }
                     });
                   },
                   child: Container(
@@ -103,7 +122,8 @@ class _MyServicePageState extends State<MyServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildServiceTypeCard();
+    final reportCubit = context.read<ReportCubit>();
+    return _buildServiceTypeCard(reportCubit);
     // Scaffold(
     //   body: SingleChildScrollView(child: _buildServiceTypeCard()),
     // );
