@@ -1,13 +1,18 @@
 class ApiConstants {
-  static const String apiBaseUrl = "http://10.0.2.2:8080/api/";
+  static const String apiBaseUrl = "http://192.168.43.212:8080/api/";
   // static const String apiBaseUrl = "http://127.0.0.1:8080/api/";
 
   // static const String apiBaseUrl = "http://localhost:8080/api/";
 
   static const String login = "auth/login";
+  static const String tickets = "tickets";
+  static const String company = "company";
   //wroker end points
   static const String workerTickets =
       "tickets/worker"; //    /api/tickets/worker/{username}
+  /* Company User End Points */
+  // /api/tickets/company/{companyId}
+  static const String companyTickets = "tickets/company";
 }
 
 class ApiErrors {
