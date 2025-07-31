@@ -8,9 +8,11 @@ class ReportRepo {
 
   ReportRepo(this._reportApiService);
 
-  Future<ApiResult<void>> sendReport(ReportWrapper reportRequest) async {
+  Future<ApiResult<void>> sendReport(
+      int ticketId, ReportWrapper reportRequest) async {
     try {
-      final respone = await _reportApiService.sendReport(reportRequest);
+      final respone =
+          await _reportApiService.sendReport(ticketId, reportRequest);
       return ApiResult.success(respone);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));

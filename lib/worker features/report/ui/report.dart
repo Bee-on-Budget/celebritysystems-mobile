@@ -1,7 +1,6 @@
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
-import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/check_list_card.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/service_type_card.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +22,6 @@ class ServiceReportScreen extends StatefulWidget {
 class _ServiceReportScreenState extends State<ServiceReportScreen> {
   @override
   Widget build(BuildContext context) {
-    final reportCubit = context.read<ReportCubit>();
-
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -51,10 +48,11 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             PrimaryButton(
               text: "Submit",
               onPressed: () {
-                final reportRequest = context.read<ReportCubit>().reportRequest;
                 print("onPressed");
-                print(reportRequest?.serviceType ?? "no data");
-                context.read<ReportCubit>().sendReport(reportRequest!);
+                // print(context.read<ReportCubit>().reportRequest.toString());
+                context
+                    .read<ReportCubit>()
+                    .sendReport(1, context.read<ReportCubit>().reportRequest!);
               },
             )
           ],
@@ -231,6 +229,10 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                       child: TextField(
+                    onChanged: (defectsFoundValue) {
+                      context.read<ReportCubit>().reportRequest?.defectsFound =
+                          defectsFoundValue;
+                    },
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.yellow[50],
@@ -282,6 +284,12 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                       child: TextField(
+                    onChanged: (solutionsProvidedValue) {
+                      context
+                          .read<ReportCubit>()
+                          .reportRequest
+                          ?.solutionsProvided = solutionsProvidedValue;
+                    },
                     maxLines: 2,
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(

@@ -20,7 +20,7 @@ class _ReportApiService implements ReportApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<void> sendReport(ReportWrapper reportRequest) async {
+  Future<void> sendReport(int ticketId, ReportWrapper reportRequest) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -30,7 +30,7 @@ class _ReportApiService implements ReportApiService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'report',
+            'tickets/${ticketId}/worker-report',
             queryParameters: queryParameters,
             data: _data,
           )

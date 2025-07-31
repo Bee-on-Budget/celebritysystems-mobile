@@ -1,4 +1,7 @@
+import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20cubit/report_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CheckListCardWidget extends StatefulWidget {
   @override
@@ -6,6 +9,34 @@ class CheckListCardWidget extends StatefulWidget {
 }
 
 class _CheckListCardWidgetState extends State<CheckListCardWidget> {
+  CheckList _mapChecklistItemsToModel() {
+    String? getStatus(String itemName) {
+      final match = checklistItems.firstWhere(
+        (item) => item['name']
+            .toString()
+            .toLowerCase()
+            .contains(itemName.toLowerCase()),
+        orElse: () => {'status': null},
+      );
+      return match['status'];
+    }
+
+    return CheckList(
+      dataCables: getStatus('Data cables'),
+      powerCable: getStatus('Power Cable'),
+      powerSupplies: getStatus('Power supplies'),
+      ledModules: getStatus('LED Modules'),
+      coolingSystems: getStatus('Cooling Systems'),
+      serviceLightsSockets: getStatus('Service lights'),
+      operatingComputers: getStatus('Operating Computers'),
+      software: getStatus('Software'),
+      powerDBs: getStatus('Power DBs'),
+      mediaConverters: getStatus('Media Converters'),
+      controlSystems: getStatus('Control Systems'),
+      videoProcessors: getStatus('Video Processors'),
+    );
+  }
+
   List<Map<String, dynamic>> checklistItems = [
     {'name': 'Data cables (Cat5/Cat6/RJ45)', 'status': 'OK'},
     {'name': 'Power Cables', 'status': 'OK'},
@@ -54,6 +85,15 @@ class _CheckListCardWidgetState extends State<CheckListCardWidget> {
                       } else if (checklistItems[index]['status'] == 'X') {
                         checklistItems[index]['status'] = 'OK';
                       }
+
+                      context.read<ReportCubit>().reportRequest?.checklist =
+                          _mapChecklistItemsToModel();
+
+                      print(context
+                          .read<ReportCubit>()
+                          .reportRequest
+                          ?.checklist
+                          ?.toJson());
                     });
                   },
                   child: Container(

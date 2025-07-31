@@ -9,7 +9,8 @@ class ApiConstants {
   static const String workerTickets =
       "tickets/worker"; //    /api/tickets/worker/{username}
 
-  static const String sendReport = "report"; //{ticket_id}
+  static const String sendReport =
+      "tickets/{ticketId}/worker-report"; //{ticket_id}
 }
 
 class ApiErrors {

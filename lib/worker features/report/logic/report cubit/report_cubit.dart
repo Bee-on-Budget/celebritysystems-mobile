@@ -7,22 +7,30 @@ import 'package:celebritysystems_mobile/worker%20features/report/data/repos/repo
 
 class ReportCubit extends Cubit<ReportState> {
   final ReportRepo _reportRepo;
-  ReportCubit(this._reportRepo) : super(ReportState.initial());
+  ReportRequest? reportRequest;
+
+  ReportCubit(this._reportRepo) : super(ReportState.initial()) {
+    reportRequest = ReportRequest(); // ✅ Initialize here
+  }
 
   // late String serviceType;
   // late CheckList checkList;
-  ReportRequest? reportRequest;
 
-  void sendReport(ReportRequest reportRequest) async {
+  void sendReport(int ticketId, ReportRequest reportRequest) async {
     emit(ReportState.loading());
-    print(reportRequest);
-    print("0000000000000000000000000000000000000000000000000000");
+    print("000000 reportRequest.checklist 00000000000000000000");
+    print(reportRequest.checklist.toString());
+    print("000000000000     defectsFound    0000000000000000000");
+    print(reportRequest.defectsFound.toString());
+
+    print("000000000000     solutionsProvided    0000000000000000000");
+    print(reportRequest.solutionsProvided.toString());
 
     print(reportRequest.toString());
     ReportWrapper reportWrapper = ReportWrapper(report: reportRequest);
 
     final result.ApiResult<void> response =
-        await _reportRepo.sendReport(reportWrapper);
+        await _reportRepo.sendReport(ticketId, reportWrapper);
 
     print("******************************************");
     print("response is ");
