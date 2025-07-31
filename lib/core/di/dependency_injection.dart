@@ -5,6 +5,13 @@ import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubi
 import 'package:celebritysystems_mobile/features/login/data/apis/login_api_service.dart';
 import 'package:celebritysystems_mobile/features/login/data/repos/login_repo.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/api/company_tickets_api_service.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/api/company_api_service.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/repos/company_ticket_repo.dart';
+import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_cubit.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/data/apis/report_api_service.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/data/repos/report_repo.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20cubit/report_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -22,6 +29,19 @@ Future<void> setupGetit() async {
   getIt.registerLazySingleton<TicketApiService>(() => TicketApiService(dio));
   getIt.registerLazySingleton<TicketRepo>(() => TicketRepo(getIt()));
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt()));
+
+  //company features
+  getIt.registerLazySingleton<CompanyTicketsApiService>(
+      () => CompanyTicketsApiService(dio));
+  getIt.registerLazySingleton<CompanyApiService>(() => CompanyApiService(dio));
+  getIt.registerLazySingleton<CompanyTicketRepo>(
+      () => CompanyTicketRepo(getIt()));
+  getIt.registerFactory<CompanyHomeCubit>(() => CompanyHomeCubit(getIt()));
+
+  //report features
+  getIt.registerLazySingleton<ReportApiService>(() => ReportApiService(dio));
+  getIt.registerLazySingleton<ReportRepo>(() => ReportRepo(getIt()));
+  getIt.registerFactory<ReportCubit>(() => ReportCubit(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.
