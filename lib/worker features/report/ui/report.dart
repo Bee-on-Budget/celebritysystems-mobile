@@ -58,9 +58,8 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 print("onPressed");
                 // Add uploaded image to the report request
                 // context.read<ReportCubit>().reportRequest?.image = _uploadedImage;
-                context
-                    .read<ReportCubit>()
-                    .sendReport(1, context.read<ReportCubit>().reportRequest!);
+                context.read<ReportCubit>().sendReport(widget.ticket.id!,
+                    context.read<ReportCubit>().reportRequest!);
               },
             )
           ],

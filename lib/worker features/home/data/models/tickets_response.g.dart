@@ -20,6 +20,7 @@ Map<String, dynamic> _$TicketsResponseToJson(TicketsResponse instance) =>
 
 OneTicketResponse _$OneTicketResponseFromJson(Map<String, dynamic> json) =>
     OneTicketResponse(
+      id: (json['id'] as num?)?.toInt(),
       title: json['title'] as String?,
       description: json['description'] as String?,
       assignedBySupervisorName: json['assignedBySupervisorName'] as String?,
@@ -34,6 +35,7 @@ OneTicketResponse _$OneTicketResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$OneTicketResponseToJson(OneTicketResponse instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'title': instance.title,
       'description': instance.description,
       'assignedToWorkerName': instance.assignedToWorkerName,

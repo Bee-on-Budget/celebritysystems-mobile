@@ -14,6 +14,7 @@ class TicketsResponse {
 
 @JsonSerializable()
 class OneTicketResponse {
+  int? id;
   String? title;
   String? description;
   String? assignedToWorkerName;
@@ -26,7 +27,8 @@ class OneTicketResponse {
   String? screenType;
 
   OneTicketResponse(
-      {this.title,
+      {this.id,
+      this.title,
       this.description,
       this.assignedBySupervisorName,
       this.assignedToWorkerName,
