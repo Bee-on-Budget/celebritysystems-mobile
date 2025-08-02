@@ -5,8 +5,12 @@ import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubi
 import 'package:celebritysystems_mobile/features/login/data/apis/login_api_service.dart';
 import 'package:celebritysystems_mobile/features/login/data/repos/login_repo.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/data/repos/report_repo.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20cubit/report_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+
+import '../../worker features/report/data/apis/report_api_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -22,6 +26,11 @@ Future<void> setupGetit() async {
   getIt.registerLazySingleton<TicketApiService>(() => TicketApiService(dio));
   getIt.registerLazySingleton<TicketRepo>(() => TicketRepo(getIt()));
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt()));
+
+  //report
+  getIt.registerLazySingleton<ReportApiService>(() => ReportApiService(dio));
+  getIt.registerLazySingleton<ReportRepo>(() => ReportRepo(getIt()));
+  getIt.registerFactory<ReportCubit>(() => ReportCubit(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.

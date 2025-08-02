@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ticket_api_service.dart';
+part of 'company_tickets_api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'ticket_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _TicketApiService implements TicketApiService {
-  _TicketApiService(this._dio, {this.baseUrl, this.errorLogger}) {
+class _CompanyTicketsApiService implements CompanyTicketsApiService {
+  _CompanyTicketsApiService(this._dio, {this.baseUrl, this.errorLogger}) {
     baseUrl ??= 'http://10.0.2.2:8080/api/';
   }
 
@@ -20,28 +20,28 @@ class _TicketApiService implements TicketApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<OneTicketResponse>> getTickets(String username) async {
+  Future<List<CompanyTicketResponse>> getCompanyTickets(int companyId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<OneTicketResponse>>(
+    final _options = _setStreamType<List<CompanyTicketResponse>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'tickets/worker/${username}',
+            'tickets/company/${companyId}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<OneTicketResponse> _value;
+    late List<CompanyTicketResponse> _value;
     try {
       _value = _result.data!
           .map(
             (dynamic i) =>
-                OneTicketResponse.fromJson(i as Map<String, dynamic>),
+                CompanyTicketResponse.fromJson(i as Map<String, dynamic>),
           )
           .toList();
     } on Object catch (e, s) {
@@ -52,25 +52,52 @@ class _TicketApiService implements TicketApiService {
   }
 
   @override
-  Future<TicketsCount> getTicketsCount(String username) async {
+  Future<CompanyTicketResponse> getTicket(int ticketId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<TicketsCount>(
+    final _options = _setStreamType<CompanyTicketResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'tickets/worker/${username}/count',
+            'tickets/${ticketId}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late TicketsCount _value;
+    late CompanyTicketResponse _value;
     try {
-      _value = TicketsCount.fromJson(_result.data!);
+      _value = CompanyTicketResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<CompanyTicketResponse> putTicket(CompanyTicketResponse ticket) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = ticket;
+    final _options = _setStreamType<CompanyTicketResponse>(
+      Options(method: 'PUT', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'tickets',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CompanyTicketResponse _value;
+    try {
+      _value = CompanyTicketResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
