@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/helpers/constants.dart';
 import 'core/helpers/shared_pref_helper.dart';
 import 'features/login/logic/user cubit/user_cubit.dart';
@@ -41,6 +42,25 @@ void main() async {
 Future<void> initOneSignal() async {
   // Replace with your actual OneSignal App ID
   OneSignal.initialize("18424b3e-8fed-4057-875a-9a9b2137df00");
+
+  //sami
+  print("Sami Debugging");
+
+  // Then check for subscription ID after a delay
+  Future.delayed(Duration(seconds: 2), () {
+    String? subscriptionId = OneSignal.User.pushSubscription.id;
+    print("Subscription ID: $subscriptionId");
+
+    // if (subscriptionId != null) {
+    //   SharedPreferences.getInstance().then((value) {
+    //     value.setString(Preferences.oneSignalUserId, subscriptionId);
+    //   });
+
+    //     print("inside if subscriptionId from oneSignal is:  " + subscriptionId);
+    // }
+  });
+
+  //sami
 
   // Request permission for notifications
   OneSignal.Notifications.requestPermission(true);

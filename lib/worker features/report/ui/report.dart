@@ -1,3 +1,5 @@
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
@@ -60,6 +62,9 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 // context.read<ReportCubit>().reportRequest?.image = _uploadedImage;
                 context.read<ReportCubit>().sendReport(widget.ticket.id!,
                     context.read<ReportCubit>().reportRequest!);
+
+//TODO: add snack bar.
+                context.pushReplacementNamed(Routes.homeScreen);
               },
             )
           ],
