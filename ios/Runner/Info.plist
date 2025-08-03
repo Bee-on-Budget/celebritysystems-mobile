@@ -49,5 +49,10 @@
 	<array>
     <string>remote-notification</string>
 	</array>
+	<!-- Permissions for image picker -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take photos for tickets</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select images for tickets</string>
 </dict>
 </plist>

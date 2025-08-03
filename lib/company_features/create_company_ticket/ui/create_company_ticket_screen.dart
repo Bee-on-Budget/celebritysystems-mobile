@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/primary_button.dart';
+import '../../../../core/widgets/image_picker_widget.dart';
 
 class CreateCompanyTicketScreen extends StatefulWidget {
   const CreateCompanyTicketScreen({super.key});
@@ -19,6 +21,7 @@ class _CreateCompanyTicketScreenState extends State<CreateCompanyTicketScreen> {
   final _locationController = TextEditingController();
   final _contactController = TextEditingController();
   final _googleMapsLinkController = TextEditingController();
+  File? _selectedImage;
 
   @override
   void dispose() {
@@ -32,15 +35,25 @@ class _CreateCompanyTicketScreenState extends State<CreateCompanyTicketScreen> {
 
   void _submitTicket() {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement ticket creation logic
+      // TODO: Implement ticket creation logic with image
+      String imageInfo = _selectedImage != null
+          ? ' with image: ${_selectedImage!.path.split('/').last}'
+          : ' without image';
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ticket created successfully!'),
+        SnackBar(
+          content: Text('Ticket created successfully!$imageInfo'),
           backgroundColor: ColorsManager.freshMint,
         ),
       );
       Navigator.pop(context);
     }
+  }
+
+  void _onImageSelected(File? image) {
+    setState(() {
+      _selectedImage = image;
+    });
   }
 
   @override
@@ -100,9 +113,12 @@ class _CreateCompanyTicketScreenState extends State<CreateCompanyTicketScreen> {
                 icon: Icons.location_on,
                 controller: _locationController,
               ),
-              // TODO:: add dropdown to screens
 
-              // TODO:: add capture a picture button or add new photo
+              // Image Picker
+              ImagePickerWidget(
+                onImageSelected: _onImageSelected,
+              ),
+
               const SizedBox(height: 16),
 
               // Submit Button
