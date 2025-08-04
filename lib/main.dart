@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'core/helpers/constants.dart';
 import 'core/helpers/shared_pref_helper.dart';
 import 'features/login/logic/user cubit/user_cubit.dart';

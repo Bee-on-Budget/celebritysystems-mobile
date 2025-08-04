@@ -1,6 +1,7 @@
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
+import 'package:celebritysystems_mobile/core/widgets/image_picker_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/check_list_card.dart';
@@ -24,8 +25,15 @@ class ServiceReportScreen extends StatefulWidget {
 }
 
 class _ServiceReportScreenState extends State<ServiceReportScreen> {
-  File? _uploadedImage;
-  final ImagePicker _picker = ImagePicker();
+  File? _selectedImage;
+
+  // File? _uploadedImage;
+  // final ImagePicker _picker = ImagePicker();
+  void _onImageSelected(File? image) {
+    setState(() {
+      _selectedImage = image;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +60,18 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             const SizedBox(height: 16),
             _buildSignatureCard(),
             const SizedBox(height: 16),
-            _buildImageUploadCard(),
-            const SizedBox(height: 8),
+            // _buildImageUploadCard(),
+            // Image Picker
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ImagePickerWidget(
+                  onImageSelected: _onImageSelected,
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
             PrimaryButton(
               text: "Submit",
               onPressed: () {
@@ -412,274 +430,274 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
     );
   }
 
-  Widget _buildImageUploadCard() {
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.camera_alt,
-                    color: ColorsManager.coralBlaze, size: 24),
-                const SizedBox(width: 8),
-                const Text(
-                  'Upload Images',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Attach photos of the service work, equipment, or any relevant documentation',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 16),
+  // Widget _buildImageUploadCard() {
+  //   return Card(
+  //     elevation: 4,
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(20.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Icon(Icons.camera_alt,
+  //                   color: ColorsManager.coralBlaze, size: 24),
+  //               const SizedBox(width: 8),
+  //               const Text(
+  //                 'Upload Images',
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: Colors.black87,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //           const SizedBox(height: 8),
+  //           Text(
+  //             'Attach photos of the service work, equipment, or any relevant documentation',
+  //             style: TextStyle(
+  //               fontSize: 14,
+  //               color: Colors.grey[600],
+  //             ),
+  //           ),
+  //           const SizedBox(height: 16),
 
-            // Upload Buttons Row
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _uploadedImage == null
-                        ? () => _pickImage(ImageSource.camera)
-                        : null,
-                    icon: const Icon(Icons.camera_alt, size: 20),
-                    label: const Text('Camera'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _uploadedImage == null
-                          ? ColorsManager.coralBlaze
-                          : Colors.grey[400],
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _uploadedImage == null
-                        ? () => _pickImage(ImageSource.gallery)
-                        : null,
-                    icon: const Icon(Icons.photo_library, size: 20),
-                    label: const Text('Gallery'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _uploadedImage == null
-                          ? Colors.grey[600]
-                          : Colors.grey[400],
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+  //           // Upload Buttons Row
+  //           Row(
+  //             children: [
+  //               Expanded(
+  //                 child: ElevatedButton.icon(
+  //                   onPressed: _uploadedImage == null
+  //                       ? () => _pickImage(ImageSource.camera)
+  //                       : null,
+  //                   icon: const Icon(Icons.camera_alt, size: 20),
+  //                   label: const Text('Camera'),
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: _uploadedImage == null
+  //                         ? ColorsManager.coralBlaze
+  //                         : Colors.grey[400],
+  //                     foregroundColor: Colors.white,
+  //                     padding: const EdgeInsets.symmetric(vertical: 12),
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(8),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 12),
+  //               Expanded(
+  //                 child: ElevatedButton.icon(
+  //                   onPressed: _uploadedImage == null
+  //                       ? () => _pickImage(ImageSource.gallery)
+  //                       : null,
+  //                   icon: const Icon(Icons.photo_library, size: 20),
+  //                   label: const Text('Gallery'),
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: _uploadedImage == null
+  //                         ? Colors.grey[600]
+  //                         : Colors.grey[400],
+  //                     foregroundColor: Colors.white,
+  //                     padding: const EdgeInsets.symmetric(vertical: 12),
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(8),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
 
-            const SizedBox(height: 16),
+  //           const SizedBox(height: 16),
 
-            // Display uploaded image
-            if (_uploadedImage != null) ...[
-              Row(
-                children: [
-                  Icon(Icons.image, color: Colors.green[600], size: 20),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Uploaded Image',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildImageDisplay(),
-            ] else ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                      color: Colors.grey[300]!, style: BorderStyle.solid),
-                ),
-                child: Column(
-                  children: [
-                    Icon(Icons.cloud_upload_outlined,
-                        size: 48, color: Colors.grey[400]),
-                    const SizedBox(height: 8),
-                    Text(
-                      'No image uploaded yet',
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
+  //           // Display uploaded image
+  //           if (_uploadedImage != null) ...[
+  //             Row(
+  //               children: [
+  //                 Icon(Icons.image, color: Colors.green[600], size: 20),
+  //                 const SizedBox(width: 8),
+  //                 const Text(
+  //                   'Uploaded Image',
+  //                   style: TextStyle(
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeight.w600,
+  //                     color: Colors.green,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             const SizedBox(height: 12),
+  //             _buildImageDisplay(),
+  //           ] else ...[
+  //             Container(
+  //               width: double.infinity,
+  //               padding: const EdgeInsets.all(20),
+  //               decoration: BoxDecoration(
+  //                 color: Colors.grey[100],
+  //                 borderRadius: BorderRadius.circular(8),
+  //                 border: Border.all(
+  //                     color: Colors.grey[300]!, style: BorderStyle.solid),
+  //               ),
+  //               child: Column(
+  //                 children: [
+  //                   Icon(Icons.cloud_upload_outlined,
+  //                       size: 48, color: Colors.grey[400]),
+  //                   const SizedBox(height: 8),
+  //                   Text(
+  //                     'No image uploaded yet',
+  //                     style: TextStyle(
+  //                       color: Colors.grey[500],
+  //                       fontSize: 14,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildImageDisplay() {
-    return Container(
-      width: double.infinity,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.file(
-              _uploadedImage!,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-          Positioned(
-            top: 8,
-            right: 8,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: _replaceImage,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[600],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: _removeImage,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.red[600],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildImageDisplay() {
+  //   return Container(
+  //     width: double.infinity,
+  //     height: 200,
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(8),
+  //       border: Border.all(color: Colors.grey[300]!),
+  //     ),
+  //     child: Stack(
+  //       children: [
+  //         ClipRRect(
+  //           borderRadius: BorderRadius.circular(8),
+  //           child: Image.file(
+  //             _uploadedImage!,
+  //             fit: BoxFit.cover,
+  //             width: double.infinity,
+  //             height: double.infinity,
+  //           ),
+  //         ),
+  //         Positioned(
+  //           top: 8,
+  //           right: 8,
+  //           child: Row(
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               GestureDetector(
+  //                 onTap: _replaceImage,
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(8),
+  //                   decoration: BoxDecoration(
+  //                     color: Colors.blue[600],
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                   child: const Icon(
+  //                     Icons.edit,
+  //                     color: Colors.white,
+  //                     size: 16,
+  //                   ),
+  //                 ),
+  //               ),
+  //               const SizedBox(width: 8),
+  //               GestureDetector(
+  //                 onTap: _removeImage,
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(8),
+  //                   decoration: BoxDecoration(
+  //                     color: Colors.red[600],
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                   child: const Icon(
+  //                     Icons.close,
+  //                     color: Colors.white,
+  //                     size: 16,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final XFile? image = await _picker.pickImage(
-        source: source,
-        imageQuality: 80,
-        maxWidth: 1920,
-        maxHeight: 1080,
-      );
+  // Future<void> _pickImage(ImageSource source) async {
+  //   try {
+  //     final XFile? image = await _picker.pickImage(
+  //       source: source,
+  //       imageQuality: 80,
+  //       maxWidth: 1920,
+  //       maxHeight: 1080,
+  //     );
 
-      if (image != null) {
-        setState(() {
-          _uploadedImage = File(image.path);
-        });
+  //     if (image != null) {
+  //       setState(() {
+  //         _uploadedImage = File(image.path);
+  //       });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Image uploaded successfully!'),
-            backgroundColor: Colors.green[600],
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error uploading image: $e'),
-          backgroundColor: Colors.red[600],
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    }
-  }
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: const Text('Image uploaded successfully!'),
+  //           backgroundColor: Colors.green[600],
+  //           duration: const Duration(seconds: 2),
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Error uploading image: $e'),
+  //         backgroundColor: Colors.red[600],
+  //         duration: const Duration(seconds: 3),
+  //       ),
+  //     );
+  //   }
+  // }
 
-  void _replaceImage() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text('Camera'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _replaceImage() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return SafeArea(
+  //         child: Wrap(
+  //           children: [
+  //             ListTile(
+  //               leading: const Icon(Icons.camera_alt),
+  //               title: const Text('Camera'),
+  //               onTap: () {
+  //                 Navigator.pop(context);
+  //                 _pickImage(ImageSource.camera);
+  //               },
+  //             ),
+  //             ListTile(
+  //               leading: const Icon(Icons.photo_library),
+  //               title: const Text('Gallery'),
+  //               onTap: () {
+  //                 Navigator.pop(context);
+  //                 _pickImage(ImageSource.gallery);
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  void _removeImage() {
-    setState(() {
-      _uploadedImage = null;
-    });
+  // void _removeImage() {
+  //   setState(() {
+  //     _uploadedImage = null;
+  //   });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Image removed'),
-        backgroundColor: Colors.orange[600],
-        duration: const Duration(seconds: 1),
-      ),
-    );
-  }
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: const Text('Image removed'),
+  //       backgroundColor: Colors.orange[600],
+  //       duration: const Duration(seconds: 1),
+  //     ),
+  //   );
+  // }
 }
