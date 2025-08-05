@@ -46,7 +46,7 @@ Future<void> initOneSignal() async {
   print("Sami Debugging");
 
   // Then check for subscription ID after a delay
-  Future.delayed(Duration(seconds: 2), () {
+  Future.delayed(Duration(seconds: 10), () {
     String? subscriptionId = OneSignal.User.pushSubscription.id;
     print("Subscription ID: $subscriptionId");
 
