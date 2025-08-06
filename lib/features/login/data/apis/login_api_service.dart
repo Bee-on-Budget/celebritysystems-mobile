@@ -15,4 +15,10 @@ abstract class LoginApiService {
   Future<LoginResponse> login(
     @Body() LoginRequestBody loginRequestBody,
   );
+
+  @PATCH("users/id/{id}")
+  Future<void> patchSubscriptionId(
+    @Path("id") int id,
+    @Body() Map<String, String> body,
+  );
 }

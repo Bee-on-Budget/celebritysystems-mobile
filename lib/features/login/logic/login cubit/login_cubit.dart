@@ -55,6 +55,20 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
+  Future<void> sendSubscreptionId(String subscriptionId, int userId) async {
+    // _loginApiService.patchSubscriptionId(subscriptionId);
+    await _loginRepo.patchSubscriptionId(userId, {
+      "playerId": subscriptionId,
+    });
+
+    // final result.ApiResult<LoginResponse> response = await _loginRepo.login(
+    //   LoginRequestBody(
+    //     email: emailController.text,
+    //     password: passwordController.text,
+    //   ),
+    // );
+  }
+
   Future<void> saveUserToken(String token) async {
     await SharedPrefHelper.setSecuredString(SharedPrefKeys.userToken, token);
     DioFactory.setTokenIntoHeaderAfterLogin(

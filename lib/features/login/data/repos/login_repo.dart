@@ -18,4 +18,14 @@ class LoginRepo {
       return ApiResult.failure(ErrorHandler.handle(error));
     }
   }
+
+  Future<void> patchSubscriptionId(int userId, Map<String, String> map) async {
+    try {
+      await _loginApiService.patchSubscriptionId(userId, map);
+      // return ApiResult.success(respone);
+    } catch (error) {
+      print(error.toString());
+      // return ApiResult.failure(ErrorHandler.handle(error));
+    }
+  }
 }

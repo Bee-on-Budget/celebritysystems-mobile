@@ -37,10 +37,21 @@ class LoginBlocListener extends StatelessWidget {
                 "********************   LoginBlocListener   *****************************");
             final token = await SharedPrefHelper.getSecuredString(
                 SharedPrefKeys.userToken);
-            await context.read<UserCubit>().loadUserFromToken(token ?? '');
 
+            // await context.read<UserCubit>().loadUserFromToken(token ?? '');
+            // final user = context.read<UserCubit>().state;
+            await context.read<UserCubit>().loadUserFromToken(token ?? '');
             final user = context.read<UserCubit>().state;
 
+            print("Final user state: $user");
+            print("userID: ${user?.userId}");
+            print("userRole: ${user?.role}");
+
+            String subId = await SharedPrefHelper.getString(
+                SharedPrefKeys.oneSignalUserId);
+            context
+                .read<LoginCubit>()
+                .sendSubscreptionId(subId, user?.userId ?? 0);
             if (user == null || !user.isAllowed) {
               context.pop(); // remove loading dialog if it's shown
 

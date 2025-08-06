@@ -4,9 +4,9 @@ import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/helpers/constants.dart';
 import 'core/helpers/shared_pref_helper.dart';
 import 'features/login/logic/user cubit/user_cubit.dart';
@@ -15,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment variables
-  await dotenv.load(fileName: ".env");
+  // await dotenv.load(fileName: ".env");
 
   // Initialize OneSignal first
   await initOneSignal();
@@ -50,9 +50,22 @@ Future<void> initOneSignal() async {
   print("Sami Debugging");
 
   // Then check for subscription ID after a delay
-  Future.delayed(Duration(seconds: 10), () {
+  Future.delayed(Duration(seconds: 3), () async {
     String? subscriptionId = OneSignal.User.pushSubscription.id;
     print("Subscription ID: $subscriptionId");
+
+    // String playedIdTest = "I am sami";
+
+    await SharedPrefHelper.setData(
+        SharedPrefKeys.oneSignalUserId, subscriptionId);
+
+    // if (playedIdTest != null) {
+    //   SharedPreferences.getInstance().then((value) {
+    //     value.setString(SharedPrefKeys.oneSignalUserId, playedIdTest);
+    //   });
+
+    //   print("inside if subscriptionId from oneSignal is:  " + playedIdTest);
+    // }
 
     // if (subscriptionId != null) {
     //   SharedPreferences.getInstance().then((value) {
