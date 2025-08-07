@@ -94,14 +94,9 @@ Future<void> initOneSignal() async {
 
   // Handle notification clicks
   OneSignal.Notifications.addClickListener((event) {
-    debugPrint('Notification clicked: ${event.notification.body}');
-
-    // You can add navigation logic here based on notification data
-    // For example, navigate to specific screen based on notification payload
     if (event.notification.additionalData != null) {
-      final data = event.notification.additionalData!;
-      // Handle navigation based on data
-      debugPrint('Additional data: $data');
+      final ticketId = event.notification.additionalData!['ticketId'];
+      debugPrint('Ticket ID: $ticketId');
     }
   });
 
