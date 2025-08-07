@@ -69,6 +69,7 @@ class UserCubit extends Cubit<UserModel?> {
 
   void logout() async {
     await SharedPrefHelper.clearAllData();
+    await SharedPrefHelper.clearAllSecuredData();
     emit(null);
   }
 
