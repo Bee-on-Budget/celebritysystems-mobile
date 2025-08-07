@@ -46,9 +46,6 @@ Future<void> initOneSignal() async {
   // Replace with your actual OneSignal App ID
   OneSignal.initialize("18424b3e-8fed-4057-875a-9a9b2137df00");
 
-  //sami
-  print("Sami Debugging");
-
   // Then check for subscription ID after a delay
   Future.delayed(Duration(seconds: 3), () async {
     String? subscriptionId = OneSignal.User.pushSubscription.id;
@@ -58,25 +55,7 @@ Future<void> initOneSignal() async {
 
     await SharedPrefHelper.setData(
         SharedPrefKeys.oneSignalUserId, subscriptionId);
-
-    // if (playedIdTest != null) {
-    //   SharedPreferences.getInstance().then((value) {
-    //     value.setString(SharedPrefKeys.oneSignalUserId, playedIdTest);
-    //   });
-
-    //   print("inside if subscriptionId from oneSignal is:  " + playedIdTest);
-    // }
-
-    // if (subscriptionId != null) {
-    //   SharedPreferences.getInstance().then((value) {
-    //     value.setString(Preferences.oneSignalUserId, subscriptionId);
-    //   });
-
-    //     print("inside if subscriptionId from oneSignal is:  " + subscriptionId);
-    // }
   });
-
-  //sami
 
   // Request permission for notifications
   OneSignal.Notifications.requestPermission(true);

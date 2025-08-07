@@ -1,3 +1,5 @@
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
@@ -409,172 +411,215 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       );
     }
 
-    return ListView.separated(
-      padding: EdgeInsets.all(20.w),
-      itemCount: tickets.length,
-      separatorBuilder: (_, __) => SizedBox(height: 16.h),
-      itemBuilder: (context, index) {
-        final ticket = tickets[index];
-
-        return TweenAnimationBuilder<double>(
-          duration: Duration(milliseconds: 300 + (index * 100)),
-          tween: Tween(begin: 0.0, end: 1.0),
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(0, 20 * (1 - value)),
-              child: Opacity(
-                opacity: value,
-                child: child,
-              ),
-            );
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  Colors.grey.withValues(alpha: 0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 20,
-                  offset: Offset(0, 8),
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(20),
-                onTap: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      transitionDuration: const Duration(milliseconds: 300),
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          FadeTransition(
-                        opacity: animation,
-                        child: TicketDetailsScreen(ticket: ticket),
-                      ),
+    return RefreshIndicator(
+      onRefresh: () async {
+        String username =
+            await SharedPrefHelper.getString(SharedPrefKeys.username);
+        await context.read<HomeCubit>().loadHomeData(username);
+      },
+      child: tickets.isEmpty
+          ? ListView(
+              // RefreshIndicator requires a scrollable child
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: 300, // ensure enough space to allow pull-down gesture
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.assignment_outlined,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          "No tickets in this tab",
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: ColorsManager.coralBlaze
-                                  .withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.confirmation_number_outlined,
-                              color: ColorsManager.coralBlaze,
-                              size: 20,
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Text(
-                              ticket.title ?? "-",
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF1A1A1A),
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.h),
-                      _infoRow(
-                          Icons.business_outlined, ticket.companyName ?? ""),
-                      _infoRow(Icons.person_outline,
-                          "By: ${ticket.assignedBySupervisorName}"),
-                      _infoRow(Icons.monitor_outlined, ticket.screenName ?? ""),
-                      SizedBox(height: 16.h),
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: _statusColor(ticket.status ?? ""),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _statusColor(ticket.status ?? "")
-                                      .withValues(alpha: 0.3),
-                                  blurRadius: 8,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              ticket.status ?? "",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Spacer(),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.access_time,
-                                  size: 14,
-                                  color: Colors.grey[600],
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  _formatDate(ticket.createdAt ?? ""),
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontSize: 11.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
                   ),
                 ),
-              ),
+              ],
+            )
+          : ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.all(20.w),
+              itemCount: tickets.length,
+              separatorBuilder: (_, __) => SizedBox(height: 16.h),
+              itemBuilder: (context, index) {
+                final ticket = tickets[index];
+
+                return TweenAnimationBuilder<double>(
+                  duration: Duration(milliseconds: 300 + (index * 100)),
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  builder: (context, value, child) {
+                    return Transform.translate(
+                      offset: Offset(0, 20 * (1 - value)),
+                      child: Opacity(
+                        opacity: value,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white,
+                          Colors.grey.withValues(alpha: 0.05),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 20,
+                          offset: Offset(0, 8),
+                          spreadRadius: 0,
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              transitionDuration:
+                                  const Duration(milliseconds: 300),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      FadeTransition(
+                                opacity: animation,
+                                child: TicketDetailsScreen(ticket: ticket),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(20.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: ColorsManager.coralBlaze
+                                          .withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Icons.confirmation_number_outlined,
+                                      color: ColorsManager.coralBlaze,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  SizedBox(width: 12.w),
+                                  Expanded(
+                                    child: Text(
+                                      ticket.title ?? "-",
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFF1A1A1A),
+                                        letterSpacing: -0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 16.h),
+                              _infoRow(Icons.business_outlined,
+                                  ticket.companyName ?? ""),
+                              _infoRow(Icons.person_outline,
+                                  "By: ${ticket.assignedBySupervisorName}"),
+                              _infoRow(Icons.monitor_outlined,
+                                  ticket.screenName ?? ""),
+                              SizedBox(height: 16.h),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: _statusColor(ticket.status ?? ""),
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              _statusColor(ticket.status ?? "")
+                                                  .withValues(alpha: 0.3),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      ticket.status ?? "",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          _formatDate(ticket.createdAt ?? ""),
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 11.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-        );
-      },
     );
   }
 

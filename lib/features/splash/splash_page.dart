@@ -30,6 +30,10 @@ class _SplashPageState extends State<SplashPage> {
         print("isExpired: ${tokenService.isExpired}");
         context.pushReplacementNamed(Routes.loginScreen);
       } else {
+        await SharedPrefHelper.setData(
+            SharedPrefKeys.username, tokenService.username);
+        await SharedPrefHelper.setData(
+            SharedPrefKeys.userId, tokenService.userId);
         if (tokenService.role == Constants.CELEBRITY_SYSTEM_WORKER) {
           context.pushReplacementNamed(Routes.homeScreen);
         } else if (tokenService.role == Constants.COMPANY) {

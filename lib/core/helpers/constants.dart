@@ -3,6 +3,8 @@ bool isLoggedInUser = false;
 class SharedPrefKeys {
   static const String userToken = 'userToken';
   static const String oneSignalUserId = "oneSignalUserId";
+  static const String username = "username";
+  static const String userId = "userId";
 }
 
 class Constants {
