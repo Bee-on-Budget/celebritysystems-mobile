@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../worker features/home/data/models/tickets_response.dart';
 
 class SharedPrefHelper {
   // private constructor as I don't want to allow creating an instance of this class itself.
@@ -90,5 +94,35 @@ class SharedPrefHelper {
     debugPrint('FlutterSecureStorage : all data has been cleared');
     const flutterSecureStorage = FlutterSecureStorage();
     await flutterSecureStorage.deleteAll();
+  }
+
+  static Future<void> saveTicketsToPrefs(
+      List<OneTicketResponse> tickets) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Map<String, dynamic>> jsonList =
+        tickets.map((ticket) => ticket.toJson()).toList();
+    prefs.setString('tickets', jsonEncode(jsonList));
+  }
+
+  static Future<List<OneTicketResponse>> getTicketsFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? jsonString = prefs.getString('jsonString');
+
+    if (jsonString != null) {
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      return jsonList.map((json) => OneTicketResponse.fromJson(json)).toList();
+    }
+    return [];
+  }
+
+  /// Clear List on Sunday
+  static Future<void> clearTicketsOnSunday() async {
+    final now = DateTime.now();
+
+    // Check if today is Sunday
+    if (now.weekday == DateTime.sunday) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('tickets');
+    }
   }
 }

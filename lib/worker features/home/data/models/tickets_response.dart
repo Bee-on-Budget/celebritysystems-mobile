@@ -41,4 +41,6 @@ class OneTicketResponse {
 
   factory OneTicketResponse.fromJson(Map<String, dynamic> json) =>
       _$OneTicketResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OneTicketResponseToJson(this);
 }

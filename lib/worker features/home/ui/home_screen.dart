@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/routing/routes.dart';
 import '../../../features/login/logic/user cubit/user_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +23,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
+
+  // Future<List<OneTicketResponse>> get completedticketsShared async =>
+  //     SharedPrefHelper.getTicketsFromPrefs();
 
   @override
   void initState() {
@@ -62,8 +66,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  Future<void> handleLogout() async {
+    final userCubit = context.read<UserCubit>();
+
+    // Clear user state
+    userCubit.logout();
+
+    // Navigate to login screen
+    if (context.mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        Routes.loginScreen,
+        (route) => false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Future<List<OneTicketResponse>> sami = completedticketsShared;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -77,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      ColorsManager.coralBlaze,
+                      ColorsManager.mistWhite,
                       ColorsManager.coralBlaze.withValues(alpha: 0.8),
                     ],
                   ),
@@ -126,63 +146,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             } else if (state is Success<List<OneTicketResponse>>) {
               final tickets = state.data;
 
-              if (tickets.isEmpty) {
-                return Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        ColorsManager.coralBlaze,
-                        ColorsManager.coralBlaze.withValues(alpha: 0.8),
-                      ],
-                    ),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.inbox_outlined,
-                          size: 80,
-                          color: Colors.white70,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          "No tickets found",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
               return FadeTransition(
                 opacity: _fadeAnimation,
                 child: CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      expandedHeight: 280.h,
-                      floating: false,
-                      pinned: true,
-                      elevation: 0,
-                      backgroundColor: ColorsManager.coralBlaze,
-                      foregroundColor: Colors.white,
-                      // Remove the default title and handle it manually in FlexibleSpaceBar
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true, // Center the title
-                        titlePadding: EdgeInsets.only(
-                          // top: 5.0,
-                          // left: 16.0,
-                          right: 200.0,
-                          bottom: 250, // Position it just above the TabBar
-                        ),
-                        title: const Text(
+                      title: Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: const Text(
                           "My Tickets",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -197,17 +168,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        background: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                ColorsManager.coralBlaze,
-                                ColorsManager.coralBlaze.withValues(alpha: 0.8),
-                              ],
-                            ),
+                      ),
+                      actions: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                            size: 30,
                           ),
+                          onPressed: () async {
+                            final shouldLogout = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Logout'),
+                                content: const Text(
+                                    'Are you sure you want to logout?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('No'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldLogout ?? false) {
+                              await handleLogout();
+                            }
+                          },
+                          tooltip: 'Logout',
+                        ),
+                      ],
+                      expandedHeight: 280.h,
+                      floating: false,
+                      pinned: true,
+                      elevation: 0,
+                      backgroundColor: ColorsManager.coralBlaze,
+                      foregroundColor: Colors.white,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -244,71 +249,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ),
                               ),
                               // Improved TabBar design
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    bottom: 8.h,
+                              Container(
+                                margin: EdgeInsets.only(
+                                  bottom: 8.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.1),
+                                ),
+                                child: TabBar(
+                                  indicator: BoxDecoration(
                                     borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.2),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: TabBar(
-                                    indicator: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      color:
-                                          Colors.white.withValues(alpha: 0.2),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black
-                                              .withValues(alpha: 0.1),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    indicatorSize: TabBarIndicatorSize.tab,
-                                    indicatorPadding: EdgeInsets.all(4),
-                                    labelColor: Colors.white,
-                                    unselectedLabelColor:
-                                        Colors.white.withValues(alpha: 0.7),
-                                    labelStyle: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 16,
-                                    ),
-                                    unselectedLabelStyle: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                    dividerColor: Colors
-                                        .transparent, // Remove the ugly line
-                                    overlayColor: WidgetStateProperty.all(
-                                      Colors.white.withValues(alpha: 0.1),
-                                    ),
-                                    tabs: const [
-                                      Tab(
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12),
-                                          child: Text('Active'),
-                                        ),
-                                      ),
-                                      Tab(
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12),
-                                          child: Text('Completed'),
-                                        ),
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Colors.black.withValues(alpha: 0.1),
+                                        blurRadius: 8,
+                                        offset: Offset(0, 2),
                                       ),
                                     ],
                                   ),
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  indicatorPadding: EdgeInsets.all(4),
+                                  labelColor: Colors.white,
+                                  unselectedLabelColor:
+                                      Colors.white.withValues(alpha: 0.7),
+                                  labelStyle: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
+                                  ),
+                                  unselectedLabelStyle: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                  dividerColor: Colors
+                                      .transparent, // Remove the ugly line
+                                  overlayColor: WidgetStateProperty.all(
+                                    Colors.white.withValues(alpha: 0.1),
+                                  ),
+                                  tabs: const [
+                                    Tab(
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        child: Text('Active'),
+                                      ),
+                                    ),
+                                    Tab(
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 12),
+                                        child: Text('Completed'),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -387,30 +386,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildTicketList(List<OneTicketResponse> tickets) {
-    if (tickets.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.assignment_outlined,
-              size: 64,
-              color: Colors.grey[400],
-            ),
-            SizedBox(height: 16),
-            Text(
-              "No tickets in this tab",
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
     return RefreshIndicator(
       onRefresh: () async {
         String username =
