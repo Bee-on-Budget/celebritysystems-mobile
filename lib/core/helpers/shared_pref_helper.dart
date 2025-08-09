@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../worker features/home/data/models/tickets_response.dart';
+import 'constants.dart';
 
 class SharedPrefHelper {
   // private constructor as I don't want to allow creating an instance of this class itself.
@@ -18,10 +19,30 @@ class SharedPrefHelper {
   }
 
   /// Removes all keys and values in the SharedPreferences
-  static clearAllData() async {
-    debugPrint('SharedPrefHelper : all data has been cleared');
+  // static clearAllData() async {
+  //   debugPrint('SharedPrefHelper : all data has been cleared');
+  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  //   await sharedPreferences.clear();
+  // }
+
+  /// Removes all keys and values in the SharedPreferences except OneSignalUserId
+  static Future<void> clearAllDataExceptOneSignalUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    // Get the value before clearing
+    String? oneSignalUserId =
+        sharedPreferences.getString(SharedPrefKeys.oneSignalUserId);
+
+    // Clear all data
     await sharedPreferences.clear();
+
+    // Restore the saved key/value
+    if (oneSignalUserId != null) {
+      await sharedPreferences.setString(
+          SharedPrefKeys.oneSignalUserId, oneSignalUserId);
+    }
+
+    debugPrint('SharedPrefHelper: all data cleared except oneSignalUserId');
   }
 
   /// Saves a [value] with a [key] in the SharedPreferences.

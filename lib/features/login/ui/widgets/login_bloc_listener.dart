@@ -56,7 +56,7 @@ class LoginBlocListener extends StatelessWidget {
               context.pop(); // remove loading dialog if it's shown
 
               //delete cash
-              await SharedPrefHelper.clearAllData();
+              await SharedPrefHelper.clearAllDataExceptOneSignalUserId();
               await SharedPrefHelper.clearAllSecuredData();
               showDialog(
                 context: context,
