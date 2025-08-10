@@ -25,6 +25,7 @@ class OneTicketResponse {
   String? createdAt;
   String? location;
   String? screenType;
+  String? ticketImageUrl;
 
   OneTicketResponse(
       {this.id,
@@ -37,7 +38,8 @@ class OneTicketResponse {
       this.screenName,
       this.status,
       this.location,
-      this.screenType});
+      this.screenType,
+      this.ticketImageUrl});
 
   factory OneTicketResponse.fromJson(Map<String, dynamic> json) =>
       _$OneTicketResponseFromJson(json);

@@ -9,7 +9,6 @@ import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/serv
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../logic/report cubit/report_cubit.dart';

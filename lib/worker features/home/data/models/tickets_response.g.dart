@@ -31,6 +31,7 @@ OneTicketResponse _$OneTicketResponseFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String?,
       location: json['location'] as String?,
       screenType: json['screenType'] as String?,
+      ticketImageUrl: json['ticketImageUrl'] as String?,
     );
 
 Map<String, dynamic> _$OneTicketResponseToJson(OneTicketResponse instance) =>
@@ -46,4 +47,5 @@ Map<String, dynamic> _$OneTicketResponseToJson(OneTicketResponse instance) =>
       'createdAt': instance.createdAt,
       'location': instance.location,
       'screenType': instance.screenType,
+      'ticketImageUrl': instance.ticketImageUrl,
     };
