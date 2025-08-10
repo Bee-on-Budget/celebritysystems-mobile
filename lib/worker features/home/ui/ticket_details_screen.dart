@@ -22,18 +22,22 @@ class TicketDetailsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorsManager.mistWhite,
       appBar: AppBar(
-        title: const Text("Ticket Details"),
+        title: Text(
+          "Ticket Details",
+          style: TextStyle(fontSize: 20.sp),
+        ),
         backgroundColor: ColorsManager.coralBlaze,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         child: Container(
-          height: 650.h,
-          padding: const EdgeInsets.all(20),
+          // Use dynamic height with min/max or remove fixed height to make it flexible
+          // height: 650.h,
+          padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
@@ -47,22 +51,21 @@ class TicketDetailsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _header("🎫 ${ticket.title}", big: true),
-              const SizedBox(height: 10),
+              SizedBox(height: 12.h),
               Text(
                 ticket.description ?? "",
-                style: const TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15.sp),
               ),
-              const Divider(height: 30),
+              Divider(height: 40.h),
               _header("📄 Details"),
               _info("Company", ticket.companyName ?? ""),
               _info("Screen", ticket.screenName ?? ""),
               _info("Assigned To", ticket.assignedToWorkerName ?? ""),
               _info("Assigned By", ticket.assignedBySupervisorName ?? ""),
               _info("Created At", _formatDate(ticket.createdAt ?? "")),
-              const Divider(height: 30),
-
+              Divider(height: 40.h),
               ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 child: InkWell(
                   onTap: () {
                     showDialog(
@@ -71,9 +74,9 @@ class TicketDetailsScreen extends StatelessWidget {
                       builder: (context) {
                         return Dialog(
                           backgroundColor: Colors.transparent,
-                          insetPadding: EdgeInsets.all(10),
+                          insetPadding: EdgeInsets.all(10.w),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                             child: Image.network(
                               ticket.ticketImageUrl ?? '',
                               errorBuilder: (context, error, stackTrace) {
@@ -92,17 +95,21 @@ class TicketDetailsScreen extends StatelessWidget {
                       return Image.asset('assets/images/logo.png');
                     },
                     fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 200.h,
                   ),
                 ),
               ),
+              SizedBox(height: 14.h),
               _header("📌 Status"),
+              SizedBox(height: 10.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Chip(
                     label: Text(
                       ticket.status ?? "",
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 14.sp),
                     ),
                     backgroundColor: _statusColor(ticket.status ?? ""),
                   ),
@@ -122,27 +129,17 @@ class TicketDetailsScreen extends StatelessWidget {
                           ),
                         ),
                       );
-
-                      // context.pushNamed(Routes.reportScreen);
                     },
                     child: Chip(
                       label: Text(
                         "Submit Report",
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 14.sp),
                       ),
                       backgroundColor: ColorsManager.slateGray,
                     ),
                   ),
                 ],
               ),
-              // if (ticket['attachmentFileName'].isNotEmpty) ...[
-              //   const SizedBox(height: 30),
-              //   _header("📎 Attachment"),
-              //   Text(ticket['attachmentFileName'],
-              //       style: const TextStyle(
-              //           fontStyle: FontStyle.italic,
-              //           color: ColorsManager.slateGray)),
-              // ]
             ],
           ),
         ),
@@ -154,7 +151,7 @@ class TicketDetailsScreen extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        fontSize: big ? 20 : 16,
+        fontSize: big ? 20.sp : 16.sp,
         fontWeight: FontWeight.w600,
         color: ColorsManager.graphiteBlack,
       ),
@@ -163,15 +160,18 @@ class TicketDetailsScreen extends StatelessWidget {
 
   Widget _info(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(top: 6),
+      padding: EdgeInsets.only(top: 6.h),
       child: Row(
         children: [
           Text(
             "$label: ",
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
           ),
           Expanded(
-            child: Text(value),
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 14.sp),
+            ),
           ),
         ],
       ),
