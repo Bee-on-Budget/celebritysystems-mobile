@@ -1,5 +1,4 @@
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
-import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:celebritysystems_mobile/features/login/ui/widgets/email_and_password.dart';
 import 'package:celebritysystems_mobile/features/login/ui/widgets/login_bloc_listener.dart';
