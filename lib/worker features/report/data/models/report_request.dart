@@ -35,14 +35,14 @@ class ReportRequest {
   @JsonKey(name: 'service_supervisor_signatures')
   String? serviceSupervisorSignatures;
 
-  @JsonKey(name: 'technician_signatures')
-  String? technicianSignatures;
+  // @JsonKey(name: 'technician_signatures')
+  // String? technicianSignatures;
 
   @JsonKey(name: 'authorized_person_Signatures')
   String? authorizedPersonSignatures;
 
-  @JsonKey(name: 'solution_image')
-  String? solutionImage;
+  // @JsonKey(name: 'solution_image')
+  // String? solutionImage;
 
   ReportRequest({
     this.date,
@@ -52,9 +52,9 @@ class ReportRequest {
     this.defectsFound,
     this.solutionsProvided,
     this.serviceSupervisorSignatures,
-    this.technicianSignatures,
+    // this.technicianSignatures,
     this.authorizedPersonSignatures,
-    this.solutionImage,
+    // this.solutionImage,
   });
 
   factory ReportRequest.fromJson(Map<String, dynamic> json) =>

@@ -17,6 +17,7 @@ class ReportCubit extends Cubit<ReportState> {
   // late CheckList checkList;
 
   void sendReport(int ticketId, ReportRequest reportRequest) async {
+    // TODO solution image, sigImage
     emit(ReportState.loading());
     print("000000 reportRequest.checklist 00000000000000000000");
     print(reportRequest.checklist.toString());
@@ -29,8 +30,8 @@ class ReportCubit extends Cubit<ReportState> {
     print(reportRequest.toString());
     ReportWrapper reportWrapper = ReportWrapper(report: reportRequest);
 
-    final result.ApiResult<void> response =
-        await _reportRepo.sendReport(ticketId, reportWrapper);
+    final result.ApiResult<void> response = await _reportRepo.sendReport(
+        ticketId, reportWrapper, null, null); // TODO solution image, sigImage
 
     print("******************************************");
     print("response is ");

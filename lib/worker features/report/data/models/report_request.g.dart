@@ -32,10 +32,8 @@ ReportRequest _$ReportRequestFromJson(Map<String, dynamic> json) =>
       solutionsProvided: json['solutions_provided'] as String?,
       serviceSupervisorSignatures:
           json['service_supervisor_signatures'] as String?,
-      technicianSignatures: json['technician_signatures'] as String?,
       authorizedPersonSignatures:
           json['authorized_person_Signatures'] as String?,
-      solutionImage: json['solution_image'] as String?,
     );
 
 Map<String, dynamic> _$ReportRequestToJson(ReportRequest instance) =>
@@ -47,9 +45,7 @@ Map<String, dynamic> _$ReportRequestToJson(ReportRequest instance) =>
       'defects_found': instance.defectsFound,
       'solutions_provided': instance.solutionsProvided,
       'service_supervisor_signatures': instance.serviceSupervisorSignatures,
-      'technician_signatures': instance.technicianSignatures,
       'authorized_person_Signatures': instance.authorizedPersonSignatures,
-      'solution_image': instance.solutionImage,
     };
 
 CheckList _$CheckListFromJson(Map<String, dynamic> json) => CheckList(
