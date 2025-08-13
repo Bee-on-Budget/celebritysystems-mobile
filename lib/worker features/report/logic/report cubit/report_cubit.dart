@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:celebritysystems_mobile/core/networking/api_result.dart'
     as result;
 import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
@@ -16,11 +18,11 @@ class ReportCubit extends Cubit<ReportState> {
   // late String serviceType;
   // late CheckList checkList;
 
-  void sendReport(int ticketId, ReportRequest reportRequest) async {
-    // TODO solution image, sigImage
+  void sendReport(int ticketId, ReportRequest reportRequest,
+      File? solutionImage, File? signatureImage) async {
     emit(ReportState.loading());
     print("000000 reportRequest.checklist 00000000000000000000");
-    print(reportRequest.checklist.toString());
+    print(reportRequest.checklist);
     print("000000000000     defectsFound    0000000000000000000");
     print(reportRequest.defectsFound.toString());
 
@@ -31,7 +33,7 @@ class ReportCubit extends Cubit<ReportState> {
     ReportWrapper reportWrapper = ReportWrapper(report: reportRequest);
 
     final result.ApiResult<void> response = await _reportRepo.sendReport(
-        ticketId, reportWrapper, null, null); // TODO solution image, sigImage
+        ticketId, reportWrapper, solutionImage, signatureImage);
 
     print("******************************************");
     print("response is ");

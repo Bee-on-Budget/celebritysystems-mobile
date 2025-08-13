@@ -10,7 +10,7 @@ part of 'report_api_service.dart';
 
 class _ReportApiService implements ReportApiService {
   _ReportApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://10.0.2.2:8080/api/';
+    baseUrl ??= 'http://192.168.1.103:8080/api/';
   }
 
   final Dio _dio;
@@ -20,17 +20,16 @@ class _ReportApiService implements ReportApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<void> sendReport(int ticketId, ReportWrapper reportRequest) async {
+  Future<void> sendReportWithImages(int ticketId, FormData formData) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(reportRequest.toJson());
+    final _data = formData;
     final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'tickets/${ticketId}/worker-report',
+            '/tickets/${ticketId}/reports',
             queryParameters: queryParameters,
             data: _data,
           )

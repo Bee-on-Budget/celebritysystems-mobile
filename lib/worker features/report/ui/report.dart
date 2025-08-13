@@ -78,7 +78,7 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                 // Add uploaded image to the report request
                 // context.read<ReportCubit>().reportRequest?.image = _uploadedImage;
                 context.read<ReportCubit>().sendReport(widget.ticket.id!,
-                    context.read<ReportCubit>().reportRequest!);
+                    context.read<ReportCubit>().reportRequest!, null, null);
 
 //TODO: add snack bar.
                 context.pushReplacementNamed(Routes.homeScreen);

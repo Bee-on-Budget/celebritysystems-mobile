@@ -1,6 +1,7 @@
-import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
-import 'package:dio/dio.dart';
 import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
+import '../../../../core/di/dependency_injection.dart'; // Where `getIt` is defined
 
 Future<void> sendReportWithImages({
   required int ticketId,
@@ -8,15 +9,13 @@ Future<void> sendReportWithImages({
   File? solutionImageFile,
   File? technicianImageFile,
 }) async {
-  final dio = Dio();
-  late MultipartFile solutionMultipart;
-  late MultipartFile technicianMultipart;
+  final dio = getIt<Dio>(); // Use the registered Dio instance
 
-  // Convert report to flat map of text fields
-  // final formFields = report.toFormDataMap();
-  final JsonReport = reportWrapper.toJson();
+  final jsonReport = reportWrapper.toJson();
 
-  // Prepare multipart files
+  MultipartFile? solutionMultipart;
+  MultipartFile? technicianMultipart;
+
   if (solutionImageFile != null) {
     solutionMultipart = await MultipartFile.fromFile(
       solutionImageFile.path,
@@ -31,21 +30,22 @@ Future<void> sendReportWithImages({
     );
   }
 
-  if (solutionMultipart != null && technicianMultipart != null) {}
-  // Compose FormData
-  final formData = FormData.fromMap({
-    ...JsonReport,
-    'solution_image': solutionMultipart,
-    'technician_image': technicianMultipart,
-  });
+  final formMap = Map<String, dynamic>.from(jsonReport);
+
+  if (solutionMultipart != null) {
+    formMap['solution_image'] = solutionMultipart;
+  }
+  if (technicianMultipart != null) {
+    formMap['technician_image'] = technicianMultipart;
+  }
+
+  final formData = FormData.fromMap(formMap);
 
   try {
     final response = await dio.post(
       'tickets/$ticketId/worker-report',
       data: formData,
-      options: Options(
-        contentType: 'multipart/form-data',
-      ),
+      options: Options(contentType: 'multipart/form-data'),
     );
 
     if (response.statusCode == 200) {
