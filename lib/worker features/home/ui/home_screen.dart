@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/routing/routes.dart';
 import '../../../features/login/logic/user cubit/user_cubit.dart';
+import 'dart:math' as math;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,8 +25,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
-  // Future<List<OneTicketResponse>> get completedticketsShared async =>
-  //     SharedPrefHelper.getTicketsFromPrefs();
+  // Animation controllers for the border effect
+  late AnimationController _borderController;
+  late Animation<double> _borderAnimation;
+  int? _highlightedTicketId;
 
   @override
   void initState() {
@@ -38,14 +41,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
 
+    // Initialize border animation controller
+    _borderController = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    );
+    _borderAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _borderController, curve: Curves.easeInOut),
+    );
+
     final username = context.read<UserCubit>().state?.username ?? 'default';
     context.read<HomeCubit>().loadHomeData(username);
     _fadeController.forward();
+
+    // Check if we have a notification ticket ID and start animation
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final notificationTicketId =
+          ModalRoute.of(context)?.settings.arguments as int?;
+      if (notificationTicketId != null) {
+        setState(() {
+          _highlightedTicketId = notificationTicketId;
+        });
+        _startBorderAnimation();
+      }
+    });
+  }
+
+  void _startBorderAnimation() {
+    _borderController.forward().then((_) {
+      // Reset the highlighted ticket after animation completes
+      if (mounted) {
+        setState(() {
+          _highlightedTicketId = null;
+        });
+        _borderController.reset();
+      }
+    });
   }
 
   @override
   void dispose() {
     _fadeController.dispose();
+    _borderController.dispose();
     super.dispose();
   }
 
@@ -83,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // Future<List<OneTicketResponse>> sami = completedticketsShared;
+    final notificationTicketId =
+        ModalRoute.of(context)?.settings.arguments as int?;
+    debugPrint("Ticket ID: $notificationTicketId");
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -144,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               );
             } else if (state is Success<List<OneTicketResponse>>) {
-              final tickets = state.data;
+              final tickets = state.data.reversed.toList();
 
               return FadeTransition(
                 opacity: _fadeAnimation,
@@ -430,6 +470,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               separatorBuilder: (_, __) => SizedBox(height: 16.h),
               itemBuilder: (context, index) {
                 final ticket = tickets[index];
+                final isHighlighted = ticket.id == _highlightedTicketId;
 
                 return TweenAnimationBuilder<double>(
                   duration: Duration(milliseconds: 300 + (index * 100)),
@@ -443,154 +484,206 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     );
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white,
-                          Colors.grey.withValues(alpha: 0.05),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 20,
-                          offset: Offset(0, 8),
-                          spreadRadius: 0,
+                  child: AnimatedBuilder(
+                    animation: _borderAnimation,
+                    builder: (context, child) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          // Animated border for highlighted ticket
+                          border: isHighlighted
+                              ? Border.all(
+                                  color: Color.lerp(
+                                    ColorsManager.coralBlaze,
+                                    ColorsManager.coralBlaze
+                                        .withValues(alpha: 0.3),
+                                    ((1 +
+                                            math.sin(_borderAnimation.value *
+                                                4 *
+                                                math.pi)) /
+                                        2),
+                                  )!,
+                                  width: 3.0,
+                                )
+                              : null,
+                          // Animated glow effect
+                          boxShadow: isHighlighted
+                              ? [
+                                  BoxShadow(
+                                    color: ColorsManager.coralBlaze.withValues(
+                                      alpha: 0.4 *
+                                          ((1 +
+                                                  math.sin(
+                                                      _borderAnimation.value *
+                                                          4 *
+                                                          math.pi)) /
+                                              2),
+                                    ),
+                                    blurRadius: 15,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                              : [],
                         ),
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              transitionDuration:
-                                  const Duration(milliseconds: 300),
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      FadeTransition(
-                                opacity: animation,
-                                child: TicketDetailsScreen(ticket: ticket),
-                              ),
+                        child: Container(
+                          margin: EdgeInsets.all(isHighlighted ? 2.0 : 0),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.white,
+                                Colors.grey.withValues(alpha: 0.05),
+                              ],
                             ),
-                          );
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(20.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: ColorsManager.coralBlaze
-                                          .withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      Icons.confirmation_number_outlined,
-                                      color: ColorsManager.coralBlaze,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.w),
-                                  Expanded(
-                                    child: Text(
-                                      ticket.title ?? "-",
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF1A1A1A),
-                                        letterSpacing: -0.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 20,
+                                offset: Offset(0, 8),
+                                spreadRadius: 0,
                               ),
-                              SizedBox(height: 16.h),
-                              _infoRow(Icons.business_outlined,
-                                  ticket.companyName ?? ""),
-                              _infoRow(Icons.person_outline,
-                                  "By: ${ticket.assignedBySupervisorName}"),
-                              _infoRow(Icons.monitor_outlined,
-                                  ticket.screenName ?? ""),
-                              SizedBox(height: 16.h),
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: _statusColor(ticket.status ?? ""),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              _statusColor(ticket.status ?? "")
-                                                  .withValues(alpha: 0.3),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Text(
-                                      ticket.status ?? "",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.04),
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                                spreadRadius: 0,
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    transitionDuration:
+                                        const Duration(milliseconds: 300),
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        FadeTransition(
+                                      opacity: animation,
+                                      child:
+                                          TicketDetailsScreen(ticket: ticket),
                                     ),
                                   ),
-                                  Spacer(),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.withValues(alpha: 0.1),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
+                                );
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(20.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       children: [
-                                        Icon(
-                                          Icons.access_time,
-                                          size: 14,
-                                          color: Colors.grey[600],
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: ColorsManager.coralBlaze
+                                                .withValues(alpha: 0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Icon(
+                                            Icons.confirmation_number_outlined,
+                                            color: ColorsManager.coralBlaze,
+                                            size: 20,
+                                          ),
                                         ),
-                                        SizedBox(width: 4),
-                                        Text(
-                                          _formatDate(ticket.createdAt ?? ""),
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 11.sp,
-                                            fontWeight: FontWeight.w500,
+                                        SizedBox(width: 12.w),
+                                        Expanded(
+                                          child: Text(
+                                            ticket.title ?? "-",
+                                            style: TextStyle(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: const Color(0xFF1A1A1A),
+                                              letterSpacing: -0.5,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 16.h),
+                                    _infoRow(Icons.business_outlined,
+                                        ticket.companyName ?? ""),
+                                    _infoRow(Icons.person_outline,
+                                        "By: ${ticket.assignedBySupervisorName}"),
+                                    _infoRow(Icons.monitor_outlined,
+                                        ticket.screenName ?? ""),
+                                    SizedBox(height: 16.h),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: _statusColor(
+                                                ticket.status ?? ""),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: _statusColor(
+                                                        ticket.status ?? "")
+                                                    .withValues(alpha: 0.3),
+                                                blurRadius: 8,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Text(
+                                            ticket.status ?? "",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey
+                                                .withValues(alpha: 0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.access_time,
+                                                size: 14,
+                                                color: Colors.grey[600],
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                _formatDate(
+                                                    ticket.createdAt ?? ""),
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 11.sp,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 );
               },
