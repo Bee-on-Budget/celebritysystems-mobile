@@ -29,7 +29,7 @@ part 'report_api_service.g.dart';
 abstract class ReportApiService {
   factory ReportApiService(Dio dio) = _ReportApiService;
 
-  @POST('/tickets/{ticketId}/reports')
+  @POST('/tickets/{ticketId}/worker-report')
   @MultiPart()
   Future<void> sendReportWithImages(
     @Path('ticketId') int ticketId,

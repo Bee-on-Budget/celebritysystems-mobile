@@ -6,6 +6,8 @@ import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/app_theme.dart';
 import 'main.dart';
 
+int? notificationTicketId = 0;
+
 class CelebrityApp extends StatefulWidget {
   final AppRouter appRouter;
   const CelebrityApp({super.key, required this.appRouter});
@@ -48,10 +50,11 @@ class _CelebrityAppState extends State<CelebrityApp> {
 
       switch (notificationType?.toUpperCase()) {
         case 'TICKET_ASSIGNMENT':
-          final notificationTicketId = int.tryParse(ticketId ?? '');
+          notificationTicketId = int.tryParse(ticketId ?? "0");
           navigatorKey.currentState?.pushNamedAndRemoveUntil(
-              Routes.homeScreen, (route) => false,
-              arguments: notificationTicketId);
+            Routes.homeScreen, (route) => false,
+            // arguments: notificationTicketId
+          );
           break;
         // case 'TICKET_UPDATE':
         //   navigatorKey.currentState?.pushNamed(

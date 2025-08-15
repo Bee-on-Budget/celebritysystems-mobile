@@ -61,7 +61,7 @@ class _ReportApiService implements ReportApiService {
       )
           .compose(
             _dio.options,
-            '/tickets/${ticketId}/reports',
+            '/tickets/${ticketId}/worker-report',
             queryParameters: queryParameters,
             data: _data,
           )
