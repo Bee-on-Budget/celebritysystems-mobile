@@ -54,15 +54,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     context.read<HomeCubit>().loadHomeData(username);
     _fadeController.forward();
 
-    // Check if we have a notification ticket ID and start animation
+    // IMPORTANT: Use addPostFrameCallback to ensure the route is fully built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final notificationTicketId =
-          ModalRoute.of(context)?.settings.arguments as int?;
-      if (notificationTicketId != null) {
+      final notificationTicketId = ModalRoute.of(context)?.settings.arguments;
+
+      debugPrint("=== HOME SCREEN ARGUMENTS DEBUG ===");
+      debugPrint("Raw arguments: $notificationTicketId");
+      debugPrint("Arguments type: ${notificationTicketId.runtimeType}");
+
+      int? ticketId;
+
+      // Handle different argument types
+      if (notificationTicketId is int) {
+        ticketId = notificationTicketId;
+      } else if (notificationTicketId is String) {
+        ticketId = int.tryParse(notificationTicketId);
+      } else if (notificationTicketId != null) {
+        ticketId = int.tryParse(notificationTicketId.toString());
+      }
+
+      debugPrint("Parsed ticket ID: $ticketId");
+      debugPrint("=== END HOME SCREEN ARGUMENTS DEBUG ===");
+
+      if (ticketId != null && ticketId > 0) {
         setState(() {
-          _highlightedTicketId = notificationTicketId;
+          _highlightedTicketId = ticketId;
         });
         _startBorderAnimation();
+        debugPrint("Starting highlight animation for ticket ID: $ticketId");
+      } else {
+        debugPrint("No valid notification ticket ID found, skipping animation");
       }
     });
   }
@@ -120,10 +141,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final notificationTicketId =
-        ModalRoute.of(context)?.settings.arguments as int?;
-    debugPrint("Ticket ID: $notificationTicketId");
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
