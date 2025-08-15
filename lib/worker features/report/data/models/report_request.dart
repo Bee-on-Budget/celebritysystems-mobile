@@ -3,18 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 part 'report_request.g.dart';
 
 @JsonSerializable()
-class ReportWrapper {
-  ReportRequest? report;
-
-  ReportWrapper({this.report});
-
-  factory ReportWrapper.fromJson(Map<String, dynamic> json) =>
-      _$ReportWrapperFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ReportWrapperToJson(this);
-}
-
-@JsonSerializable()
 class ReportRequest {
   String? date;
 
@@ -32,14 +20,8 @@ class ReportRequest {
   @JsonKey(name: 'solutions_provided')
   String? solutionsProvided;
 
-  @JsonKey(name: 'service_supervisor_signatures')
-  String? serviceSupervisorSignatures;
-
   // @JsonKey(name: 'technician_signatures')
   // String? technicianSignatures;
-
-  @JsonKey(name: 'authorized_person_Signatures')
-  String? authorizedPersonSignatures;
 
   // @JsonKey(name: 'solution_image')
   // String? solutionImage;
@@ -51,9 +33,7 @@ class ReportRequest {
     this.checklist,
     this.defectsFound,
     this.solutionsProvided,
-    this.serviceSupervisorSignatures,
     // this.technicianSignatures,
-    this.authorizedPersonSignatures,
     // this.solutionImage,
   });
 

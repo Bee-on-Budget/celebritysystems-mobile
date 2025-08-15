@@ -24,16 +24,12 @@ class ReportCubit extends Cubit<ReportState> {
     print("000000 reportRequest.checklist 00000000000000000000");
     print(reportRequest.checklist);
     print("000000000000     defectsFound    0000000000000000000");
-    print(reportRequest.defectsFound.toString());
-
-    print("000000000000     solutionsProvided    0000000000000000000");
-    print(reportRequest.solutionsProvided.toString());
+    print(reportRequest.defectsFound);
 
     print(reportRequest.toString());
-    ReportWrapper reportWrapper = ReportWrapper(report: reportRequest);
 
     final result.ApiResult<void> response = await _reportRepo.sendReport(
-        ticketId, reportWrapper, solutionImage, signatureImage);
+        ticketId, reportRequest, solutionImage, signatureImage);
 
     print("******************************************");
     print("response is ");

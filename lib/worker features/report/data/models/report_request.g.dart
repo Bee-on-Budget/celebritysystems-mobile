@@ -6,18 +6,6 @@ part of 'report_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ReportWrapper _$ReportWrapperFromJson(Map<String, dynamic> json) =>
-    ReportWrapper(
-      report: json['report'] == null
-          ? null
-          : ReportRequest.fromJson(json['report'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$ReportWrapperToJson(ReportWrapper instance) =>
-    <String, dynamic>{
-      'report': instance.report,
-    };
-
 ReportRequest _$ReportRequestFromJson(Map<String, dynamic> json) =>
     ReportRequest(
       date: json['date'] as String?,
@@ -30,10 +18,6 @@ ReportRequest _$ReportRequestFromJson(Map<String, dynamic> json) =>
           : CheckList.fromJson(json['checklist'] as Map<String, dynamic>),
       defectsFound: json['defects_found'] as String?,
       solutionsProvided: json['solutions_provided'] as String?,
-      serviceSupervisorSignatures:
-          json['service_supervisor_signatures'] as String?,
-      authorizedPersonSignatures:
-          json['authorized_person_Signatures'] as String?,
     );
 
 Map<String, dynamic> _$ReportRequestToJson(ReportRequest instance) =>
@@ -44,8 +28,6 @@ Map<String, dynamic> _$ReportRequestToJson(ReportRequest instance) =>
       'checklist': instance.checklist,
       'defects_found': instance.defectsFound,
       'solutions_provided': instance.solutionsProvided,
-      'service_supervisor_signatures': instance.serviceSupervisorSignatures,
-      'authorized_person_Signatures': instance.authorizedPersonSignatures,
     };
 
 CheckList _$CheckListFromJson(Map<String, dynamic> json) => CheckList(

@@ -14,14 +14,26 @@ class ReportRepo {
 
   ReportRepo(this._reportApiService);
 
-  Future<ApiResult<void>> sendReport(int ticketId, ReportWrapper reportRequest,
+  Future<ApiResult<void>> sendReport(int ticketId, ReportRequest reportRequest,
       File? solutionImageFile, File? technicianImageFile) async {
     try {
-      final response = await sendReportWithImages(
-          ticketId: ticketId,
-          reportWrapper: reportRequest,
-          solutionImageFile: solutionImageFile,
-          technicianImageFile: technicianImageFile);
+      final response = await _reportApiService.sendReportWithImages(
+        ticketId,
+        "2025-08-15", //reportRequest.date,
+        reportRequest.serviceType,
+        jsonEncode(reportRequest.checklist),
+        DateTime.now().toIso8601String(),
+        reportRequest.defectsFound,
+        reportRequest.solutionsProvided,
+        // null,
+        // null
+      );
+
+      // await sendReportWithImages(
+      //     ticketId: ticketId,
+      //     reportRequest: reportRequest,
+      //     solutionImageFile: solutionImageFile,
+      //     technicianImageFile: technicianImageFile);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));
@@ -30,7 +42,7 @@ class ReportRepo {
 
   Future<void> sendReportWithImages({
     required int ticketId,
-    required ReportWrapper reportWrapper,
+    required ReportRequest reportRequest,
     File? solutionImageFile,
     File? technicianImageFile,
   }) async {
@@ -40,7 +52,7 @@ class ReportRepo {
 
       // Add the report JSON data as a string
       formData.fields
-          .add(MapEntry('report', jsonEncode(reportWrapper.toJson())));
+          .add(MapEntry('report', jsonEncode(reportRequest.toJson())));
 
       // Add solution image if provided
       if (solutionImageFile != null) {
@@ -67,7 +79,7 @@ class ReportRepo {
       }
 
       // Make the API call using your ReportApiService
-      await _reportApiService.sendReportWithImages(ticketId, formData);
+      // await _reportApiService.sendReportWithImages(ticketId, formData);
     } catch (error) {
       print('Error in sendReportWithImages: $error');
       rethrow;

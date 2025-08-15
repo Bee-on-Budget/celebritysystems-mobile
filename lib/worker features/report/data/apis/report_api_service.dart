@@ -17,6 +17,8 @@
 //   );
 // }
 
+import 'dart:io';
+
 import 'package:celebritysystems_mobile/core/networking/api_constants.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -28,9 +30,16 @@ abstract class ReportApiService {
   factory ReportApiService(Dio dio) = _ReportApiService;
 
   @POST('/tickets/{ticketId}/reports')
-  // @MultiPart()
+  @MultiPart()
   Future<void> sendReportWithImages(
     @Path('ticketId') int ticketId,
-    @Body() FormData formData, //@Path
+    @Part(name: "date") String? date,
+    @Part(name: "serviceType") String? serviceType,
+    @Part(name: "checklist") String? checklistJson,
+    @Part(name: "dateTime") String? dateTime, // Send as ISO string
+    @Part(name: "defectsFound") String? defectsFound,
+    @Part(name: "solutionsProvided") String? solutionsProvided,
+    // @Part(name: "technicianSignatures") File? technicianSignatures,
+    // @Part(name: "solutionImage") File? solutionImage,
   );
 }
