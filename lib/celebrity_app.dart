@@ -6,8 +6,6 @@ import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/app_theme.dart';
 import 'main.dart';
 
-int? notificationTicketId = 0;
-
 class CelebrityApp extends StatefulWidget {
   final AppRouter appRouter;
   const CelebrityApp({super.key, required this.appRouter});
@@ -50,18 +48,42 @@ class _CelebrityAppState extends State<CelebrityApp> {
 
       switch (notificationType?.toUpperCase()) {
         case 'TICKET_ASSIGNMENT':
-          notificationTicketId = int.tryParse(ticketId ?? "0");
-          navigatorKey.currentState?.pushNamedAndRemoveUntil(
-            Routes.homeScreen, (route) => false,
-            // arguments: notificationTicketId
-          );
+          final notificationTicketId = int.tryParse(ticketId ?? "0");
+          debugPrint("Parsed ticket ID: $notificationTicketId");
+
+          if (notificationTicketId != null && notificationTicketId > 0) {
+            debugPrint(
+                "Navigating to HomeScreen with ticket ID: $notificationTicketId");
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              Routes.homeScreen,
+              (route) => false,
+              arguments: notificationTicketId,
+            );
+          } else {
+            debugPrint("Invalid ticket ID, navigating without arguments");
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              Routes.homeScreen,
+              (route) => false,
+            );
+          }
           break;
-        // case 'TICKET_UPDATE':
-        //   navigatorKey.currentState?.pushNamed(
-        //     Routes.ticketDetails,
-        //     arguments: {'ticketId': ticketId},
-        //   );
-        //   break;
+
+        case 'TICKET_UPDATE':
+          final updateTicketId = int.tryParse(ticketId ?? "0");
+          if (updateTicketId != null && updateTicketId > 0) {
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              Routes.homeScreen,
+              (route) => false,
+              arguments: updateTicketId,
+            );
+          } else {
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              Routes.homeScreen,
+              (route) => false,
+            );
+          }
+          break;
+
         default:
           navigatorKey.currentState?.pushNamedAndRemoveUntil(
             Routes.homeScreen,
@@ -73,12 +95,19 @@ class _CelebrityAppState extends State<CelebrityApp> {
 
   void _showInAppNotification(OSNotification notification) {
     if (!mounted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(notification.body ?? 'New notification'),
         duration: const Duration(seconds: 3),
+        backgroundColor: Colors.blueGrey[800],
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
         action: SnackBarAction(
           label: 'View',
+          textColor: Colors.white,
           onPressed: () {
             final data = notification.additionalData;
             _handleNotificationNavigation(
