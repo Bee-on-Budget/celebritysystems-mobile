@@ -20,45 +20,13 @@ class _ReportApiService implements ReportApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<void> sendReportWithImages(
-    int ticketId,
-    String? date,
-    String? serviceType,
-    String? checklistJson,
-    String? dateTime,
-    String? defectsFound,
-    String? solutionsProvided,
-  ) async {
+  Future<void> sendReport(int ticketId, FormData formData) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    if (date != null) {
-      _data.fields.add(MapEntry('date', date));
-    }
-    if (serviceType != null) {
-      _data.fields.add(MapEntry('serviceType', serviceType));
-    }
-    if (checklistJson != null) {
-      _data.fields.add(MapEntry('checklist', checklistJson));
-    }
-    if (dateTime != null) {
-      _data.fields.add(MapEntry('dateTime', dateTime));
-    }
-    if (defectsFound != null) {
-      _data.fields.add(MapEntry('defectsFound', defectsFound));
-    }
-    if (solutionsProvided != null) {
-      _data.fields.add(MapEntry('solutionsProvided', solutionsProvided));
-    }
+    final _data = formData;
     final _options = _setStreamType<void>(
-      Options(
-        method: 'POST',
-        headers: _headers,
-        extra: _extra,
-        contentType: 'multipart/form-data',
-      )
+      Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             '/tickets/${ticketId}/worker-report',

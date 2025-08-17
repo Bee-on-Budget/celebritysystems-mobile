@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:celebritysystems_mobile/core/networking/api_result.dart'
     as result;
 import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
@@ -15,21 +14,27 @@ class ReportCubit extends Cubit<ReportState> {
     reportRequest = ReportRequest(); // ✅ Initialize here
   }
 
-  // late String serviceType;
-  // late CheckList checkList;
-
-  void sendReport(int ticketId, ReportRequest reportRequest,
-      File? solutionImage, File? signatureImage) async {
+  void sendReport(
+    int ticketId,
+    ReportRequest reportRequest,
+    File? solutionImage,
+    File? signatureImage,
+  ) async {
     emit(ReportState.loading());
-    print("000000 reportRequest.checklist 00000000000000000000");
-    print(reportRequest.checklist);
-    print("000000000000     defectsFound    0000000000000000000");
-    print(reportRequest.defectsFound);
 
+    print("===== Checklist =====");
+    print(reportRequest.checklist);
+    print("===== Defects Found =====");
+    print(reportRequest.defectsFound);
     print(reportRequest.toString());
 
+    // ✅ Just call repo, repo handles File → MultipartFile conversion
     final result.ApiResult<void> response = await _reportRepo.sendReport(
-        ticketId, reportRequest, solutionImage, signatureImage);
+      ticketId,
+      reportRequest,
+      solutionImage,
+      signatureImage,
+    );
 
     print("******************************************");
     print("response is ");
@@ -39,9 +44,7 @@ class ReportCubit extends Cubit<ReportState> {
 
     switch (response) {
       case result.Success():
-        print(
-            "WE HAVE SUCCESS RESPONSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-
+        print("🎉 SUCCESS RESPONSE RECEIVED 🎉");
         emit(ReportState.success());
 
       case result.Failure(:final errorHandler):

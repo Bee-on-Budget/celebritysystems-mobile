@@ -114,30 +114,35 @@ class TicketDetailsScreen extends StatelessWidget {
                     backgroundColor: _statusColor(ticket.status ?? ""),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          transitionDuration: const Duration(milliseconds: 300),
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  FadeTransition(
-                            opacity: animation,
-                            child: BlocProvider(
-                              create: (context) => ReportCubit(getIt()),
-                              child: ServiceReportScreen(ticket: ticket),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            transitionDuration:
+                                const Duration(milliseconds: 300),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    FadeTransition(
+                              opacity: animation,
+                              child: BlocProvider(
+                                create: (context) => ReportCubit(getIt()),
+                                child: ServiceReportScreen(ticket: ticket),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    child: Chip(
-                      label: Text(
-                        "Submit Report",
-                        style: TextStyle(color: Colors.white, fontSize: 14.sp),
-                      ),
-                      backgroundColor: ColorsManager.slateGray,
-                    ),
-                  ),
+                        );
+                      },
+                      child: ticket.status == "OPEN"
+                          ? Chip(
+                              label: Text(
+                                "Submit Report",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14.sp),
+                              ),
+                              backgroundColor: ColorsManager.slateGray,
+                            )
+                          : SizedBox(
+                              width: 100.w,
+                            )),
                 ],
               ),
             ],

@@ -5,114 +5,176 @@ import 'package:celebritysystems_mobile/core/networking/api_error_handler.dart';
 import 'package:celebritysystems_mobile/core/networking/api_result.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
 import 'package:dio/dio.dart';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
 import '../apis/report_api_service.dart';
-import '../apis/report_dio_api_service.dart';
 
 class ReportRepo {
   final ReportApiService _reportApiService;
 
   ReportRepo(this._reportApiService);
 
-  Future<ApiResult<void>> sendReport(int ticketId, ReportRequest reportRequest,
-      File? solutionImageFile, File? technicianImageFile) async {
+  Future<ApiResult<void>> sendReport(
+    int ticketId,
+    ReportRequest reportRequest,
+    File? solutionImage,
+    File? technicianSignature,
+  ) async {
     try {
-      final response = await _reportApiService.sendReportWithImages(
-        ticketId,
-        "2025-08-15", //reportRequest.date,
-        reportRequest.serviceType,
-        jsonEncode(reportRequest.checklist),
-        DateTime.now().toIso8601String(),
-        reportRequest.defectsFound,
-        reportRequest.solutionsProvided,
-        // null,
-        // null
-      );
+      final formData = FormData();
 
-      // await sendReportWithImages(
-      //     ticketId: ticketId,
-      //     reportRequest: reportRequest,
-      //     solutionImageFile: solutionImageFile,
-      //     technicianImageFile: technicianImageFile);
+      // Add text fields
+      formData.fields.addAll([
+        MapEntry(
+            'date', reportRequest.date ?? DateTime.now().toIso8601String()),
+        if (reportRequest.serviceType != null)
+          MapEntry('serviceType', reportRequest.serviceType!),
+        MapEntry('checklist', jsonEncode(reportRequest.checklist)),
+        MapEntry('dateTime', DateTime.now().toIso8601String()),
+        if (reportRequest.defectsFound != null)
+          MapEntry('defectsFound', reportRequest.defectsFound!),
+        if (reportRequest.solutionsProvided != null)
+          MapEntry('solutionsProvided', reportRequest.solutionsProvided!),
+      ]);
+
+      // Add solution image if provided
+      if (solutionImage != null) {
+        final mimeType =
+            lookupMimeType(solutionImage.path) ?? 'application/octet-stream';
+        final mimeSplit = mimeType.split('/');
+        formData.files.add(MapEntry(
+          'solutionImage',
+          await MultipartFile.fromFile(
+            solutionImage.path,
+            contentType: MediaType(mimeSplit[0], mimeSplit[1]),
+          ),
+        ));
+      }
+
+      // Add signature image if provided
+      if (technicianSignature != null) {
+        final mimeType = lookupMimeType(technicianSignature.path) ??
+            'application/octet-stream';
+        final mimeSplit = mimeType.split('/');
+        formData.files.add(MapEntry(
+          'technicianSignatures',
+          await MultipartFile.fromFile(
+            technicianSignature.path,
+            contentType: MediaType(mimeSplit[0], mimeSplit[1]),
+          ),
+        ));
+      }
+
+      final response = await _reportApiService.sendReport(ticketId, formData);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));
     }
   }
-
-  Future<void> sendReportWithImages({
-    required int ticketId,
-    required ReportRequest reportRequest,
-    File? solutionImageFile,
-    File? technicianImageFile,
-  }) async {
-    try {
-      // Create FormData for multipart request
-      FormData formData = FormData();
-
-      // Add the report JSON data as a string
-      formData.fields
-          .add(MapEntry('report', jsonEncode(reportRequest.toJson())));
-
-      // Add solution image if provided
-      if (solutionImageFile != null) {
-        String fileName = solutionImageFile.path.split('/').last;
-        formData.files.add(MapEntry(
-          'solution_image',
-          await MultipartFile.fromFile(
-            solutionImageFile.path,
-            filename: fileName,
-          ),
-        ));
-      }
-
-      // Add technician/signature image if provided
-      if (technicianImageFile != null) {
-        String fileName = technicianImageFile.path.split('/').last;
-        formData.files.add(MapEntry(
-          'signature_image',
-          await MultipartFile.fromFile(
-            technicianImageFile.path,
-            filename: fileName,
-          ),
-        ));
-      }
-
-      // Make the API call using your ReportApiService
-      // await _reportApiService.sendReportWithImages(ticketId, formData);
-    } catch (error) {
-      print('Error in sendReportWithImages: $error');
-      rethrow;
-    }
-  }
 }
 
+// import 'dart:convert';
 // import 'dart:io';
 
 // import 'package:celebritysystems_mobile/core/networking/api_error_handler.dart';
 // import 'package:celebritysystems_mobile/core/networking/api_result.dart';
 // import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
+// import 'package:dio/dio.dart';
+// import 'package:mime/mime.dart';
+// import 'package:http_parser/http_parser.dart';
 
 // import '../apis/report_api_service.dart';
-// import '../apis/report_dio_api_service.dart';
 
 // class ReportRepo {
 //   final ReportApiService _reportApiService;
 
 //   ReportRepo(this._reportApiService);
-//   // ReportRepo([Object? object]);
 
-//   Future<ApiResult<void>> sendReport(int ticketId, ReportWrapper reportRequest,
-//       File? solutionImageFile, File? technicianImageFile) async {
+//   Future<ApiResult<void>> sendReport(
+//     int ticketId,
+//     ReportRequest reportRequest,
+//     File? solutionImage, // 👈 now accept File?
+//     File? technicianSignature, // 👈 now accept File?
+//   ) async {
 //     try {
-//       final respone = await sendReportWithImages(
-//           ticketId: ticketId,
-//           reportWrapper: reportRequest,
-//           solutionImageFile: solutionImageFile,
-//           technicianImageFile: technicianImageFile);
-//       return ApiResult.success(respone);
+//       MultipartFile? solutionMultipart;
+//       if (solutionImage != null) {
+//         final mimeType =
+//             lookupMimeType(solutionImage.path) ?? 'application/octet-stream';
+//         final mimeSplit = mimeType.split('/');
+//         solutionMultipart = await MultipartFile.fromFile(
+//           solutionImage.path,
+//           contentType: MediaType(mimeSplit[0], mimeSplit[1]),
+//         );
+//       }
+
+//       MultipartFile? signatureMultipart;
+//       if (technicianSignature != null) {
+//         final mimeType = lookupMimeType(technicianSignature.path) ??
+//             'application/octet-stream';
+//         final mimeSplit = mimeType.split('/');
+//         signatureMultipart = await MultipartFile.fromFile(
+//           technicianSignature.path,
+//           contentType: MediaType(mimeSplit[0], mimeSplit[1]),
+//         );
+//       }
+
+//       final response = await _reportApiService.sendReportWithImages(
+//         ticketId,
+//         reportRequest.date ?? DateTime.now().toIso8601String(), // or your date
+//         reportRequest.serviceType,
+//         jsonEncode(reportRequest.checklist),
+//         DateTime.now().toIso8601String(),
+//         reportRequest.defectsFound,
+//         reportRequest.solutionsProvided,
+//         solutionMultipart,
+//         // signatureMultipart,
+//       );
+
+//       return ApiResult.success(response);
 //     } catch (error) {
 //       return ApiResult.failure(ErrorHandler.handle(error));
 //     }
 //   }
 // }
+
+// // import 'dart:convert';
+// // import 'dart:io';
+
+// // import 'package:celebritysystems_mobile/core/networking/api_error_handler.dart';
+// // import 'package:celebritysystems_mobile/core/networking/api_result.dart';
+// // import 'package:celebritysystems_mobile/worker%20features/report/data/models/report_request.dart';
+// // import 'package:dio/dio.dart';
+
+// // import '../apis/report_api_service.dart';
+
+// // class ReportRepo {
+// //   final ReportApiService _reportApiService;
+
+// //   ReportRepo(this._reportApiService);
+
+// //   Future<ApiResult<void>> sendReport(
+// //       int ticketId,
+// //       ReportRequest reportRequest,
+// //       MultipartFile? solutionImageFile,
+// //       MultipartFile? technicianImageFile) async {
+// //     try {
+// //       final response = await _reportApiService.sendReportWithImages(
+// //           ticketId,
+// //           "2025-08-15", //reportRequest.date,
+// //           reportRequest.serviceType,
+// //           jsonEncode(reportRequest.checklist),
+// //           DateTime.now().toIso8601String(),
+// //           reportRequest.defectsFound,
+// //           reportRequest.solutionsProvided,
+// //           solutionImageFile
+// //           // null
+// //           );
+
+// //       return ApiResult.success(response);
+// //     } catch (error) {
+// //       return ApiResult.failure(ErrorHandler.handle(error));
+// //     }
+// //   }
+// // }
