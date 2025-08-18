@@ -26,7 +26,10 @@ class UserModel {
     required this.userId,
   });
 
-  bool get isAllowed => role == 'CELEBRITY_SYSTEM_WORKER' || role == 'COMPANY';
+  bool get isAllowed =>
+      role == 'CELEBRITY_SYSTEM_WORKER' ||
+      role == 'COMPANY' ||
+      role == 'SUPERVISOR';
 
   @override
   String toString() {

@@ -10,4 +10,5 @@ class SharedPrefKeys {
 class Constants {
   static const String CELEBRITY_SYSTEM_WORKER = 'CELEBRITY_SYSTEM_WORKER';
   static const String COMPANY = 'COMPANY';
+  static const String SUPERVISOR = 'SUPERVISOR';
 }
