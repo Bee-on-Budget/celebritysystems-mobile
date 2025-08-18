@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theming/colors.dart';
 import '../../../../core/widgets/custom_text_field.dart';
@@ -22,6 +23,13 @@ class _CreateCompanyTicketScreenState extends State<CreateCompanyTicketScreen> {
   File? _selectedImage;
   String? _selectedScreen;
   String? _selectedPriority;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // final listOfCompanyScreens = context.read<TicketCubit>();
+  }
 
   // Static list of screen names
   static const List<String> screenNames = [

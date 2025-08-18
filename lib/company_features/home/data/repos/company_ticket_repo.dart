@@ -12,7 +12,7 @@ class CompanyTicketRepo {
       int companyId) async {
     try {
       final List<CompanyTicketResponse> response =
-      await _companyTicketApiService.getCompanyTickets(companyId);
+          await _companyTicketApiService.getCompanyTickets(companyId);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));
@@ -22,7 +22,7 @@ class CompanyTicketRepo {
   Future<ApiResult<CompanyTicketResponse>> getTicketById(int ticketId) async {
     try {
       final CompanyTicketResponse response =
-      await _companyTicketApiService.getTicket(ticketId);
+          await _companyTicketApiService.getTicket(ticketId);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));

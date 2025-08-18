@@ -52,7 +52,8 @@ class AppRouter {
       case Routes.companyHomeScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => CompanyHomeCubit(getIt()),
+            create: (context) =>
+                CompanyHomeCubit(getIt(), getIt()), //TODO: check second getIt()
             child: const CompanyHomeScreen(),
           ),
           settings: settings, // ✅ Added settings parameter

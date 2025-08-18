@@ -24,6 +24,12 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
 
     _companyId = context.read<UserCubit>().state?.companyId ?? 0;
     context.read<CompanyHomeCubit>().loadCompanyHomeData(_companyId);
+
+    final printList =
+        context.read<CompanyHomeCubit>().loadcompanyScreensData(_companyId);
+
+    print("****************************************************");
+    print(printList);
   }
 
   Future<void> _onRefresh() async {
