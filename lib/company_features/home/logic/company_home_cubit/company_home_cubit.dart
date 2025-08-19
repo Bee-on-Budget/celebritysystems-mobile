@@ -43,7 +43,7 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
   }
 
   Future<void> loadcompanyScreensData(int companyId) async {
-    emit(Loading());
+    // emit(Loading());
 
     final result.ApiResult<List<CompanyScreenModel>> listOfScreen =
         await _companyRepo.getCompanyScreens(companyId);
@@ -59,6 +59,6 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
         return;
     }
 
-    emit(Success(listOfCompanyScreen));
+    // emit(Success(listOfCompanyScreen));
   }
 }

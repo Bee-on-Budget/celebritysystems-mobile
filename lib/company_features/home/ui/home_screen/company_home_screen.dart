@@ -1,3 +1,4 @@
+import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,10 +27,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     context.read<CompanyHomeCubit>().loadCompanyHomeData(_companyId);
 
     final printList =
-        context.read<CompanyHomeCubit>().loadcompanyScreensData(_companyId);
+        context.read<CompanyHomeCubit>().loadcompanyScreensData(4); //TODO
 
     print("****************************************************");
     print(printList);
+    print("listOfCompanyScreen");
   }
 
   Future<void> _onRefresh() async {
@@ -47,6 +49,11 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
       body: companyHomeBody(_onRefresh),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // List<CompanyScreenModel> listOfCompanyScreen =
+          //     context.read<CompanyHomeCubit>().listOfCompanyScreen;
+
+          print(
+              context.read<CompanyHomeCubit>().listOfCompanyScreen.first.name);
           Navigator.pushNamed(context, Routes.createCompanyTicketScreen);
         },
         child: const Icon(Icons.add),
