@@ -11,8 +11,12 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
   final CompanyTicketRepo _companyTicketRepo;
   final CompanyRepo _companyRepo;
 
-  CompanyHomeCubit(this._companyTicketRepo, this._companyRepo)
-      : super(CompanyHomeState.initial());
+  CompanyHomeCubit({
+    required CompanyRepo companyRepo,
+    required CompanyTicketRepo companyTicketRepo,
+  })  : _companyRepo = companyRepo,
+        _companyTicketRepo = companyTicketRepo,
+        super(CompanyHomeState.initial());
 
   List<CompanyScreenModel> listOfCompanyScreen = [];
 

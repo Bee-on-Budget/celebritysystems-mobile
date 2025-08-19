@@ -44,8 +44,10 @@ Future<void> setupGetit() async {
   getIt.registerLazySingleton<CompanyTicketRepo>(
       () => CompanyTicketRepo(getIt()));
   getIt.registerLazySingleton<CompanyRepo>(() => CompanyRepo(getIt()));
-  getIt.registerFactory<CompanyHomeCubit>(
-      () => CompanyHomeCubit(getIt(), getIt())); //TODO add CompanyRepo
+  getIt.registerFactory<CompanyHomeCubit>(() => CompanyHomeCubit(
+        companyRepo: getIt(),
+        companyTicketRepo: getIt(),
+      ));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.
