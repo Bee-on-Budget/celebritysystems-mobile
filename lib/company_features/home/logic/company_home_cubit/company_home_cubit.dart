@@ -42,7 +42,7 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
     emit(Success<List<CompanyTicketResponse>>(tickets));
   }
 
-  Future<void> loadcompanyScreensData(int companyId) async {
+  Future<void> loadCompanyScreensData(int companyId) async {
     // emit(Loading());
 
     final result.ApiResult<List<CompanyScreenModel>> listOfScreen =

@@ -60,7 +60,9 @@ class AppRouter {
 
       case Routes.createCompanyTicketScreen:
         return MaterialPageRoute(
-          builder: (_) => const CreateCompanyTicketScreen(),
+          builder: (_) => const CreateCompanyTicketScreen(
+            screensList: [],
+          ),
           settings: settings, // ✅ Added settings parameter
         );
 
