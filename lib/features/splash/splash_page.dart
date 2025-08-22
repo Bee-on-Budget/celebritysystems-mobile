@@ -37,6 +37,8 @@ class _SplashPageState extends State<SplashPage> {
         if (tokenService.role == Constants.CELEBRITY_SYSTEM_WORKER) {
           context.pushReplacementNamed(Routes.homeScreen);
         } else if (tokenService.role == Constants.COMPANY) {
+          await SharedPrefHelper.setData(
+              SharedPrefKeys.companyId, tokenService.companyId);
           context.pushReplacementNamed(Routes.companyHomeScreen);
         } else {
           print("there is no implementation for this Role");

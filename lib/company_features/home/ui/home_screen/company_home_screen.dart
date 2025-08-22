@@ -1,9 +1,10 @@
-import 'package:celebritysystems_mobile/company_features/create_company_ticket/ui/create_company_ticket_screen.dart';
+import 'package:celebritysystems_mobile/company_features/create_company_ticket/ui/create_ticket_screen.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/routing/routes.dart';
 import '../../../../core/theming/colors.dart';
 import '../../../../features/login/logic/user cubit/user_cubit.dart';
 import '../../logic/company_home_cubit/company_home_cubit.dart';
@@ -52,13 +53,9 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         onPressed: () {
           List<CompanyScreenModel> listOfCompanyScreen =
               context.read<CompanyHomeCubit>().listOfCompanyScreen;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  CreateCompanyTicketScreen(screensList: listOfCompanyScreen),
-            ),
-          );
+
+          context.pushNamed(Routes.createCompanyTicketScreen,
+              arguments: listOfCompanyScreen);
         },
         child: const Icon(Icons.add),
       ),

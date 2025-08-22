@@ -15,6 +15,9 @@ import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../company_features/create_company_ticket/data/api/create_ticket_api_service.dart';
+import '../../company_features/create_company_ticket/data/repo/create_ticket_repo.dart';
+import '../../company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
 import '../../worker features/report/data/apis/report_api_service.dart';
 
 final getIt = GetIt.instance;
@@ -48,6 +51,13 @@ Future<void> setupGetit() async {
         companyRepo: getIt(),
         companyTicketRepo: getIt(),
       ));
+
+  //CreateTicket
+  getIt.registerLazySingleton<CreateTicketApiService>(
+      () => CreateTicketApiService(dio));
+  getIt
+      .registerLazySingleton<CreateTicketRepo>(() => CreateTicketRepo(getIt()));
+  getIt.registerFactory<CreateTicketCubit>(() => CreateTicketCubit(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.

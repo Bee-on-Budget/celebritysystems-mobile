@@ -5,6 +5,7 @@ class SharedPrefKeys {
   static const String oneSignalUserId = "oneSignalUserId";
   static const String username = "username";
   static const String userId = "userId";
+  static const String companyId = "companyId";
 }
 
 class Constants {

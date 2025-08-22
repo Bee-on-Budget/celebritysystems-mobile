@@ -27,6 +27,7 @@ class TokenService {
   String? get userId => claims['sub'];
   String? get username => claims['username'];
   String? get role => claims['role'];
+  int? get companyId => claims['companyId'];
 
   DateTime get expirationDate => JwtDecoder.getExpirationDate(token);
   //Get expiration date like 2025-01-13 13:04:18.000
