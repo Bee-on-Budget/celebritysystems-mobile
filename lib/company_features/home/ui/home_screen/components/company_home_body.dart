@@ -1,4 +1,9 @@
+import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+import 'package:celebritysystems_mobile/company_features/reports/ui/report_screen.dart';
 import 'package:celebritysystems_mobile/company_features/ticket_details/ui/company_ticket_details_screen.dart';
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
+import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,93 +51,122 @@ Widget companyHomeBody(Future<void> Function() onRefresh) {
           );
         }
 
-        return RefreshIndicator(
-          color: ColorsManager.coralBlaze,
-          onRefresh: onRefresh,
-          child: ListView.separated(
-            itemCount: tickets.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final ticket = tickets[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                child: Material(
-                  elevation: 2,
-                  borderRadius: BorderRadius.circular(12),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        PageRouteBuilder(
-                          transitionDuration: const Duration(milliseconds: 300),
-                          pageBuilder: (context, animation, secondaryAnimation) =>
-                              FadeTransition(
-                                opacity: animation,
-                                child: CompanyTicketDetailsScreen(ticket: ticket),
-                              ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
+        return Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            PrimaryButton(
+              text: "text",
+              onPressed: () {
+                List<CompanyScreenModel> listOfCompanyScreen =
+                    context.read<CompanyHomeCubit>().listOfCompanyScreen;
+                // context.pushNamed(Routes.companyReportsScreen);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ReportScreen(
+                          listOfCompanyScreen: listOfCompanyScreen,
+                        )));
+              },
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                color: ColorsManager.coralBlaze,
+                onRefresh: onRefresh,
+                child: ListView.separated(
+                  itemCount: tickets.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final ticket = tickets[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 6),
+                      child: Material(
+                        elevation: 2,
                         borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// Title & Status
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  ticket.title ?? 'Untitled Ticket',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                transitionDuration:
+                                    const Duration(milliseconds: 300),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        FadeTransition(
+                                  opacity: animation,
+                                  child: CompanyTicketDetailsScreen(
+                                      ticket: ticket),
                                 ),
                               ),
-                              StatusLabel(status: ticket.status),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-
-                          /// Screen name & type
-                          Text(
-                            '${ticket.screenName ?? 'Unknown'} • ${ticket.screenType ?? 'N/A'}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ),
-
-                          /// Date
-                          if (ticket.createdAt != null) ...[
-                            const SizedBox(height: 6),
-                            Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.calendar_today,
-                                    size: 14, color: Colors.grey),
-                                const SizedBox(width: 4),
-                                Text(
-                                  ticket.createdAt!.split('T').first,
-                                  style: const TextStyle(fontSize: 13),
+                                /// Title & Status
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        ticket.title ?? 'Untitled Ticket',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    StatusLabel(status: ticket.status),
+                                  ],
                                 ),
+                                const SizedBox(height: 8),
+
+                                /// Screen name & type
+                                Text(
+                                  '${ticket.screenName ?? 'Unknown'} • ${ticket.screenType ?? 'N/A'}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+
+                                /// Date
+                                if (ticket.createdAt != null) ...[
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.calendar_today,
+                                          size: 14, color: Colors.grey),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        ticket.createdAt!.split('T').first,
+                                        style: const TextStyle(fontSize: 13),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ],
                             ),
-                          ],
-                        ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         );
       }
 

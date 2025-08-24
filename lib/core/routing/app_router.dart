@@ -82,11 +82,15 @@ class AppRouter {
           settings: settings,
         );
 
-      // case Routes.reportScreen:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const ServiceReportScreen(ticket: null,),
-      //     settings: settings,
-      //   );
+      case Routes.companyReportsScreen:
+        return MaterialPageRoute(
+          builder: (context) => const CompanyHomeScreen(),
+          // builder: (_) => BlocProvider(
+          //   create: (context) => getIt<CompanyHomeCubit>(),
+          //   child: const CompanyHomeScreen(),
+          // ),
+          settings: settings, // ✅ Added settings parameter
+        );
 
       default:
         debugPrint("Route ${settings.name} not found!");
@@ -101,3 +105,10 @@ class AppRouter {
     }
   }
 }
+
+
+      // case Routes.reportScreen:
+      //   return MaterialPageRoute(
+      //     builder: (_) => const ServiceReportScreen(ticket: null,),
+      //     settings: settings,
+      //   );

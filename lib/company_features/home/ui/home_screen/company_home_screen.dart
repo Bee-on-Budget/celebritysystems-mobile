@@ -1,4 +1,3 @@
-import 'package:celebritysystems_mobile/company_features/create_company_ticket/ui/create_ticket_screen.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';

@@ -208,6 +208,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: CustomScrollView(
                   slivers: [
                     SliverAppBar(
+                      automaticallyImplyLeading: false,
                       title: Padding(
                         padding: const EdgeInsets.only(left: 16),
                         child: const Text(
