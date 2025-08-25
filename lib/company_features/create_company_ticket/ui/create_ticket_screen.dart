@@ -10,6 +10,7 @@ import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/routing/routes.dart';
 import '../../../core/widgets/custom_text_field.dart';
 import '../../../core/widgets/image_picker_widget.dart';
 import '../../../core/widgets/primary_button.dart';
@@ -111,7 +112,11 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
         listener: (context, state) {
           if (state is Success) {
             _showSuccessSnackBar('Support ticket created successfully!');
-            context.pop();
+            // context.pop();
+            context.pushNamedAndRemoveUntil(
+              Routes.companyHomeScreen,
+              predicate: (route) => false,
+            );
             // Navigator.pop(context, true); // Return true to indicate success
           } else if (state is Error) {
             _showErrorSnackBar(state.error);

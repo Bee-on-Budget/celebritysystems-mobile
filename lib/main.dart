@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'dart:math' as math;
 import 'core/helpers/constants.dart';
 import 'core/helpers/shared_pref_helper.dart';
 import 'features/login/logic/user cubit/user_cubit.dart';
@@ -26,8 +27,28 @@ void main() async {
       await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken);
   final userCubit = UserCubit();
 
+  print("=== APP INITIALIZATION ===");
+  print("Token found: ${token != null ? "Yes" : "No"}");
+  if (token != null) {
+    print("Token length: ${token.length}");
+    print(
+        "Token preview: ${token.substring(0, math.min(50, token.length as int))}...");
+  }
+
   if (!token.toString().isNullOrEmpty()) {
+    print("Loading user from existing token...");
     await userCubit.loadUserFromToken(token!);
+    final user = userCubit.state;
+    print("User loaded: ${user != null ? "Yes" : "No"}");
+    if (user != null) {
+      print("User role: ${user.role}");
+      print("User ID: ${user.userId}");
+      if (user.role == Constants.COMPANY) {
+        print("Company ID: ${user.companyId}");
+      }
+    }
+  } else {
+    print("No existing token found, user will need to login");
   }
 
   setupGetit();
@@ -36,6 +57,7 @@ void main() async {
   await ScreenUtil.ensureScreenSize();
   // await checkIfLoggedInUser();
 
+  print("=== STARTING APP ===");
   runApp(
     BlocProvider(
       create: (_) => userCubit,

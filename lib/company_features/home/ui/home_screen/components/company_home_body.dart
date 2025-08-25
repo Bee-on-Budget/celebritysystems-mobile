@@ -1,5 +1,4 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
-import 'package:celebritysystems_mobile/company_features/reports/ui/report_screen.dart';
 import 'package:celebritysystems_mobile/company_features/ticket_details/ui/company_ticket_details_screen.dart';
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
@@ -57,15 +56,14 @@ Widget companyHomeBody(Future<void> Function() onRefresh) {
               height: 30,
             ),
             PrimaryButton(
-              text: "text",
+              text: "Generate Reports",
               onPressed: () {
                 List<CompanyScreenModel> listOfCompanyScreen =
                     context.read<CompanyHomeCubit>().listOfCompanyScreen;
-                // context.pushNamed(Routes.companyReportsScreen);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ReportScreen(
-                          listOfCompanyScreen: listOfCompanyScreen,
-                        )));
+                Navigator.of(context).pushNamed(
+                  Routes.companyReportsScreen,
+                  arguments: listOfCompanyScreen,
+                );
               },
             ),
             SizedBox(

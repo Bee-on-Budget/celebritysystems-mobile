@@ -1,6 +1,12 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
+import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
+import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_state.dart';
+import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReportScreen extends StatefulWidget {
   final List<CompanyScreenModel> listOfCompanyScreen;
@@ -17,6 +23,21 @@ class _ReportScreenState extends State<ReportScreen> {
   // Date selection variables
   DateTime? startDate;
   DateTime? endDate;
+
+  // Report cubit
+  late ReportCubit _reportCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _reportCubit = getIt<ReportCubit>();
+  }
+
+  @override
+  void dispose() {
+    _reportCubit.close();
+    super.dispose();
+  }
 
   void _toggleCardSelection(int? cardId) {
     if (cardId == null) return;
@@ -132,116 +153,17 @@ class _ReportScreenState extends State<ReportScreen> {
       return;
     }
 
-    // TODO: Implement the API call to backend
-    // For now, just show a dialog with the selected data
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: ColorsManager.royalIndigo.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.assessment_rounded,
-                color: ColorsManager.royalIndigo,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: 12),
-            Text(
-              'Generate Report',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: ColorsManager.graphiteBlack,
-              ),
-            ),
-          ],
-        ),
-        content: Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: ColorsManager.mistWhite,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSummaryItem(
-                Icons.screen_share_rounded,
-                'Selected Screens',
-                '${selectedCardIds.length} screens',
-                ColorsManager.royalIndigo,
-              ),
-              SizedBox(height: 12),
-              _buildSummaryItem(
-                Icons.calendar_today_rounded,
-                'Date Range',
-                '${_formatDate(startDate)} - ${_formatDate(endDate)}',
-                ColorsManager.coralBlaze,
-              ),
-              SizedBox(height: 12),
-              _buildSummaryItem(
-                Icons.info_outline_rounded,
-                'Screen IDs',
-                selectedCardIds.join(', '),
-                ColorsManager.slateGray,
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: ColorsManager.slateGray,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Navigate to report results page
-              // Navigator.push(context, MaterialPageRoute(
-              //   builder: (context) => ReportResultsScreen(
-              //     selectedScreenIds: selectedCardIds,
-              //     startDate: startDate!,
-              //     endDate: endDate!,
-              //   ),
-              // ));
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorsManager.royalIndigo,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.rocket_launch_rounded, size: 18),
-                SizedBox(width: 8),
-                Text(
-                  'Generate Report',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    // Create the request
+    final request = GenerateReportRequest(
+      screenIds: selectedCardIds,
+      startDate:
+          startDate!.toIso8601String().split('T')[0], // Format as YYYY-MM-DD
+      endDate: endDate!.toIso8601String().split('T')[0], // Format as YYYY-MM-DD
+      reportType: 'SUMMARY',
     );
+
+    // Call the cubit to generate report
+    _reportCubit.generateReport(request);
   }
 
   Widget _buildSummaryItem(
@@ -548,266 +470,434 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorsManager.mistWhite,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                ColorsManager.royalIndigo,
-                ColorsManager.coralBlaze,
+    return BlocProvider(
+      create: (context) => _reportCubit,
+      child: BlocBuilder<ReportCubit, ReportState<GenerateReportResponse>>(
+        builder: (context, state) {
+          // Handle state changes
+          if (state is Loading<GenerateReportResponse>) {
+            // Show loading indicator
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Text('Generating report...'),
+                    ],
+                  ),
+                  backgroundColor: ColorsManager.royalIndigo,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            });
+          } else if (state is Success<GenerateReportResponse>) {
+            // Show success dialog with report data
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showReportResultsDialog(state.data);
+            });
+          } else if (state is Error<GenerateReportResponse>) {
+            // Show error message
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error),
+                  backgroundColor: ColorsManager.softCrimson,
+                ),
+              );
+            });
+          }
+
+          return Scaffold(
+            backgroundColor: ColorsManager.mistWhite,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      ColorsManager.royalIndigo,
+                      ColorsManager.coralBlaze,
+                    ],
+                  ),
+                ),
+              ),
+              title: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.assessment_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Text(
+                    'Report Generator',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                // Show count of selected items
+                Container(
+                  margin: EdgeInsets.only(right: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.check_circle_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        '${selectedCardIds.length}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ),
+            body: Column(
+              children: [
+                // Date Picker Section
+                _buildDatePickerSection(),
+
+                // Selection Summary
+                _buildSelectionSummary(),
+
+                if (selectedCardIds.isNotEmpty ||
+                    startDate != null ||
+                    endDate != null)
+                  SizedBox(height: 20),
+
+                // Cards list
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: widget.listOfCompanyScreen.length,
+                    itemBuilder: (context, index) {
+                      final company = widget.listOfCompanyScreen[index];
+                      final isSelected = _isCardSelected(company.id);
+
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: Card(
+                          elevation: isSelected ? 12 : 4,
+                          shadowColor: isSelected
+                              ? ColorsManager.royalIndigo.withOpacity(0.3)
+                              : Colors.black.withOpacity(0.1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: InkWell(
+                            onTap: () => _toggleCardSelection(company.id),
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                gradient: isSelected
+                                    ? LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          ColorsManager.royalIndigo
+                                              .withOpacity(0.1),
+                                          ColorsManager.coralBlaze
+                                              .withOpacity(0.05),
+                                        ],
+                                      )
+                                    : null,
+                                border: isSelected
+                                    ? Border.all(
+                                        color: ColorsManager.royalIndigo,
+                                        width: 2,
+                                      )
+                                    : null,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Row(
+                                  children: [
+                                    // Selection indicator
+                                    Container(
+                                      width: 28,
+                                      height: 28,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? ColorsManager.royalIndigo
+                                              : ColorsManager.paleLavenderBlue,
+                                          width: 2,
+                                        ),
+                                        color: isSelected
+                                            ? ColorsManager.royalIndigo
+                                            : Colors.transparent,
+                                      ),
+                                      child: isSelected
+                                          ? Icon(
+                                              Icons.check_rounded,
+                                              color: Colors.white,
+                                              size: 18,
+                                            )
+                                          : null,
+                                    ),
+                                    SizedBox(width: 20),
+
+                                    // Card content
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            company.name ?? 'No Name',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: isSelected
+                                                  ? ColorsManager.royalIndigo
+                                                  : ColorsManager.graphiteBlack,
+                                            ),
+                                          ),
+                                          SizedBox(height: 12),
+                                          if (company.screenType != null)
+                                            _buildInfoRow(
+                                              Icons.category_rounded,
+                                              company.screenType!,
+                                              isSelected,
+                                            ),
+                                          if (company.location != null)
+                                            _buildInfoRow(
+                                              Icons.location_on_rounded,
+                                              company.location!,
+                                              isSelected,
+                                            ),
+                                          if (company.solutionType != null)
+                                            _buildInfoRow(
+                                              Icons.settings_rounded,
+                                              company.solutionType!,
+                                              isSelected,
+                                            ),
+                                          if (company.id != null)
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 8),
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: ColorsManager
+                                                      .paleLavenderBlue
+                                                      .withOpacity(0.5),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  'ID: ${company.id}',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color:
+                                                        ColorsManager.slateGray,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            // Generate Report Button
+            floatingActionButton: Container(
+              margin: EdgeInsets.only(bottom: 20),
+              child: FloatingActionButton.extended(
+                onPressed: _generateReport,
+                label: Text(
+                  _canGenerateReport() ? 'Generate Report' : 'Select Data',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                icon: Icon(
+                  _canGenerateReport()
+                      ? Icons.rocket_launch_rounded
+                      : Icons.warning_rounded,
+                  size: 24,
+                ),
+                backgroundColor: _canGenerateReport()
+                    ? ColorsManager.royalIndigo
+                    : ColorsManager.slateGray,
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showReportResultsDialog(GenerateReportResponse reportData) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
+                color: ColorsManager.royalIndigo.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 Icons.assessment_rounded,
-                color: Colors.white,
+                color: ColorsManager.royalIndigo,
                 size: 24,
               ),
             ),
             SizedBox(width: 12),
             Text(
-              'Report Generator',
+              'Report Generated Successfully',
               style: TextStyle(
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                color: ColorsManager.graphiteBlack,
               ),
             ),
           ],
         ),
-        actions: [
-          // Show count of selected items
-          Container(
-            margin: EdgeInsets.only(right: 20),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.3)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.check_circle_rounded,
-                  color: Colors.white,
-                  size: 18,
+        content: Container(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSummaryItem(
+                Icons.screen_share_rounded,
+                'Report Type',
+                reportData.reportType,
+                ColorsManager.royalIndigo,
+              ),
+              SizedBox(height: 12),
+              _buildSummaryItem(
+                Icons.calendar_today_rounded,
+                'Date Range',
+                '${reportData.startDate} - ${reportData.endDate}',
+                ColorsManager.coralBlaze,
+              ),
+              SizedBox(height: 12),
+              _buildSummaryItem(
+                Icons.info_outline_rounded,
+                'Total Components',
+                '${reportData.totalCounts.overallTotal}',
+                ColorsManager.slateGray,
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Component Breakdown:',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: ColorsManager.graphiteBlack,
                 ),
-                SizedBox(width: 8),
-                Text(
-                  '${selectedCardIds.length}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Date Picker Section
-          _buildDatePickerSection(),
-
-          // Selection Summary
-          _buildSelectionSummary(),
-
-          if (selectedCardIds.isNotEmpty ||
-              startDate != null ||
-              endDate != null)
-            SizedBox(height: 20),
-
-          // Cards list
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              itemCount: widget.listOfCompanyScreen.length,
-              itemBuilder: (context, index) {
-                final company = widget.listOfCompanyScreen[index];
-                final isSelected = _isCardSelected(company.id);
-
-                return Container(
-                  margin: EdgeInsets.only(bottom: 16),
-                  child: Card(
-                    elevation: isSelected ? 12 : 4,
-                    shadowColor: isSelected
-                        ? ColorsManager.royalIndigo.withOpacity(0.3)
-                        : Colors.black.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: InkWell(
-                      onTap: () => _toggleCardSelection(company.id),
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          gradient: isSelected
-                              ? LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    ColorsManager.royalIndigo.withOpacity(0.1),
-                                    ColorsManager.coralBlaze.withOpacity(0.05),
-                                  ],
-                                )
-                              : null,
-                          border: isSelected
-                              ? Border.all(
-                                  color: ColorsManager.royalIndigo,
-                                  width: 2,
-                                )
-                              : null,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Row(
-                            children: [
-                              // Selection indicator
-                              Container(
-                                width: 28,
-                                height: 28,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? ColorsManager.royalIndigo
-                                        : ColorsManager.paleLavenderBlue,
-                                    width: 2,
-                                  ),
-                                  color: isSelected
-                                      ? ColorsManager.royalIndigo
-                                      : Colors.transparent,
-                                ),
-                                child: isSelected
-                                    ? Icon(
-                                        Icons.check_rounded,
-                                        color: Colors.white,
-                                        size: 18,
-                                      )
-                                    : null,
-                              ),
-                              SizedBox(width: 20),
-
-                              // Card content
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      company.name ?? 'No Name',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: isSelected
-                                            ? ColorsManager.royalIndigo
-                                            : ColorsManager.graphiteBlack,
-                                      ),
-                                    ),
-                                    SizedBox(height: 12),
-                                    if (company.screenType != null)
-                                      _buildInfoRow(
-                                        Icons.category_rounded,
-                                        company.screenType!,
-                                        isSelected,
-                                      ),
-                                    if (company.location != null)
-                                      _buildInfoRow(
-                                        Icons.location_on_rounded,
-                                        company.location!,
-                                        isSelected,
-                                      ),
-                                    if (company.solutionType != null)
-                                      _buildInfoRow(
-                                        Icons.settings_rounded,
-                                        company.solutionType!,
-                                        isSelected,
-                                      ),
-                                    if (company.id != null)
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 8),
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: ColorsManager
-                                                .paleLavenderBlue
-                                                .withOpacity(0.5),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          child: Text(
-                                            'ID: ${company.id}',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: ColorsManager.slateGray,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ],
+              ),
+              SizedBox(height: 8),
+              ...reportData.totalCounts.componentTotals.entries
+                  .map(
+                    (entry) => Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            entry.key,
+                            style: TextStyle(
+                              color: ColorsManager.slateGray,
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
+                          Text(
+                            '${entry.value}',
+                            style: TextStyle(
+                              color: ColorsManager.royalIndigo,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-
-      // Generate Report Button
-      floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 20),
-        child: FloatingActionButton.extended(
-          onPressed: _generateReport,
-          label: Text(
-            _canGenerateReport() ? 'Generate Report' : 'Select Data',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          icon: Icon(
-            _canGenerateReport()
-                ? Icons.rocket_launch_rounded
-                : Icons.warning_rounded,
-            size: 24,
-          ),
-          backgroundColor: _canGenerateReport()
-              ? ColorsManager.royalIndigo
-              : ColorsManager.slateGray,
-          elevation: 8,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+                  )
+                  .toList(),
+            ],
           ),
         ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _reportCubit.resetState();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ColorsManager.royalIndigo,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text('Close'),
+          ),
+        ],
       ),
     );
   }
