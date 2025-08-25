@@ -1,6 +1,5 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/company_features/ticket_details/ui/company_ticket_details_screen.dart';
-import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
