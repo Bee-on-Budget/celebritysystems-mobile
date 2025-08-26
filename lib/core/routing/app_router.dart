@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:celebritysystems_mobile/company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/ui/home_screen.dart';
@@ -13,11 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart'; // ✅ NEW
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import '../../company_features/company_dashboard_screen.dart';
+import '../../company_features/home/data/models/company_screen_model.dart';
 import '../../company_features/home/logic/company_home_cubit/company_home_cubit.dart';
 import '../../company_features/home/ui/home_screen/company_home_screen.dart';
-import '../../company_features/create_company_ticket/ui/create_company_ticket_screen.dart';
+import '../../company_features/create_company_ticket/ui/create_ticket_screen.dart';
+import '../../company_features/reports/ui/report_screen.dart';
 import '../di/dependency_injection.dart';
 
 class AppRouter {
@@ -43,18 +45,59 @@ class AppRouter {
       case Routes.homeScreen:
         return _handleHomeScreenRoute(settings);
 
+      case Routes.companyDashboardScreen:
+        return MaterialPageRoute(
+          builder: (_) => const CompanyDashboardScreen(),
+          settings: settings,
+        );
+
       case Routes.companyHomeScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => CompanyHomeCubit(getIt(), getIt()),
+            create: (context) => getIt<CompanyHomeCubit>(),
             child: const CompanyHomeScreen(),
           ),
           settings: settings,
         );
 
       case Routes.createCompanyTicketScreen:
+        // Extract the arguments with null safety
+        final List<CompanyScreenModel> screensList;
+
+        if (arguments != null && arguments is List<CompanyScreenModel>) {
+          screensList = arguments;
+        } else {
+          debugPrint(
+              "Warning: Expected List<CompanyScreenModel> but got: ${arguments.runtimeType}");
+          screensList = []; // Fallback to empty list
+        }
+
         return MaterialPageRoute(
-          builder: (_) => const CreateCompanyTicketScreen(),
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<CreateTicketCubit>(),
+            child: CreateTicketScreen(
+              screensList: screensList,
+            ),
+          ),
+          settings: settings,
+        );
+
+      case Routes.companyReportsScreen:
+        // Extract the arguments with null safety
+        final List<CompanyScreenModel> screensList;
+
+        if (arguments != null && arguments is List<CompanyScreenModel>) {
+          screensList = arguments;
+        } else {
+          debugPrint(
+              "Warning: Expected List<CompanyScreenModel> but got: ${arguments.runtimeType}");
+          screensList = []; // Fallback to empty list
+        }
+
+        return MaterialPageRoute(
+          builder: (_) => ReportScreen(
+            listOfCompanyScreen: screensList,
+          ),
           settings: settings,
         );
 
@@ -134,7 +177,6 @@ class SupervisorWebAppScreen extends StatefulWidget {
 
   const SupervisorWebAppScreen({super.key, required this.url});
 
-  @override
   State<SupervisorWebAppScreen> createState() => _SupervisorWebAppScreenState();
 }
 
@@ -208,9 +250,7 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
         final cookie = WebViewCookie(
           name: "jwt",
           value: token,
-          domain: Uri
-              .parse(widget.url)
-              .host,
+          domain: Uri.parse(widget.url).host,
           path: "/",
         );
 
@@ -359,3 +399,10 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     );
   }
 }
+
+
+      // case Routes.reportScreen:
+      //   return MaterialPageRoute(
+      //     builder: (_) => const ServiceReportScreen(ticket: null,),
+      //     settings: settings,
+      //   );

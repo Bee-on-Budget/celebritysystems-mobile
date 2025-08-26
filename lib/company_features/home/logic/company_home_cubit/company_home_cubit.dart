@@ -11,8 +11,12 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
   final CompanyTicketRepo _companyTicketRepo;
   final CompanyRepo _companyRepo;
 
-  CompanyHomeCubit(this._companyTicketRepo, this._companyRepo)
-      : super(CompanyHomeState.initial());
+  CompanyHomeCubit({
+    required CompanyRepo companyRepo,
+    required CompanyTicketRepo companyTicketRepo,
+  })  : _companyRepo = companyRepo,
+        _companyTicketRepo = companyTicketRepo,
+        super(CompanyHomeState.initial());
 
   List<CompanyScreenModel> listOfCompanyScreen = [];
 
@@ -38,8 +42,8 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
     emit(Success<List<CompanyTicketResponse>>(tickets));
   }
 
-  Future<void> loadcompanyScreensData(int companyId) async {
-    emit(Loading());
+  Future<void> loadCompanyScreensData(int companyId) async {
+    // emit(Loading());
 
     final result.ApiResult<List<CompanyScreenModel>> listOfScreen =
         await _companyRepo.getCompanyScreens(companyId);
@@ -55,6 +59,6 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
         return;
     }
 
-    emit(Success(listOfCompanyScreen));
+    // emit(Success(listOfCompanyScreen));
   }
 }

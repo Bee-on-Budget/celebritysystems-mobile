@@ -17,6 +17,7 @@ class CustomTextField extends StatelessWidget {
     this.isPassword = false,
     this.toggleObscure,
     this.obscureText = false,
+    String? Function(dynamic value)? validator,
   });
 
   @override

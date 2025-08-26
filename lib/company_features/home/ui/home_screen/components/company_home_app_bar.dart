@@ -8,7 +8,6 @@ companyHomeAppBar(
   BuildContext context,
   Color backgroundColor,
 ) {
-
   Future<void> handleLogout() async {
     final userCubit = context.read<UserCubit>();
 
@@ -19,15 +18,17 @@ companyHomeAppBar(
     if (context.mounted) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         Routes.loginScreen,
-            (route) => false,
+        (route) => false,
       );
     }
   }
+
   return AppBar(
     title: Text("Welcome Again"),
     backgroundColor: backgroundColor,
     foregroundColor: Colors.white,
     elevation: 0,
+    automaticallyImplyLeading: false,
     actions: [
       IconButton(
         icon: const Icon(

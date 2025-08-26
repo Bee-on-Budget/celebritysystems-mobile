@@ -9,6 +9,17 @@ class CheckListCardWidget extends StatefulWidget {
 }
 
 class _CheckListCardWidgetState extends State<CheckListCardWidget> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context
+            .read<ReportCubit>()
+            .reportRequest
+            ?.checklist = // this is the initial state of the checklist
+        _mapChecklistItemsToModel();
+  }
+
   CheckList _mapChecklistItemsToModel() {
     String? getStatus(String itemName) {
       final match = checklistItems.firstWhere(
@@ -48,7 +59,7 @@ class _CheckListCardWidgetState extends State<CheckListCardWidget> {
     {'name': 'Software', 'status': 'OK'},
     {'name': 'Power DBs', 'status': 'OK'},
     {'name': 'Media Converters', 'status': 'OK'},
-    {'name': 'Control Systems', 'status': 'X'},
+    {'name': 'Control Systems', 'status': 'OK'},
     {'name': 'Video Processors', 'status': 'OK'},
   ];
 
