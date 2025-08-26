@@ -93,7 +93,8 @@ class LoginBlocListener extends StatelessWidget {
             // Allowed roles - go to home
             context.pop(); // remove loading dialog
             if (user.role == Constants.COMPANY) {
-              context.pushReplacementNamed(Routes.companyHomeScreen);
+              // context.pushReplacementNamed(Routes.companyHomeScreen);
+              context.pushReplacementNamed(Routes.companyDashboardScreen);
             } else {
               context.pushReplacementNamed(Routes.homeScreen);
             }

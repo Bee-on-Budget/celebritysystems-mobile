@@ -7,6 +7,7 @@ import 'package:celebritysystems_mobile/features/login/ui/login_screen.dart';
 import 'package:celebritysystems_mobile/features/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../company_features/company_dashboard_screen.dart';
 import '../../company_features/home/data/models/company_screen_model.dart';
 import '../../company_features/home/logic/company_home_cubit/company_home_cubit.dart';
 import '../../company_features/home/ui/home_screen/company_home_screen.dart';
@@ -50,6 +51,12 @@ class AppRouter {
             child: const HomeScreen(),
           ),
           settings: settings, // ✅ CRITICAL: This preserves the arguments!
+        );
+
+      case Routes.companyDashboardScreen:
+        return MaterialPageRoute(
+          builder: (_) => const CompanyDashboardScreen(),
+          settings: settings,
         );
 
       case Routes.companyHomeScreen:

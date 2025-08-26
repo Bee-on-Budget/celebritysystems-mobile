@@ -72,7 +72,8 @@ class _SplashPageState extends State<SplashPage> {
       context.pushReplacementNamed(Routes.homeScreen);
     } else if (role == Constants.COMPANY) {
       print('Splash: Navigating to company home screen');
-      context.pushReplacementNamed(Routes.companyHomeScreen);
+      // context.pushReplacementNamed(Routes.companyHomeScreen);
+      context.pushReplacementNamed(Routes.companyDashboardScreen);
     } else {
       print("Splash: Unknown role '$role', navigating to login");
       _navigateToLogin();
