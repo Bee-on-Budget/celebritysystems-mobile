@@ -7,6 +7,7 @@ import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ReportScreen extends StatefulWidget {
   final List<CompanyScreenModel> listOfCompanyScreen;
@@ -171,14 +172,14 @@ class _ReportScreenState extends State<ReportScreen> {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(8.r),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
-          child: Icon(icon, color: color, size: 20),
+          child: Icon(icon, color: color, size: 20.sp),
         ),
-        SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +187,7 @@ class _ReportScreenState extends State<ReportScreen> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: ColorsManager.slateGray,
                   fontWeight: FontWeight.w500,
                 ),
@@ -194,7 +195,7 @@ class _ReportScreenState extends State<ReportScreen> {
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: ColorsManager.graphiteBlack,
                   fontWeight: FontWeight.w600,
                 ),
@@ -792,110 +793,131 @@ class _ReportScreenState extends State<ReportScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         title: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(8.r),
               decoration: BoxDecoration(
                 color: ColorsManager.royalIndigo.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
                 Icons.assessment_rounded,
                 color: ColorsManager.royalIndigo,
-                size: 24,
+                size: 24.sp,
               ),
             ),
-            SizedBox(width: 12),
-            Text(
-              'Report Generated Successfully',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: ColorsManager.graphiteBlack,
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Text(
+                'Generated Report',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: ColorsManager.graphiteBlack,
+                  fontSize: 16.sp,
+                ),
               ),
             ),
           ],
         ),
         content: Container(
           width: double.maxFinite,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSummaryItem(
-                Icons.screen_share_rounded,
-                'Report Type',
-                reportData.reportType,
-                ColorsManager.royalIndigo,
-              ),
-              SizedBox(height: 12),
-              _buildSummaryItem(
-                Icons.calendar_today_rounded,
-                'Date Range',
-                '${reportData.startDate} - ${reportData.endDate}',
-                ColorsManager.coralBlaze,
-              ),
-              SizedBox(height: 12),
-              _buildSummaryItem(
-                Icons.info_outline_rounded,
-                'Total Components',
-                '${reportData.totalCounts.overallTotal}',
-                ColorsManager.slateGray,
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Component Breakdown:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: ColorsManager.graphiteBlack,
+          constraints: BoxConstraints(
+            maxHeight: 0.6.sh, // Max 60% of screen height
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSummaryItem(
+                  Icons.screen_share_rounded,
+                  'Report Type',
+                  reportData.reportType,
+                  ColorsManager.royalIndigo,
                 ),
-              ),
-              SizedBox(height: 8),
-              ...reportData.totalCounts.componentTotals.entries
-                  .map(
-                    (entry) => Padding(
-                      padding: EdgeInsets.only(bottom: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            entry.key,
-                            style: TextStyle(
-                              color: ColorsManager.slateGray,
-                              fontSize: 12,
+                SizedBox(height: 12.h),
+                _buildSummaryItem(
+                  Icons.calendar_today_rounded,
+                  'Date Range',
+                  '${reportData.startDate} - ${reportData.endDate}',
+                  ColorsManager.coralBlaze,
+                ),
+                SizedBox(height: 12.h),
+                _buildSummaryItem(
+                  Icons.info_outline_rounded,
+                  'Total Components',
+                  '${reportData.totalCounts.overallTotal}',
+                  ColorsManager.slateGray,
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  'Component Breakdown:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: ColorsManager.graphiteBlack,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                ...reportData.totalCounts.componentTotals.entries
+                    .map(
+                      (entry) => Padding(
+                        padding: EdgeInsets.only(bottom: 4.h),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                entry.key,
+                                style: TextStyle(
+                                  color: ColorsManager.slateGray,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
                             ),
-                          ),
-                          Text(
-                            '${entry.value}',
-                            style: TextStyle(
-                              color: ColorsManager.royalIndigo,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                            Text(
+                              '${entry.value}',
+                              style: TextStyle(
+                                color: ColorsManager.royalIndigo,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.sp,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
-            ],
+                    )
+                    .toList(),
+              ],
+            ),
           ),
         ),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _reportCubit.resetState();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorsManager.royalIndigo,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _reportCubit.resetState();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorsManager.royalIndigo,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                minimumSize: Size(double.infinity, 44.h),
+              ),
+              child: Text(
+                'Close',
+                style: TextStyle(fontSize: 14.sp),
               ),
             ),
-            child: Text('Close'),
           ),
         ],
       ),
