@@ -5,7 +5,6 @@ import 'package:celebritysystems_mobile/core/widgets/image_picker_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/check_list_card.dart';
-import 'package:celebritysystems_mobile/worker%20features/report/ui/widgets/service_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -74,13 +73,10 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                   children: [
                     _buildHeaderCard(),
                     const SizedBox(height: 16),
-                    MyServicePage(),
-                    const SizedBox(height: 16),
+                    // MyServicePage(),
                     CheckListCardWidget(),
                     const SizedBox(height: 16),
                     _buildServiceDetailsCard(),
-                    const SizedBox(height: 16),
-                    _buildSignatureCard(),
                     const SizedBox(height: 16),
                     Card(
                       elevation: 4,
@@ -383,83 +379,6 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSignatureCard() {
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Signatures',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(child: _buildSignatureBox('Service Supervisor')),
-                const SizedBox(width: 12),
-                Expanded(child: _buildSignatureBox('Technician')),
-                const SizedBox(width: 12),
-                Expanded(child: _buildSignatureBox('Authorized Person')),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSignatureBox(String title) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Container(
-          height: 80,
-          width: double.infinity,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: Center(
-            child: Text(
-              'Signature',
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Authorized Signature',
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 10,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
     );
   }
 }
