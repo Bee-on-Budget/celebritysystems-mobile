@@ -27,12 +27,12 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     _companyId = context.read<UserCubit>().state?.companyId ?? 0;
     context.read<CompanyHomeCubit>().loadCompanyHomeData(_companyId);
 
-    final printList =
-        context.read<CompanyHomeCubit>().loadCompanyScreensData(4); //TODO
+    // final printList =
+    //     context.read<CompanyHomeCubit>().loadCompanyScreensData(4); //TODO
 
-    print("****************************************************");
-    print(printList);
-    print("listOfCompanyScreen");
+    // print("****************************************************");
+    // print(printList);
+    // print("listOfCompanyScreen");
   }
 
   Future<void> _onRefresh() async {
@@ -49,6 +49,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
       ),
       body: companyHomeBody(_onRefresh),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_ticket_button',
         onPressed: () {
           List<CompanyScreenModel> listOfCompanyScreen =
               context.read<CompanyHomeCubit>().listOfCompanyScreen;

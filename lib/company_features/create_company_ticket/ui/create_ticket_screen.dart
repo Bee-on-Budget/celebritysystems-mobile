@@ -155,15 +155,44 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text(
-        'Create Support Ticket',
-        style: TextStyle(
-          color: ColorsManager.mistWhite,
-          fontWeight: FontWeight.w600,
+      title: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              Icons.account_circle_outlined,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          SizedBox(width: 12),
+          Text(
+            'Create Support Ticket',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              ColorsManager.royalIndigo,
+              ColorsManager.coralBlaze,
+            ],
+          ),
         ),
       ),
-      backgroundColor: ColorsManager.coralBlaze,
-      foregroundColor: Colors.white,
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),

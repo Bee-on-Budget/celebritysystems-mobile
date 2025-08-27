@@ -1,3 +1,5 @@
+import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/company_profile/ui/company_profile.dart';
 import 'package:celebritysystems_mobile/company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
@@ -55,7 +57,10 @@ class AppRouter {
 
       case Routes.companyDashboardScreen:
         return MaterialPageRoute(
-          builder: (_) => const CompanyDashboardScreen(),
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<CompanyHomeCubit>(),
+            child: const CompanyDashboardScreen(),
+          ),
           settings: settings,
         );
 
@@ -104,11 +109,19 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (_) => ReportScreen(
-            listOfCompanyScreen: screensList,
-          ),
+              // listOfCompanyScreen: screensList,
+              ),
           settings: settings,
         );
 
+      case Routes.companyProfileScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ProfileCubit>(),
+            child: CompanyDetailsScreen(),
+          ),
+          settings: settings,
+        );
       default:
         debugPrint("Route ${settings.name} not found!");
         return MaterialPageRoute(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/routing/routes.dart';
+import '../../../../../core/theming/colors.dart';
 import '../../../../../features/login/logic/user cubit/user_cubit.dart';
 
 companyHomeAppBar(
@@ -24,8 +25,44 @@ companyHomeAppBar(
   }
 
   return AppBar(
-    title: Text("Welcome Again"),
-    backgroundColor: backgroundColor,
+    title: Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            Icons.home_max_outlined,
+            color: Colors.white,
+            size: 24,
+          ),
+        ),
+        SizedBox(width: 12),
+        Text(
+          'Tickets Page',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ],
+    ),
+    backgroundColor: Colors.transparent,
+    flexibleSpace: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            ColorsManager.royalIndigo,
+            ColorsManager.coralBlaze,
+          ],
+        ),
+      ),
+    ),
     foregroundColor: Colors.white,
     elevation: 0,
     automaticallyImplyLeading: false,

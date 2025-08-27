@@ -1,17 +1,21 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
 import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_state.dart';
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ReportScreen extends StatefulWidget {
-  final List<CompanyScreenModel> listOfCompanyScreen;
-  const ReportScreen({super.key, required this.listOfCompanyScreen});
+  const ReportScreen({
+    super.key,
+  });
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -28,10 +32,22 @@ class _ReportScreenState extends State<ReportScreen> {
   // Report cubit
   late ReportCubit _reportCubit;
 
+  List<CompanyScreenModel> listOfCompanyScreen = [];
+
   @override
   void initState() {
     super.initState();
     _reportCubit = getIt<ReportCubit>();
+    _loadCompanyScreens();
+
+    // context.read<CompanyHomeCubit>().loadCompanyScreensData(4);
+    // listOfCompanyScreen = context.read<CompanyHomeCubit>().listOfCompanyScreen;
+  }
+
+  Future<void> _loadCompanyScreens() async {
+    int companyId = await SharedPrefHelper.getInt(SharedPrefKeys.companyId);
+    if (!mounted) return; // ✅ ensures widget is still in the tree
+    context.read<CompanyHomeCubit>().loadCompanyScreensData(companyId);
   }
 
   @override
@@ -471,6 +487,12 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    listOfCompanyScreen = context.watch<CompanyHomeCubit>().listOfCompanyScreen;
+
+    if (listOfCompanyScreen.isEmpty) {
+      return const Center(child: Text("Do You Have Screens?..."));
+    }
+
     return BlocProvider(
       create: (context) => _reportCubit,
       child: BlocBuilder<ReportCubit, ReportState<GenerateReportResponse>>(
@@ -521,6 +543,7 @@ class _ReportScreenState extends State<ReportScreen> {
           return Scaffold(
             backgroundColor: ColorsManager.mistWhite,
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               elevation: 0,
               backgroundColor: Colors.transparent,
               flexibleSpace: Container(
@@ -609,9 +632,9 @@ class _ReportScreenState extends State<ReportScreen> {
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: widget.listOfCompanyScreen.length,
+                    itemCount: listOfCompanyScreen!.length,
                     itemBuilder: (context, index) {
-                      final company = widget.listOfCompanyScreen[index];
+                      final company = listOfCompanyScreen![index];
                       final isSelected = _isCardSelected(company.id);
 
                       return Container(
@@ -760,6 +783,7 @@ class _ReportScreenState extends State<ReportScreen> {
             floatingActionButton: Container(
               margin: EdgeInsets.only(bottom: 20),
               child: FloatingActionButton.extended(
+                heroTag: 'generate_report_button',
                 onPressed: _generateReport,
                 label: Text(
                   _canGenerateReport() ? 'Generate Report' : 'Select Data',
