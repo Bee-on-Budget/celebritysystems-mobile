@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'company_api_service.dart';
+part of 'profile_api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'company_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _CompanyApiService implements CompanyApiService {
-  _CompanyApiService(this._dio, {this.baseUrl, this.errorLogger}) {
+class _ProfileApiService implements ProfileApiService {
+  _ProfileApiService(this._dio, {this.baseUrl, this.errorLogger}) {
     baseUrl ??= 'http://10.0.2.2:8080/api/';
   }
 
@@ -20,57 +20,25 @@ class _CompanyApiService implements CompanyApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<Company> getCompany(int companyId) async {
+  Future<CompanyModel> getCompanyProfile(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Company>(
+    final _options = _setStreamType<CompanyModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'company/${companyId}',
+            'company/id/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Company _value;
+    late CompanyModel _value;
     try {
-      _value = Company.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<List<CompanyScreenModel>> getCompanyScreens(int companyId) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<CompanyScreenModel>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            'contracts/company/${companyId}/screens/active',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<CompanyScreenModel> _value;
-    try {
-      _value = _result.data!
-          .map(
-            (dynamic i) =>
-                CompanyScreenModel.fromJson(i as Map<String, dynamic>),
-          )
-          .toList();
+      _value = CompanyModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

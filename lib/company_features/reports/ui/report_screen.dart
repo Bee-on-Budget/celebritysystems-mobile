@@ -1,17 +1,23 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_state.dart'
+    as company_state;
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
 import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_state.dart';
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ReportScreen extends StatefulWidget {
-  final List<CompanyScreenModel> listOfCompanyScreen;
-  const ReportScreen({super.key, required this.listOfCompanyScreen});
+  const ReportScreen({
+    super.key,
+  });
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -32,6 +38,13 @@ class _ReportScreenState extends State<ReportScreen> {
   void initState() {
     super.initState();
     _reportCubit = getIt<ReportCubit>();
+    _loadCompanyScreens();
+  }
+
+  Future<void> _loadCompanyScreens() async {
+    int companyId = await SharedPrefHelper.getInt(SharedPrefKeys.companyId);
+    if (!mounted) return; // ✅ ensures widget is still in the tree
+    context.read<CompanyHomeCubit>().loadCompanyScreensData(companyId);
   }
 
   @override
@@ -521,6 +534,7 @@ class _ReportScreenState extends State<ReportScreen> {
           return Scaffold(
             backgroundColor: ColorsManager.mistWhite,
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               elevation: 0,
               backgroundColor: Colors.transparent,
               flexibleSpace: Container(
@@ -606,152 +620,178 @@ class _ReportScreenState extends State<ReportScreen> {
                   SizedBox(height: 20),
 
                 // Cards list
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: widget.listOfCompanyScreen.length,
-                    itemBuilder: (context, index) {
-                      final company = widget.listOfCompanyScreen[index];
-                      final isSelected = _isCardSelected(company.id);
+                BlocBuilder<CompanyHomeCubit, company_state.CompanyHomeState>(
+                  builder: (context, state) {
+                    if (state is company_state.Error) {
+                      return Center(
+                        child: Text("Error"),
+                      );
+                    } else if (state is company_state.Loading) {
+                      return Center(
+                        child: Text("Loading"),
+                      );
+                    } else if (state is company_state.Success) {
+                      final List<CompanyScreenModel> screens = state.data;
+                      return Expanded(
+                        child: ListView.builder(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          itemCount: screens.length,
+                          itemBuilder: (context, index) {
+                            final company = screens[index];
+                            final isSelected = _isCardSelected(company.id);
 
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 16),
-                        child: Card(
-                          elevation: isSelected ? 12 : 4,
-                          shadowColor: isSelected
-                              ? ColorsManager.royalIndigo.withOpacity(0.3)
-                              : Colors.black.withOpacity(0.1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: InkWell(
-                            onTap: () => _toggleCardSelection(company.id),
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: isSelected
-                                    ? LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          ColorsManager.royalIndigo
-                                              .withOpacity(0.1),
-                                          ColorsManager.coralBlaze
-                                              .withOpacity(0.05),
-                                        ],
-                                      )
-                                    : null,
-                                border: isSelected
-                                    ? Border.all(
-                                        color: ColorsManager.royalIndigo,
-                                        width: 2,
-                                      )
-                                    : null,
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(20),
-                                child: Row(
-                                  children: [
-                                    // Selection indicator
-                                    Container(
-                                      width: 28,
-                                      height: 28,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? ColorsManager.royalIndigo
-                                              : ColorsManager.paleLavenderBlue,
-                                          width: 2,
-                                        ),
-                                        color: isSelected
-                                            ? ColorsManager.royalIndigo
-                                            : Colors.transparent,
-                                      ),
-                                      child: isSelected
-                                          ? Icon(
-                                              Icons.check_rounded,
-                                              color: Colors.white,
-                                              size: 18,
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 16),
+                              child: Card(
+                                elevation: isSelected ? 12 : 4,
+                                shadowColor: isSelected
+                                    ? ColorsManager.royalIndigo.withOpacity(0.3)
+                                    : Colors.black.withOpacity(0.1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: InkWell(
+                                  onTap: () => _toggleCardSelection(company.id),
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient: isSelected
+                                          ? LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                ColorsManager.royalIndigo
+                                                    .withOpacity(0.1),
+                                                ColorsManager.coralBlaze
+                                                    .withOpacity(0.05),
+                                              ],
+                                            )
+                                          : null,
+                                      border: isSelected
+                                          ? Border.all(
+                                              color: ColorsManager.royalIndigo,
+                                              width: 2,
                                             )
                                           : null,
                                     ),
-                                    SizedBox(width: 20),
-
-                                    // Card content
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Row(
                                         children: [
-                                          Text(
-                                            company.name ?? 'No Name',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
+                                          // Selection indicator
+                                          Container(
+                                            width: 28,
+                                            height: 28,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: isSelected
+                                                    ? ColorsManager.royalIndigo
+                                                    : ColorsManager
+                                                        .paleLavenderBlue,
+                                                width: 2,
+                                              ),
                                               color: isSelected
                                                   ? ColorsManager.royalIndigo
-                                                  : ColorsManager.graphiteBlack,
+                                                  : Colors.transparent,
                                             ),
+                                            child: isSelected
+                                                ? Icon(
+                                                    Icons.check_rounded,
+                                                    color: Colors.white,
+                                                    size: 18,
+                                                  )
+                                                : null,
                                           ),
-                                          SizedBox(height: 12),
-                                          if (company.screenType != null)
-                                            _buildInfoRow(
-                                              Icons.category_rounded,
-                                              company.screenType!,
-                                              isSelected,
-                                            ),
-                                          if (company.location != null)
-                                            _buildInfoRow(
-                                              Icons.location_on_rounded,
-                                              company.location!,
-                                              isSelected,
-                                            ),
-                                          if (company.solutionType != null)
-                                            _buildInfoRow(
-                                              Icons.settings_rounded,
-                                              company.solutionType!,
-                                              isSelected,
-                                            ),
-                                          if (company.id != null)
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 8),
-                                              child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 6,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: ColorsManager
-                                                      .paleLavenderBlue
-                                                      .withOpacity(0.5),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: Text(
-                                                  'ID: ${company.id}',
+                                          SizedBox(width: 20),
+
+                                          // Card content
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  company.name ?? 'No Name',
                                                   style: TextStyle(
-                                                    fontSize: 12,
-                                                    color:
-                                                        ColorsManager.slateGray,
-                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: isSelected
+                                                        ? ColorsManager
+                                                            .royalIndigo
+                                                        : ColorsManager
+                                                            .graphiteBlack,
                                                   ),
                                                 ),
-                                              ),
+                                                SizedBox(height: 12),
+                                                if (company.screenType != null)
+                                                  _buildInfoRow(
+                                                    Icons.category_rounded,
+                                                    company.screenType!,
+                                                    isSelected,
+                                                  ),
+                                                if (company.location != null)
+                                                  _buildInfoRow(
+                                                    Icons.location_on_rounded,
+                                                    company.location!,
+                                                    isSelected,
+                                                  ),
+                                                if (company.solutionType !=
+                                                    null)
+                                                  _buildInfoRow(
+                                                    Icons.settings_rounded,
+                                                    company.solutionType!,
+                                                    isSelected,
+                                                  ),
+                                                if (company.id != null)
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.only(top: 8),
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 6,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: ColorsManager
+                                                            .paleLavenderBlue
+                                                            .withOpacity(0.5),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                      ),
+                                                      child: Text(
+                                                        'ID: ${company.id}',
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: ColorsManager
+                                                              .slateGray,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
                                             ),
+                                          ),
                                         ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
+                    }
+                    return Center(
+                      child: Text("No State"),
+                    );
+                  },
                 ),
               ],
             ),
@@ -760,6 +800,7 @@ class _ReportScreenState extends State<ReportScreen> {
             floatingActionButton: Container(
               margin: EdgeInsets.only(bottom: 20),
               child: FloatingActionButton.extended(
+                heroTag: 'generate_report_button',
                 onPressed: _generateReport,
                 label: Text(
                   _canGenerateReport() ? 'Generate Report' : 'Select Data',

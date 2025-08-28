@@ -43,22 +43,25 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
   }
 
   Future<void> loadCompanyScreensData(int companyId) async {
-    // emit(Loading());
+    emit(Loading());
 
     final result.ApiResult<List<CompanyScreenModel>> listOfScreen =
         await _companyRepo.getCompanyScreens(companyId);
+
+    List<CompanyScreenModel> ScreenList = [];
 
     // Extract ticket data
     switch (listOfScreen) {
       case result.Success(:final data):
         listOfCompanyScreen = data;
+        ScreenList = data;
       case result.Failure(:final errorHandler):
         final msg =
-            errorHandler.apiErrorModel.message ?? "Failed to load tickets";
+            errorHandler.apiErrorModel.message ?? "Failed to load screens";
         emit(Error(error: msg));
         return;
     }
 
-    // emit(Success(listOfCompanyScreen));
+    emit(Success(ScreenList));
   }
 }

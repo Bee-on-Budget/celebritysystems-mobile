@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/company_profile/ui/company_profile.dart';
 import 'package:celebritysystems_mobile/company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
@@ -13,7 +15,7 @@ import 'package:celebritysystems_mobile/core/helpers/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:webview_flutter/webview_flutter.dart'; // ✅ NEW
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../company_features/company_dashboard_screen.dart';
 import '../../company_features/home/data/models/company_screen_model.dart';
 import '../../company_features/home/logic/company_home_cubit/company_home_cubit.dart';
@@ -45,9 +47,18 @@ class AppRouter {
       case Routes.homeScreen:
         return _handleHomeScreenRoute(settings);
 
+      // case Routes.companyDashboardScreen:
+      //   return MaterialPageRoute(
+      //     builder: (_) => const CompanyDashboardScreen(),
+      //     settings: settings,
+      //   );
+
       case Routes.companyDashboardScreen:
         return MaterialPageRoute(
-          builder: (_) => const CompanyDashboardScreen(),
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<CompanyHomeCubit>(),
+            child: const CompanyDashboardScreen(),
+          ),
           settings: settings,
         );
 
@@ -96,11 +107,19 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (_) => ReportScreen(
-            listOfCompanyScreen: screensList,
-          ),
+              // listOfCompanyScreen: screensList,
+              ),
           settings: settings,
         );
 
+      case Routes.companyProfileScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<ProfileCubit>(),
+            child: CompanyDetailsScreen(),
+          ),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

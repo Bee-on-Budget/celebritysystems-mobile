@@ -1,3 +1,6 @@
+import 'package:celebritysystems_mobile/company_features/company_profile/data/api/profile_api_service.dart';
+import 'package:celebritysystems_mobile/company_features/company_profile/data/repo/profile_repo.dart';
+import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/api/company_api_service.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/api/company_tickets_api_service.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/company_repo.dart';
@@ -72,6 +75,11 @@ Future<void> setupGetit() async {
       () => company_report_repo.ReportRepo(getIt()));
   getIt.registerFactory<company_report_cubit.ReportCubit>(
       () => company_report_cubit.ReportCubit(reportRepo: getIt()));
+
+  //company profile
+  getIt.registerLazySingleton<ProfileApiService>(() => ProfileApiService(dio));
+  getIt.registerLazySingleton<ProfileRepo>(() => ProfileRepo(getIt()));
+  getIt.registerFactory<ProfileCubit>(() => ProfileCubit(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.
