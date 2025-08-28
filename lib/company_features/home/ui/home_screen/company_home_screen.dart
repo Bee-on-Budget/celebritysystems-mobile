@@ -28,7 +28,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     context.read<CompanyHomeCubit>().loadCompanyHomeData(_companyId);
 
     // final printList =
-    //     context.read<CompanyHomeCubit>().loadCompanyScreensData(4); //TODO
+    context.read<CompanyHomeCubit>().loadCompanyScreensData(_companyId); //TODO
 
     // print("****************************************************");
     // print(printList);

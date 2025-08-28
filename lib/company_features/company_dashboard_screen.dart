@@ -31,16 +31,23 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
     // Initialize screens list
     _screens.addAll([
       CompanyHomeScreen(),
-      ScreenPage(
-        companyId: _companyId,
+      BlocProvider(
+        create: (context) =>
+            CompanyHomeCubit(companyRepo: getIt(), companyTicketRepo: getIt()),
+        child: ScreenPage(
+          companyId: _companyId,
+        ),
       ),
-      ReportScreen(),
+      BlocProvider(
+        create: (context) =>
+            CompanyHomeCubit(companyRepo: getIt(), companyTicketRepo: getIt()),
+        child: ReportScreen(),
+      ),
+      // ReportScreen(),
       BlocProvider(
         create: (context) => ProfileCubit(getIt()),
         child: CompanyDetailsScreen(),
       ),
-      // const TicketsSection(),
-      // const ScreensSection(),
     ]);
   }
 
@@ -63,16 +70,13 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // BlocProvider(
-        //   create: (context) => getIt<CompanyHomeCubit>(),
-        //   child:
-        Scaffold(
+    return Scaffold(
       backgroundColor: ColorsManager.mistWhite,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: _screens[_currentIndex],
+      // IndexedStack(
+      //   index: _currentIndex,
+      //   children: _screens,
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
@@ -104,17 +108,3 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
     // );
   }
 }
-
-
-// //floatingActionButton: _currentIndex == 0
-//         //     ? FloatingActionButton(
-//         //         onPressed: () {
-//         //           final companyScreens =
-//         //               context.read<CompanyHomeCubit>().listOfCompanyScreen;
-//         //           context.pushNamed(Routes.createCompanyTicketScreen,
-//         //               arguments: companyScreens);
-//         //         },
-//         //         backgroundColor: ColorsManager.coralBlaze,
-//         //         child: const Icon(Icons.add, color: Colors.white),
-//         //       )
-//         //     : null,

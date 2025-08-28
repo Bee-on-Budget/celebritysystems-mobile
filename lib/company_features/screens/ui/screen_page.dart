@@ -1,8 +1,6 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
-import 'package:celebritysystems_mobile/core/helpers/constants.dart';
-import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_state.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
-import 'package:celebritysystems_mobile/features/login/logic/user%20cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,7 +18,7 @@ class ScreenPage extends StatefulWidget {
 class _ScreenPageState extends State<ScreenPage> {
   // late final int _companyId;
 
-  List<CompanyScreenModel> listOfCompanyScreen = [];
+  // List<CompanyScreenModel> listOfCompanyScreen = [];
 
   @override
   void initState() {
@@ -39,173 +37,243 @@ class _ScreenPageState extends State<ScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    listOfCompanyScreen = context.watch<CompanyHomeCubit>().listOfCompanyScreen;
-    if (listOfCompanyScreen.isEmpty) {
-      return const Center(child: Text("Do You Have Screens?..."));
-    }
-    return Scaffold(
-      backgroundColor: ColorsManager.mistWhite,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                ColorsManager.royalIndigo,
-                ColorsManager.coralBlaze,
-              ],
-            ),
-          ),
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
+    // listOfCompanyScreen = context.watch<CompanyHomeCubit>().listOfCompanyScreen;
+    // if (listOfCompanyScreen.isEmpty) {
+    //   return const Center(child: Text("Do You Have Screens?..."));
+    // }
+    return BlocBuilder<CompanyHomeCubit, CompanyHomeState>(
+      builder: (context, state) {
+        if (state is Error) {
+          return Center(
+            child: Text("Error"),
+          );
+        } else if (state is Loading) {
+          return Center(
+            child: Text("Loading"),
+          );
+        } else if (state is Success) {
+          final List<CompanyScreenModel> Screens = state.data;
+          return Scaffold(
+            backgroundColor: ColorsManager.mistWhite,
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      ColorsManager.royalIndigo,
+                      ColorsManager.coralBlaze,
+                    ],
+                  ),
+                ),
               ),
-              child: Icon(
-                Icons.screenshot_monitor_outlined,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            SizedBox(width: 12),
-            Text(
-              'Screen Page',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 16.h,
-          ),
-          // Cards list
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              itemCount: listOfCompanyScreen!.length,
-              itemBuilder: (context, index) {
-                final company = listOfCompanyScreen![index];
-
-                return Container(
-                  margin: EdgeInsets.only(bottom: 16),
-                  child: Card(
-                    elevation: 4,
-                    shadowColor: Colors.black.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+              title: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Row(
+                    child: Icon(
+                      Icons.screenshot_monitor_outlined,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Text(
+                    'Screen Page',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            body: Column(
+              children: [
+                SizedBox(
+                  height: 16.h,
+                ),
+                // Cards list
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await context
+                          .read<CompanyHomeCubit>()
+                          .loadCompanyScreensData(widget.companyId);
+                    },
+                    child: Screens.isEmpty
+                        ? ListView(
+                            // RefreshIndicator requires a scrollable child
+                            physics: const AlwaysScrollableScrollPhysics(),
                             children: [
-                              // Selection indicator
-                              Container(
-                                width: 28,
-                                height: 28,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: ColorsManager.paleLavenderBlue,
-                                    width: 2,
-                                  ),
-                                  color: Colors.transparent,
-                                ),
-                              ),
-                              SizedBox(width: 20),
-
-                              // Card content
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      company.name ?? 'No Name',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: ColorsManager.graphiteBlack,
+                              SizedBox(
+                                height:
+                                    300, // ensure enough space to allow pull-down gesture
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.assignment_outlined,
+                                        size: 64,
+                                        color: Colors.grey[400],
                                       ),
-                                    ),
-                                    SizedBox(height: 12),
-                                    if (company.screenType != null)
-                                      _buildInfoRow(
-                                        Icons.category_rounded,
-                                        company.screenType!,
-                                        false,
-                                      ),
-                                    if (company.location != null)
-                                      _buildInfoRow(
-                                        Icons.location_on_rounded,
-                                        company.location!,
-                                        false,
-                                      ),
-                                    if (company.solutionType != null)
-                                      _buildInfoRow(
-                                        Icons.settings_rounded,
-                                        company.solutionType!,
-                                        false,
-                                      ),
-                                    if (company.id != null)
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 8),
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: ColorsManager
-                                                .paleLavenderBlue
-                                                .withOpacity(0.5),
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          child: Text(
-                                            'ID: ${company.id}',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: ColorsManager.slateGray,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
+                                      SizedBox(height: 16),
+                                      Text(
+                                        "No Screens Here!",
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
+                          )
+                        : ListView.builder(
+                            // physics: BouncingScrollPhysics(),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: Screens.length,
+                            itemBuilder: (context, index) {
+                              final company = Screens[index];
+
+                              return Container(
+                                margin: EdgeInsets.only(bottom: 16),
+                                child: Card(
+                                  elevation: 4,
+                                  shadowColor: Colors.black.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {},
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(20),
+                                        child: Row(
+                                          children: [
+                                            // Selection indicator
+                                            Container(
+                                              width: 28,
+                                              height: 28,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: ColorsManager
+                                                      .paleLavenderBlue,
+                                                  width: 2,
+                                                ),
+                                                color: Colors.transparent,
+                                              ),
+                                            ),
+                                            SizedBox(width: 20),
+
+                                            // Card content
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    company.name ?? 'No Name',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: ColorsManager
+                                                          .graphiteBlack,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 12),
+                                                  if (company.screenType !=
+                                                      null)
+                                                    _buildInfoRow(
+                                                      Icons.category_rounded,
+                                                      company.screenType!,
+                                                      false,
+                                                    ),
+                                                  if (company.location != null)
+                                                    _buildInfoRow(
+                                                      Icons.location_on_rounded,
+                                                      company.location!,
+                                                      false,
+                                                    ),
+                                                  if (company.solutionType !=
+                                                      null)
+                                                    _buildInfoRow(
+                                                      Icons.settings_rounded,
+                                                      company.solutionType!,
+                                                      false,
+                                                    ),
+                                                  if (company.id != null)
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 8),
+                                                      child: Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 6,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: ColorsManager
+                                                              .paleLavenderBlue
+                                                              .withOpacity(0.5),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                        child: Text(
+                                                          'ID: ${company.id}',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: ColorsManager
+                                                                .slateGray,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ),
-                    ),
                   ),
-                );
-              },
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        }
+        return Center(
+          child: Text("No State"),
+        );
+      },
     );
   }
 
