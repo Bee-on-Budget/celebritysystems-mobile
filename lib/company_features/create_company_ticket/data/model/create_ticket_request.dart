@@ -9,14 +9,15 @@ class CreateTicketRequest {
   int? screenId;
   String? status;
   int? companyId;
+  String? serviceType;
 
-  CreateTicketRequest({
-    this.title,
-    this.description,
-    this.screenId,
-    this.status,
-    this.companyId,
-  });
+  CreateTicketRequest(
+      {this.title,
+      this.description,
+      this.screenId,
+      this.status,
+      this.companyId,
+      this.serviceType});
 
   factory CreateTicketRequest.fromJson(Map<String, dynamic> json) =>
       _$CreateTicketRequestFromJson(json);

@@ -1,7 +1,6 @@
+import 'package:celebritysystems_mobile/company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../logic/report cubit/report_cubit.dart';
 
 class MyServicePage extends StatefulWidget {
   @override
@@ -10,17 +9,30 @@ class MyServicePage extends StatefulWidget {
 
 class _MyServicePageState extends State<MyServicePage> {
   List<Map<String, dynamic>> serviceTypes = [
-    {'name': 'Preventive Maintenance', 'checked': false},
-    {'name': 'Regular Service', 'checked': false},
-    {'name': 'Call Back Service', 'checked': false},
-    {'name': 'Emergency Service', 'checked': false},
+    {
+      'name': 'Preventive Maintenance',
+      'checked': false,
+      'enum': 'PREVENTIVE_MAINTENANCE'
+    },
+    {'name': 'Regular Service', 'checked': false, 'enum': 'REGULAR_SERVICE'},
+    {
+      'name': 'Call Back Service',
+      'checked': false,
+      'enum': 'CALL_BACK_SERVICE'
+    },
+    {
+      'name': 'Emergency Service',
+      'checked': false,
+      'enum': 'EMERGENCY_SERVICE'
+    },
   ];
 
-  Widget _buildServiceTypeCard(reportCubit) {
+  Widget _buildServiceTypeCard(createTicketCubit) {
     return Card(
-      elevation: 4,
+      margin: EdgeInsets.all(0),
+      elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -64,9 +76,9 @@ class _MyServicePageState extends State<MyServicePage> {
                       for (var element in serviceTypes) {
                         if (element["checked"] == true) {
                           context
-                              .read<ReportCubit>()
-                              .reportRequest
-                              ?.serviceType = element["name"];
+                              .read<CreateTicketCubit>()
+                              .createCompanyTicketReq
+                              ?.serviceType = element["enum"];
                         }
                       }
                     });
@@ -122,8 +134,8 @@ class _MyServicePageState extends State<MyServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final reportCubit = context.read<ReportCubit>();
-    return _buildServiceTypeCard(reportCubit);
+    final createTicketCubit = context.read<CreateTicketCubit>();
+    return _buildServiceTypeCard(createTicketCubit);
     // Scaffold(
     //   body: SingleChildScrollView(child: _buildServiceTypeCard()),
     // );

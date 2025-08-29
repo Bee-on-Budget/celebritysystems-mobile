@@ -13,6 +13,7 @@ CreateTicketRequest _$CreateTicketRequestFromJson(Map<String, dynamic> json) =>
       screenId: (json['screenId'] as num?)?.toInt(),
       status: json['status'] as String?,
       companyId: (json['companyId'] as num?)?.toInt(),
+      serviceType: json['serviceType'] as String?,
     );
 
 Map<String, dynamic> _$CreateTicketRequestToJson(
@@ -23,4 +24,5 @@ Map<String, dynamic> _$CreateTicketRequestToJson(
       'screenId': instance.screenId,
       'status': instance.status,
       'companyId': instance.companyId,
+      'serviceType': instance.serviceType,
     };

@@ -27,6 +27,9 @@ class CreateTicketRepo {
         MapEntry('status', "OPEN"),
         if (createCompanyTicketReq.companyId != null)
           MapEntry('companyId', createCompanyTicketReq.companyId.toString()),
+        if (createCompanyTicketReq.serviceType != null)
+          MapEntry(
+              'serviceType', createCompanyTicketReq.serviceType.toString()),
       ]);
 
       // Add solution image if provided

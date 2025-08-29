@@ -7,6 +7,7 @@ import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
+import 'package:celebritysystems_mobile/company_features/create_company_ticket/ui/widget/service_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -134,6 +135,8 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                   const SizedBox(height: 24),
                   _buildScreenDropdown(),
                   _buildScreenDetailsCard(),
+                  const SizedBox(height: 16),
+                  MyServicePage(),
                   const SizedBox(height: 16),
                   _buildTitleField(),
                   const SizedBox(height: 16),
