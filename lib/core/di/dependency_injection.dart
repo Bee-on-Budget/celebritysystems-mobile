@@ -12,6 +12,9 @@ import 'package:celebritysystems_mobile/company_features/reports/data/repos/repo
     as company_report_repo;
 import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_cubit.dart'
     as company_report_cubit;
+import 'package:celebritysystems_mobile/company_features/show_contract/data/api/contract_api_service.dart';
+import 'package:celebritysystems_mobile/company_features/show_contract/data/repo/contract_repo.dart';
+import 'package:celebritysystems_mobile/company_features/show_contract/logic/contract_cubit/contract_cubit.dart';
 import 'package:celebritysystems_mobile/core/networking/dio_factory.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/apis/ticket_api_service.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/repos/ticket_repo.dart';
@@ -80,6 +83,12 @@ Future<void> setupGetit() async {
   getIt.registerLazySingleton<ProfileApiService>(() => ProfileApiService(dio));
   getIt.registerLazySingleton<ProfileRepo>(() => ProfileRepo(getIt()));
   getIt.registerFactory<ProfileCubit>(() => ProfileCubit(getIt()));
+
+  //contracts Info
+  getIt
+      .registerLazySingleton<ContractApiService>(() => ContractApiService(dio));
+  getIt.registerLazySingleton<ContractRepo>(() => ContractRepo(getIt()));
+  getIt.registerFactory<ContractCubit>(() => ContractCubit(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.

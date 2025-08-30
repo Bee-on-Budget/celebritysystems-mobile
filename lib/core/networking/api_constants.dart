@@ -19,6 +19,8 @@ class ApiConstants {
 
   static const String sendReport =
       "tickets/{ticketId}/worker-report"; //{ticket_id}
+
+  static const String contracts = "contracts/company";
 }
 
 class ApiErrors {

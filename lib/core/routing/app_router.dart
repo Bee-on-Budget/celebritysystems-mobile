@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/company_profile/ui/company_profile.dart';
 import 'package:celebritysystems_mobile/company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/show_contract/logic/contract_cubit/contract_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/show_contract/screens/show_contract.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/ui/home_screen.dart';
@@ -46,12 +48,6 @@ class AppRouter {
 
       case Routes.homeScreen:
         return _handleHomeScreenRoute(settings);
-
-      // case Routes.companyDashboardScreen:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const CompanyDashboardScreen(),
-      //     settings: settings,
-      //   );
 
       case Routes.companyDashboardScreen:
         return MaterialPageRoute(
@@ -117,6 +113,14 @@ class AppRouter {
           builder: (_) => BlocProvider(
             create: (context) => getIt<ProfileCubit>(),
             child: CompanyDetailsScreen(),
+          ),
+          settings: settings,
+        );
+      case Routes.contractScreen:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => ContractCubit(getIt()),
+            child: ContractScreen(),
           ),
           settings: settings,
         );
@@ -418,10 +422,3 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     );
   }
 }
-
-
-      // case Routes.reportScreen:
-      //   return MaterialPageRoute(
-      //     builder: (_) => const ServiceReportScreen(ticket: null,),
-      //     settings: settings,
-      //   );

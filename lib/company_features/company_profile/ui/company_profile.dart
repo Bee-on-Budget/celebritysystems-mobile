@@ -2,7 +2,9 @@ import 'package:celebritysystems_mobile/company_features/company_profile/data/mo
 import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_state.dart';
 import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,6 +100,31 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
           final company = state.data;
 
           return Scaffold(
+              floatingActionButton: Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: FloatingActionButton.extended(
+                  heroTag: 'explore_contracts_button',
+                  onPressed: () {
+                    context.pushNamed(Routes.contractScreen);
+                  },
+                  label: Text(
+                    'Explore Contracts',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.pages,
+                    size: 24,
+                  ),
+                  backgroundColor: ColorsManager.royalIndigo,
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
               backgroundColor: ColorsManager.mistWhite,
               appBar: AppBar(
                 automaticallyImplyLeading: false,
