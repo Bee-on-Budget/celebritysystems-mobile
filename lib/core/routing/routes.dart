@@ -17,4 +17,5 @@ class Routes {
       '/companyTicketDetailsScreen';
   static const String companyProfileScreen = '/companyProfileScreen';
   static const String contractScreen = '/contractScreen';
+  static const String screenDetailsHistory = '/ScreenDetailsHistory';
 }

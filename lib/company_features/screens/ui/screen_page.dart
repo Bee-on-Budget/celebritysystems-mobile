@@ -1,11 +1,14 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_state.dart';
+import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../home/logic/company_home_cubit/company_home_cubit.dart';
+import 'screen_details.dart';
 
 class ScreenPage extends StatefulWidget {
   final int companyId;
@@ -37,10 +40,6 @@ class _ScreenPageState extends State<ScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    // listOfCompanyScreen = context.watch<CompanyHomeCubit>().listOfCompanyScreen;
-    // if (listOfCompanyScreen.isEmpty) {
-    //   return const Center(child: Text("Do You Have Screens?..."));
-    // }
     return BlocBuilder<CompanyHomeCubit, CompanyHomeState>(
       builder: (context, state) {
         if (state is Error) {
@@ -52,7 +51,7 @@ class _ScreenPageState extends State<ScreenPage> {
             child: Text("Loading"),
           );
         } else if (state is Success) {
-          final List<CompanyScreenModel> Screens = state.data;
+          final List<CompanyScreenModel> screens = state.data;
           return Scaffold(
             backgroundColor: ColorsManager.mistWhite,
             appBar: AppBar(
@@ -110,7 +109,7 @@ class _ScreenPageState extends State<ScreenPage> {
                           .read<CompanyHomeCubit>()
                           .loadCompanyScreensData(widget.companyId);
                     },
-                    child: Screens.isEmpty
+                    child: screens.isEmpty
                         ? ListView(
                             // RefreshIndicator requires a scrollable child
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -145,9 +144,10 @@ class _ScreenPageState extends State<ScreenPage> {
                         : ListView.builder(
                             // physics: BouncingScrollPhysics(),
                             padding: EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: Screens.length,
+                            itemCount: screens.length,
                             itemBuilder: (context, index) {
-                              final company = Screens[index];
+                              final company = screens[
+                                  index]; //Todo change the name for screen
 
                               return Container(
                                 margin: EdgeInsets.only(bottom: 16),
@@ -158,7 +158,11 @@ class _ScreenPageState extends State<ScreenPage> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      context.pushNamed(
+                                          Routes.screenDetailsHistory,
+                                          arguments: company);
+                                    },
                                     borderRadius: BorderRadius.circular(20),
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -168,20 +172,6 @@ class _ScreenPageState extends State<ScreenPage> {
                                         padding: EdgeInsets.all(20),
                                         child: Row(
                                           children: [
-                                            // Selection indicator
-                                            Container(
-                                              width: 28,
-                                              height: 28,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: ColorsManager
-                                                      .paleLavenderBlue,
-                                                  width: 2,
-                                                ),
-                                                color: Colors.transparent,
-                                              ),
-                                            ),
                                             SizedBox(width: 20),
 
                                             // Card content

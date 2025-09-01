@@ -12,6 +12,9 @@ import 'package:celebritysystems_mobile/company_features/reports/data/repos/repo
     as company_report_repo;
 import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_cubit.dart'
     as company_report_cubit;
+import 'package:celebritysystems_mobile/company_features/screens/data/api/screen_api_service.dart';
+import 'package:celebritysystems_mobile/company_features/screens/data/repo/screen_details_repo.dart';
+import 'package:celebritysystems_mobile/company_features/screens/logic/screen_cubit/screen_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/show_contract/data/api/contract_api_service.dart';
 import 'package:celebritysystems_mobile/company_features/show_contract/data/repo/contract_repo.dart';
 import 'package:celebritysystems_mobile/company_features/show_contract/logic/contract_cubit/contract_cubit.dart';
@@ -89,6 +92,12 @@ Future<void> setupGetit() async {
       .registerLazySingleton<ContractApiService>(() => ContractApiService(dio));
   getIt.registerLazySingleton<ContractRepo>(() => ContractRepo(getIt()));
   getIt.registerFactory<ContractCubit>(() => ContractCubit(getIt()));
+
+  //screen details with tickets history
+  getIt.registerLazySingleton<ScreenApiService>(() => ScreenApiService(dio));
+  getIt.registerLazySingleton<ScreenDetailsRepo>(
+      () => ScreenDetailsRepo(getIt()));
+  getIt.registerFactory<ScreenCubit>(() => ScreenCubit(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.

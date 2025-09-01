@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/company_profile/ui/company_profile.dart';
 import 'package:celebritysystems_mobile/company_features/create_company_ticket/logic/cubit/create_ticket_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/screens/data/models/ticket_history_response.dart';
+import 'package:celebritysystems_mobile/company_features/screens/logic/screen_cubit/screen_cubit.dart';
+import 'package:celebritysystems_mobile/company_features/screens/ui/screen_details.dart';
 import 'package:celebritysystems_mobile/company_features/show_contract/logic/contract_cubit/contract_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/show_contract/screens/show_contract.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
@@ -121,6 +124,26 @@ class AppRouter {
           builder: (_) => BlocProvider(
             create: (context) => ContractCubit(getIt()),
             child: ContractScreen(),
+          ),
+          settings: settings,
+        );
+      case Routes.screenDetailsHistory:
+        // Extract the arguments with null safety
+        final CompanyScreenModel screen;
+
+        if (arguments != null && arguments is CompanyScreenModel) {
+          screen = arguments;
+        } else {
+          debugPrint(
+              "Warning: Expected CompanyScreenModel but got: ${arguments.runtimeType}");
+          screen = CompanyScreenModel(); // Fallback to empty list
+        }
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => ScreenCubit(getIt()),
+            child: ScreenHistoryPage(
+              screen: screen,
+            ),
           ),
           settings: settings,
         );
