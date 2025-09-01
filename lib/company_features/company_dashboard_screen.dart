@@ -8,6 +8,7 @@ import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/features/login/logic/user cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompanyDashboardScreen extends StatefulWidget {
@@ -70,41 +71,48 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorsManager.mistWhite,
-      body: _screens[_currentIndex],
-      // IndexedStack(
-      //   index: _currentIndex,
-      //   children: _screens,
-      // ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        selectedItemColor: ColorsManager.coralBlaze,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-        elevation: 8,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number),
-            label: 'Tickets',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.screen_share),
-            label: 'Screen',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assessment),
-            label: 'Reports',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Company',
-          ),
-        ],
+    return PopScope(
+      canPop: false, // prevent auto pop
+      onPopInvokedWithResult: (didPop, result) {
+        if (_currentIndex != 0) {
+          // if not on first tab → go back to Tickets
+          setState(() => _currentIndex = 0);
+        } else {
+          // already on Tickets → exit app
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: ColorsManager.mistWhite,
+        body: _screens[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+          selectedItemColor: ColorsManager.coralBlaze,
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
+          elevation: 8,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number),
+              label: 'Tickets',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.screen_share),
+              label: 'Screen',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assessment),
+              label: 'Reports',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.business),
+              label: 'Company',
+            ),
+          ],
+        ),
       ),
     );
-    // );
   }
 }

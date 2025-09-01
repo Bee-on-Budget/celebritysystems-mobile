@@ -6,6 +6,7 @@ import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubi
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_state.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/ui/ticket_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -141,257 +142,267 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF8F9FA),
-        body: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            if (state is Loading) {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      ColorsManager.mistWhite,
-                      ColorsManager.coralBlaze.withValues(alpha: 0.8),
-                    ],
+    return PopScope(
+      canPop: false, // prevent auto pop
+      onPopInvokedWithResult: (didPop, result) {
+        SystemNavigator.pop();
+      },
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          backgroundColor: const Color(0xFFF8F9FA),
+          body: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              if (state is Loading) {
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        ColorsManager.mistWhite,
+                        ColorsManager.coralBlaze.withValues(alpha: 0.8),
+                      ],
+                    ),
                   ),
-                ),
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
                   ),
-                ),
-              );
-            } else if (state is Error) {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      ColorsManager.coralBlaze,
-                      Colors.red.withValues(alpha: 0.8),
-                    ],
+                );
+              } else if (state is Error) {
+                return Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        ColorsManager.coralBlaze,
+                        Colors.red.withValues(alpha: 0.8),
+                      ],
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        state.error,
-                        style: TextStyle(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
                           color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            } else if (state is Success<List<OneTicketResponse>>) {
-              final tickets = state.data.reversed.toList();
-
-              return FadeTransition(
-                opacity: _fadeAnimation,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      automaticallyImplyLeading: false,
-                      title: Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: const Text(
-                          "My Tickets",
+                        SizedBox(height: 16),
+                        Text(
+                          state.error,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
                             color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(0, 1),
-                                blurRadius: 3.0,
-                                color: Color.fromARGB(128, 0, 0, 0),
-                              ),
-                            ],
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ),
-                      actions: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.logout,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          onPressed: () async {
-                            final shouldLogout = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Logout'),
-                                content: const Text(
-                                    'Are you sure you want to logout?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text('No'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: const Text('Yes'),
-                                  ),
-                                ],
-                              ),
-                            );
-                            if (shouldLogout ?? false) {
-                              await handleLogout();
-                            }
-                          },
-                          tooltip: 'Logout',
+                          textAlign: TextAlign.center,
                         ),
                       ],
-                      expandedHeight: 280.h,
-                      floating: false,
-                      pinned: true,
-                      elevation: 0,
-                      backgroundColor: ColorsManager.coralBlaze,
-                      foregroundColor: Colors.white,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              // Stats cards with improved spacing
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 20.w, vertical: 16.h),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: _buildStatsCard(
-                                        "Assigned",
-                                        context
-                                            .read<HomeCubit>()
-                                            .assignedCount
-                                            .toString(),
-                                        Icons.assignment,
-                                        Colors.white.withValues(alpha: 0.2),
-                                      ),
+                    ),
+                  ),
+                );
+              } else if (state is Success<List<OneTicketResponse>>) {
+                final tickets = state.data.reversed.toList();
+
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        automaticallyImplyLeading: false,
+                        title: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: const Text(
+                            "My Tickets",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(0, 1),
+                                  blurRadius: 3.0,
+                                  color: Color.fromARGB(128, 0, 0, 0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        actions: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.logout,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            onPressed: () async {
+                              final shouldLogout = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Logout'),
+                                  content: const Text(
+                                      'Are you sure you want to logout?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text('No'),
                                     ),
-                                    SizedBox(width: 16.w),
-                                    Expanded(
-                                      child: _buildStatsCard(
-                                        "Completed",
-                                        context
-                                            .read<HomeCubit>()
-                                            .completedCount
-                                            .toString(),
-                                        Icons.check_circle_outline,
-                                        Colors.white.withValues(alpha: 0.2),
-                                      ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text('Yes'),
                                     ),
                                   ],
                                 ),
-                              ),
-                              // Improved TabBar design
-                              Container(
-                                margin: EdgeInsets.only(
-                                  bottom: 8.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: TabBar(
-                                  indicator: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            Colors.black.withValues(alpha: 0.1),
-                                        blurRadius: 8,
-                                        offset: Offset(0, 2),
+                              );
+                              if (shouldLogout ?? false) {
+                                await handleLogout();
+                              }
+                            },
+                            tooltip: 'Logout',
+                          ),
+                        ],
+                        expandedHeight: 280.h,
+                        floating: false,
+                        pinned: true,
+                        elevation: 0,
+                        backgroundColor: ColorsManager.coralBlaze,
+                        foregroundColor: Colors.white,
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                // Stats cards with improved spacing
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 20.w, vertical: 16.h),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildStatsCard(
+                                          "Assigned",
+                                          context
+                                              .read<HomeCubit>()
+                                              .assignedCount
+                                              .toString(),
+                                          Icons.assignment,
+                                          Colors.white.withValues(alpha: 0.2),
+                                        ),
+                                      ),
+                                      SizedBox(width: 16.w),
+                                      Expanded(
+                                        child: _buildStatsCard(
+                                          "Completed",
+                                          context
+                                              .read<HomeCubit>()
+                                              .completedCount
+                                              .toString(),
+                                          Icons.check_circle_outline,
+                                          Colors.white.withValues(alpha: 0.2),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  indicatorSize: TabBarIndicatorSize.tab,
-                                  indicatorPadding: EdgeInsets.all(4),
-                                  labelColor: Colors.white,
-                                  unselectedLabelColor:
-                                      Colors.white.withValues(alpha: 0.7),
-                                  labelStyle: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16,
-                                  ),
-                                  unselectedLabelStyle: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                  ),
-                                  dividerColor: Colors
-                                      .transparent, // Remove the ugly line
-                                  overlayColor: WidgetStateProperty.all(
-                                    Colors.white.withValues(alpha: 0.1),
-                                  ),
-                                  tabs: const [
-                                    Tab(
-                                      child: Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 12),
-                                        child: Text('Active'),
-                                      ),
-                                    ),
-                                    Tab(
-                                      child: Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 12),
-                                        child: Text('Completed'),
-                                      ),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                            ],
+                                // Improved TabBar design
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    bottom: 8.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.2),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: TabBar(
+                                    indicator: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black
+                                              .withValues(alpha: 0.1),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    indicatorSize: TabBarIndicatorSize.tab,
+                                    indicatorPadding: EdgeInsets.all(4),
+                                    labelColor: Colors.white,
+                                    unselectedLabelColor:
+                                        Colors.white.withValues(alpha: 0.7),
+                                    labelStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                    ),
+                                    unselectedLabelStyle: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                    ),
+                                    dividerColor: Colors
+                                        .transparent, // Remove the ugly line
+                                    overlayColor: WidgetStateProperty.all(
+                                      Colors.white.withValues(alpha: 0.1),
+                                    ),
+                                    tabs: const [
+                                      Tab(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          child: Text('Active'),
+                                        ),
+                                      ),
+                                      Tab(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          child: Text('Completed'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SliverFillRemaining(
-                      child: TabBarView(
-                        children: [
-                          _buildTicketList(tickets
-                              .where((t) => t.status?.toLowerCase() != 'closed')
-                              .toList()),
-                          _buildTicketList(tickets
-                              .where((t) => t.status?.toLowerCase() == 'closed')
-                              .toList()),
-                        ],
+                      SliverFillRemaining(
+                        child: TabBarView(
+                          children: [
+                            _buildTicketList(tickets
+                                .where(
+                                    (t) => t.status?.toLowerCase() != 'closed')
+                                .toList()),
+                            _buildTicketList(tickets
+                                .where(
+                                    (t) => t.status?.toLowerCase() == 'closed')
+                                .toList()),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
+                    ],
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
         ),
       ),
     );

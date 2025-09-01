@@ -147,6 +147,11 @@ class AppRouter {
           ),
           settings: settings,
         );
+      case '/':
+        return MaterialPageRoute(
+          builder: (_) => const SplashPage(),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
