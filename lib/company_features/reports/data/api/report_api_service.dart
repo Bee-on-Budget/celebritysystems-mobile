@@ -1,5 +1,6 @@
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
+import 'package:celebritysystems_mobile/company_features/reports/ui/report_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -15,4 +16,11 @@ abstract class ReportApiService {
   Future<GenerateReportResponse> generateReport(
     @Body() GenerateReportRequest request,
   );
+
+  @GET('tickets/analytics/summary')
+  Future<AnalyticsResponse> analyticsTickets({
+    @Query('screenIds') List<int>? screenIds,
+    @Query('startDate') String? startDate,
+    @Query('endDate') String? endDate,
+  });
 }
