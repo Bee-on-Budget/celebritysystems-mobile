@@ -1,7 +1,6 @@
-import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/company_features/ticket_details/ui/company_ticket_details_screen.dart';
-import 'package:celebritysystems_mobile/core/routing/routes.dart';
-import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
+import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
+import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,74 +13,19 @@ import 'status_label.dart';
 
 Widget companyHomeBody(Future<void> Function() onRefresh) {
   return BlocBuilder<CompanyHomeCubit, CompanyHomeState>(
+    buildWhen: (previous, current) {
+      // Only rebuild when the state is relevant to tickets
+      return current is Loading ||
+          current is Error ||
+          current is Success<List<CompanyTicketResponse>>;
+    },
     builder: (context, state) {
       if (state is Loading) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  ColorsManager.coralBlaze,
-                ),
-                strokeWidth: 3,
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                'Loading tickets...',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        );
+        return customLoadingWidget("Loading tickets...");
       }
 
       if (state is Error) {
-        return Center(
-          child: Container(
-            margin: const EdgeInsets.all(24),
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.red.shade50,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.red.shade200),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: Colors.red.shade400,
-                  size: 48,
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Oops! Something went wrong',
-                  style: TextStyle(
-                    color: Colors.red.shade800,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 8),
-                Text(
-                  state.error,
-                  style: TextStyle(
-                    color: Colors.red.shade600,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        );
+        return customErrorWidget("Oops! Something went wrong");
       }
 
       if (state is Success<List<CompanyTicketResponse>>) {
