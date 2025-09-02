@@ -101,7 +101,8 @@ class LoginBlocListener extends StatelessWidget {
             break;
 
           case Error(:final error):
-            setupErrorState(context, error);
+            setupErrorState(
+                context, "Invalid credintial. Check your email and password");
             break;
 
           default:

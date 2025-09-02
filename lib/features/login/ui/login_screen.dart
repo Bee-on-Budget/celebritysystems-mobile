@@ -61,7 +61,13 @@ class LoginScreen extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        context.read<LoginCubit>().emitLoginStates();
+                        if (context
+                            .read<LoginCubit>()
+                            .formKey
+                            .currentState!
+                            .validate()) {
+                          context.read<LoginCubit>().emitLoginStates();
+                        }
                       },
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
