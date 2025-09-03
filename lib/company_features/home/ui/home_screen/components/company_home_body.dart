@@ -1,6 +1,7 @@
 import 'package:celebritysystems_mobile/company_features/ticket_details/ui/company_ticket_details_screen.dart';
 import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,11 +22,11 @@ Widget companyHomeBody(Future<void> Function() onRefresh) {
     },
     builder: (context, state) {
       if (state is Loading) {
-        return customLoadingWidget("Loading tickets...");
+        return customLoadingWidget("loading_tickets".tr());
       }
 
       if (state is Error) {
-        return customErrorWidget("Oops! Something went wrong");
+        return customErrorWidget("error_msg".tr());
       }
 
       if (state is Success<List<CompanyTicketResponse>>) {
@@ -71,7 +72,7 @@ Widget companyHomeBody(Future<void> Function() onRefresh) {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    "No tickets yet!",
+                    "no_tickets_yet".tr(),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -80,7 +81,7 @@ Widget companyHomeBody(Future<void> Function() onRefresh) {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "Your tickets will appear here once they're created",
+                    "your_tickets_will_appear_here_once_they_are_created".tr(),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -195,7 +196,7 @@ Widget _buildTicketCard(BuildContext context, CompanyTicketResponse ticket) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          ticket.title ?? 'Untitled Ticket',
+                          ticket.title ?? 'untitled_ticket'.tr(),
                           style: TextStyle(
                             color: Colors.grey.shade800,
                             fontSize: 18,
@@ -242,7 +243,7 @@ Widget _buildTicketCard(BuildContext context, CompanyTicketResponse ticket) {
                     ),
                     SizedBox(width: 6),
                     Text(
-                      '${ticket.screenName ?? 'Unknown'} • ${ticket.screenType ?? 'N/A'}',
+                      '${ticket.screenName ?? 'unknown'.tr()} • ${ticket.screenType ?? 'N/A'}',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -313,11 +314,11 @@ String _formatDate(String dateString) {
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'Today';
+      return 'today'.tr();
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return 'yesterday'.tr();
     } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
+      return '${difference.inDays}${'days ago'.tr()}';
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }

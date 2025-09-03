@@ -1,4 +1,8 @@
+import 'package:celebritysystems_mobile/core/language_cubit/language_cubit.dart';
+import 'package:celebritysystems_mobile/settings_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:celebritysystems_mobile/core/routing/app_router.dart';
@@ -126,14 +130,57 @@ class _CelebrityAppState extends State<CelebrityApp> {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        title: 'Celebrity App',
-        theme: AppTheme.lightTheme,
-        initialRoute: Routes.splashScreen,
-        onGenerateRoute: widget.appRouter.generateRoute,
+      child: BlocProvider(
+        create: (context) => LanguageCubit(),
+        child: MaterialApp(
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
+          title: 'Celebrity App',
+          theme: AppTheme.lightTheme,
+          initialRoute: Routes.splashScreen,
+          onGenerateRoute: widget.appRouter.generateRoute,
+          // Easy localization handles these automatically
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          // home: SettingsScreen(),
+        ),
       ),
     );
   }
 }
+
+// @override
+// Widget build(BuildContext context) {
+//   return ScreenUtilInit(
+//     designSize: const Size(375, 812),
+//     minTextAdapt: true,
+//     splitScreenMode: true,
+//     builder: (_, __) {
+//       return BlocProvider(
+//         create: (_) => LanguageCubit(),
+//         child: MaterialApp(
+//           navigatorKey: navigatorKey,
+//           debugShowCheckedModeBanner: false,
+//           title: 'Celebrity App',
+//           theme: AppTheme.lightTheme,
+//           initialRoute: Routes.splashScreen,
+//           onGenerateRoute: widget.appRouter.generateRoute,
+
+//           // easy_localization setup
+//           localizationsDelegates: context.localizationDelegates,
+//           supportedLocales: context.supportedLocales,
+//           locale: context.locale,
+
+//           // RTL/LTR handled automatically by easy_localization
+//           builder: (context, child) => Directionality(
+//             textDirection: context.locale.languageCode == 'ar'
+//                 ? TextDirection.rtl
+//                 : TextDirection.ltr,
+//             child: child ?? const SizedBox.shrink(),
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }

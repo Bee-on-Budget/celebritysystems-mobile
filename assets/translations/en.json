@@ -1,0 +1,19 @@
+{
+    "head_title" : "Hello",
+    "//comment": "company section",
+    "tickets_page":"Tickets Page",
+    "loading_tickets":"Loading tickets...",
+    "error_msg":"Oops! Something went wrong",
+    "no_tickets_yet":"No tickets yet!",
+    "your_tickets_will_appear_here_once_they_are_created":"Your tickets will appear here once they're created",
+    "untitled_ticket":"Untitled Ticket",
+    "unknown":"Unknown",
+    "today":"Today",
+    "yesterday":"Yesterday",
+    "days_ago":"days ago"
+
+
+
+
+
+}

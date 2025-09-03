@@ -1,0 +1,14 @@
+{
+    "head_title": "مرحبا",
+    "//comment": "قسم الشركة",
+    "tickets_page": "صفحة التذاكر",
+    "loading_tickets": "جاري تحميل التذاكر...",
+    "error_msg": "عذراً! حدث خطأ ما",
+    "no_tickets_yet": "لا توجد تذاكر بعد!",
+    "your_tickets_will_appear_here_once_they_are_created": "ستظهر تذاكرك هنا بمجرد إنشائها",
+    "untitled_ticket": "تذكرة بدون عنوان",
+    "unknown": "غير معروف",
+    "today": "اليوم",
+    "yesterday": "الأمس",
+    "days_ago": "منذ أيام"
+}
