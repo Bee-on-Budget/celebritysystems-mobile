@@ -11,6 +11,7 @@ import '../../../../../features/login/logic/user cubit/user_cubit.dart';
 companyHomeAppBar(
   BuildContext context,
   Color backgroundColor,
+  void Function(VoidCallback fn) setState,
 ) {
   Future<void> handleLogout() async {
     final userCubit = context.read<UserCubit>();
@@ -73,11 +74,15 @@ companyHomeAppBar(
       BlocBuilder<LanguageCubit, LanguageState>(
         builder: (context, state) {
           return IconButton(
-            icon: const Icon(Icons.language),
+            icon: Icon(
+              Icons.translate,
+            ),
             onPressed: () {
               context.read<LanguageCubit>().toggleLanguage(context);
+              // context.read<LanguageCubit>().changeLanguage(context, "an");
+              setState(() {});
             },
-            tooltip: 'change_language',
+            tooltip: 'Switch to English',
           );
         },
       ),
@@ -90,16 +95,16 @@ companyHomeAppBar(
           final shouldLogout = await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Logout'),
-              content: const Text('Are you sure you want to logout?'),
+              title: Text('logout'.tr()),
+              content: Text('are_you_sure_you_want_to_logout'.tr()),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('No'),
+                  child: Text('no'.tr()),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Yes'),
+                  child: Text('yes'.tr()),
                 ),
               ],
             ),
@@ -108,7 +113,7 @@ companyHomeAppBar(
             await handleLogout();
           }
         },
-        tooltip: 'Logout',
+        tooltip: 'logout'.tr(),
       ),
     ],
   );

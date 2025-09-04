@@ -10,5 +10,9 @@
     "unknown": "غير معروف",
     "today": "اليوم",
     "yesterday": "الأمس",
-    "days_ago": "منذ أيام"
+    "days_ago": "منذ أيام",
+    "logout": "تسجيل الخروج",
+    "are_you_sure_you_want_to_logout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "no": "لا",
+    "yes": "نعم"
 }

@@ -46,6 +46,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
       appBar: companyHomeAppBar(
         context,
         ColorsManager.coralBlaze,
+        setState,
       ),
       body: companyHomeBody(_onRefresh),
       floatingActionButton: FloatingActionButton(

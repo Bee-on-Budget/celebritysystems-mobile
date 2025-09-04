@@ -1,5 +1,6 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/company_repo.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/networking/api_result.dart' as result;
@@ -34,7 +35,7 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
         break;
       case result.Failure(:final errorHandler):
         final msg = errorHandler.apiErrorModel.message ??
-            "Failed to load company tickets";
+            "failed_to_load_company_tickets".tr();
         emit(Error<List<CompanyTicketResponse>>(error: msg));
         return;
     }
@@ -57,7 +58,7 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
         ScreenList = data;
       case result.Failure(:final errorHandler):
         final msg =
-            errorHandler.apiErrorModel.message ?? "Failed to load screens";
+            errorHandler.apiErrorModel.message ?? "failed_to_load_screens".tr();
         emit(Error(error: msg));
         return;
     }
