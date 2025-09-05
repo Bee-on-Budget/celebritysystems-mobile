@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/theming/colors.dart';
 import '../../home/data/models/company_tickets_response.dart';
@@ -14,7 +15,7 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
   final CompanyTicketResponse ticket;
 
   String _formatDate(String? rawDate) {
-    if (rawDate == null) return "Unknown";
+    if (rawDate == null) return "unknown".tr();
     try {
       final dateTime = DateTime.parse(rawDate);
       return DateFormat.yMMMMd().add_jm().format(dateTime);
@@ -75,7 +76,7 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
       foregroundColor: Colors.black87,
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
-          'Ticket Details',
+          'ticket_details'.tr(),
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,
@@ -214,7 +215,7 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      ticket.status ?? 'Unknown',
+                      ticket.status ?? "unknown".tr(),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -270,7 +271,7 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
           // Description Section
           if (ticket.description != null && ticket.description!.isNotEmpty)
             _buildSection(
-              title: "Description",
+              title: "description".tr(),
               icon: Icons.description_rounded,
               children: [
                 _buildDescriptionCard(),
@@ -279,23 +280,23 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
 
           // Company Information Section
           _buildSection(
-            title: "Company Information",
+            title: "company_details".tr(),
             icon: Icons.business_rounded,
             children: [
               _buildInfoGrid([
                 _InfoItem(
                   icon: Icons.business_center_rounded,
-                  label: "Company",
+                  label: "company".tr(),
                   value: ticket.companyName,
                 ),
                 _InfoItem(
                   icon: Icons.monitor_rounded,
-                  label: "Screen",
+                  label: "screens".tr(),
                   value: ticket.screenName,
                 ),
                 _InfoItem(
                   icon: Icons.category_rounded,
-                  label: "Screen Type",
+                  label: "Screen_type".tr(),
                   value: ticket.screenType,
                 ),
               ]),
@@ -305,12 +306,12 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
           // Location Section
           if (ticket.location != null)
             _buildSection(
-              title: "Location",
+              title: "location".tr(),
               icon: Icons.location_on_rounded,
               children: [
                 googleLinkUi(
                   icon: Icons.location_on_rounded,
-                  title: "Location",
+                  title: "location".tr(),
                   url: ticket.location,
                 ),
               ],
@@ -318,18 +319,18 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
 
           // Assignment Section
           _buildSection(
-            title: "Assignment Details",
+            title: "assignment_details".tr(),
             icon: Icons.people_rounded,
             children: [
               _buildInfoGrid([
                 _InfoItem(
                   icon: Icons.person_rounded,
-                  label: "Assigned To",
+                  label: "assigned_to".tr(),
                   value: ticket.assignedToWorkerName,
                 ),
                 _InfoItem(
                   icon: Icons.supervisor_account_rounded,
-                  label: "Assigned By",
+                  label: "assigned_by".tr(),
                   value: ticket.assignedBySupervisorName,
                 ),
               ]),

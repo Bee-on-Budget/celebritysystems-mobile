@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 Widget customErrorWidget(dynamic state) {
   return Center(
@@ -20,7 +21,7 @@ Widget customErrorWidget(dynamic state) {
           ),
           SizedBox(height: 16),
           Text(
-            'Oops! Something went wrong',
+            'error_msg'.tr(),
             style: TextStyle(
               color: Colors.red.shade800,
               fontSize: 18,

@@ -34,6 +34,7 @@
 
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginHeader extends StatefulWidget {
   const LoginHeader({super.key});
@@ -126,7 +127,7 @@ class _LoginHeaderState extends State<LoginHeader>
                 ],
               ).createShader(bounds),
               child: Text(
-                "Welcome Back",
+                "welcome_back".tr(),
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -139,7 +140,7 @@ class _LoginHeaderState extends State<LoginHeader>
             const SizedBox(height: 8),
 
             Text(
-              "Sign in to continue",
+              "sign_in_to_continue".tr(),
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey.shade600,

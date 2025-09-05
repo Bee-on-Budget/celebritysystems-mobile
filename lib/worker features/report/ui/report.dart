@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../logic/report cubit/report_cubit.dart';
 import '../logic/report cubit/report_state.dart';
@@ -61,7 +62,7 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             Scaffold(
               backgroundColor: Colors.grey[50],
               appBar: AppBar(
-                title: const Text('Service Report'),
+                title: Text('service_report'.tr()),
                 backgroundColor: ColorsManager.coralBlaze,
                 foregroundColor: Colors.white,
                 elevation: 0,
@@ -89,7 +90,7 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                     ),
                     const SizedBox(height: 14),
                     PrimaryButton(
-                      text: "Submit",
+                      text: "submit".tr(),
                       onPressed: () {
                         context.read<ReportCubit>().sendReport(
                               widget.ticket.id!,
@@ -133,7 +134,7 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
               children: [
                 const Expanded(
                   child: Text(
-                    'LED SCREEN SERVICE REPORT',
+                    'led_screen_service_report'.tr(),
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -167,12 +168,12 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                     children: [
                       InfoRowWidget(
                           icon: Icons.business,
-                          label: 'Company Name',
+                          label: 'company_name'.tr(),
                           value: widget.ticket.companyName ?? ""),
                       const SizedBox(height: 12),
                       InfoRowWidget(
                           icon: Icons.location_on,
-                          label: 'Location',
+                          label: 'location'.tr(),
                           value: widget.ticket.location ?? '_'),
                     ],
                   ),
@@ -183,14 +184,14 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                     children: [
                       InfoRowWidget(
                           icon: Icons.calendar_today,
-                          label: 'Service Date',
+                          label: 'service_date'.tr(),
                           value: DateFormat('dd/MM/yyyy')
                               .format(DateTime.now())
                               .toString()), // ex: '05/02/2025'
                       const SizedBox(height: 12),
                       InfoRowWidget(
                           icon: Icons.screenshot_monitor_rounded,
-                          label: 'Screen Name',
+                          label: 'screen_name'.tr(),
                           value: widget.ticket.screenName ?? 'Not specified'),
                     ],
                   ),
@@ -205,11 +206,11 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
 
   Widget _buildServiceDetailsCard() {
     final servicesRendered = [
-      'Control System',
-      'Power Cables',
-      'Data Cables',
-      'Power Supply',
-      'Receiving Cards',
+      'control_system'.tr(),
+      'power_cables'.tr(),
+      'data_cables'.tr(),
+      'power_supply'.tr(),
+      'receiving_cards'.tr(),
     ];
 
     return Card(
@@ -219,8 +220,8 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Service Details',
+            Text(
+              'service_details'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -230,8 +231,8 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             const SizedBox(height: 16),
 
             // Services Rendered
-            const Text(
-              'Services Rendered',
+            Text(
+              'services_rendered'.tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -265,8 +266,8 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             const SizedBox(height: 16),
 
             // Defects Found
-            const Text(
-              'Defects Found',
+            Text(
+              'defects_found'.tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -320,8 +321,8 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             const SizedBox(height: 16),
 
             // Solutions
-            const Text(
-              'Solutions Implemented',
+            Text(
+              'solutions_implemented'.tr(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

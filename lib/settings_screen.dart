@@ -55,8 +55,8 @@ class SettingsScreen extends StatelessWidget {
                   },
                   child: Text(
                     state.locale.languageCode == 'en'
-                        ? 'Switch to Arabic'
-                        : 'التبديل إلى الإنجليزية',
+                        ? 'switch_to_arabic'.tr()
+                        : 'switch_to_english'.tr(),
                   ),
                 );
               },

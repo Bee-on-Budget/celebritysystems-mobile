@@ -3,6 +3,7 @@ import 'package:celebritysystems_mobile/core/widgets/custom_text_field.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EmailAndPassword extends StatefulWidget {
   const EmailAndPassword({super.key});
@@ -29,14 +30,14 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
         children: [
           // Email Input
           CustomTextField(
-            label: "Email",
+            label: "email".tr(),
             icon: Icons.email_outlined,
             controller: context.read<LoginCubit>().emailController,
             validator: (value) {
               if (value == null ||
                   value.isEmpty ||
                   !AppRegex.isEmailValid(value)) {
-                return 'Please enter a valid email';
+                return 'please_enter_a_valid_email'.tr();
               }
               return null; // Return null if validation passes
             },
@@ -45,7 +46,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 
           // Password Input
           CustomTextField(
-            label: "Password",
+            label: "password".tr(),
             icon: Icons.lock_outline,
             isPassword: true,
             obscureText: isObsecure,
@@ -55,7 +56,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
             controller: context.read<LoginCubit>().passwordController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter a password';
+                return 'please_enter_a_password'.tr();
               }
               // Add more password validation rules as needed
               return null;
@@ -116,7 +117,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 //         children: [
 //           // Email Input
 //           CustomTextField(
-//             label: "Email",
+//             label: "email".tr(),
 //             icon: Icons.email_outlined,
 //             controller: context.read<LoginCubit>().emailController,
 //             validator: (value) {
@@ -124,7 +125,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 //               if (value == null ||
 //                   value.isEmpty ||
 //                   !AppRegex.isEmailValid(value)) {
-//                 return 'Please enter a valid email';
+//                 return 'please_enter_a_valid_email'.tr();
 //               }
 //             },
 //           ),
@@ -132,7 +133,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 
 //           // Password Input
 //           CustomTextField(
-//             label: "Password",
+//             label: "password".tr(),
 //             icon: Icons.lock_outline,
 //             isPassword: true,
 //             obscureText: isObsecure,

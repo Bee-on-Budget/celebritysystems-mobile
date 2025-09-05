@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/routing/routes.dart';
 import '../../../features/login/logic/user cubit/user_cubit.dart';
@@ -217,8 +218,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         automaticallyImplyLeading: false,
                         title: Padding(
                           padding: const EdgeInsets.only(left: 16),
-                          child: const Text(
-                            "My Tickets",
+                          child: Text(
+                            "my_tickets".tr(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
@@ -244,19 +245,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               final shouldLogout = await showDialog<bool>(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: const Text('Logout'),
-                                  content: const Text(
-                                      'Are you sure you want to logout?'),
+                                  title: Text('logout'.tr()),
+                                  content: Text(
+                                      'are_you_sure_you_want_to_logout'.tr()),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(false),
-                                      child: const Text('No'),
+                                      child: Text('no'.tr()),
                                     ),
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(true),
-                                      child: const Text('Yes'),
+                                      child: Text('yes'.tr()),
                                     ),
                                   ],
                                 ),
@@ -265,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 await handleLogout();
                               }
                             },
-                            tooltip: 'Logout',
+                            tooltip: 'logout'.tr(),
                           ),
                         ],
                         expandedHeight: 280.h,
@@ -288,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     children: [
                                       Expanded(
                                         child: _buildStatsCard(
-                                          "Assigned",
+                                          "assigned".tr(),
                                           context
                                               .read<HomeCubit>()
                                               .assignedCount
@@ -300,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       SizedBox(width: 16.w),
                                       Expanded(
                                         child: _buildStatsCard(
-                                          "Completed",
+                                          "completed".tr(),
                                           context
                                               .read<HomeCubit>()
                                               .completedCount
@@ -363,14 +364,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 12),
-                                          child: Text('Active'),
+                                          child: Text('active'.tr()),
                                         ),
                                       ),
                                       Tab(
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 12),
-                                          child: Text('Completed'),
+                                          child: Text('completed'.tr()),
                                         ),
                                       ),
                                     ],
@@ -479,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ),
                         SizedBox(height: 16),
                         Text(
-                          "No tickets in this tab",
+                          "no_tickets_in_this_tab".tr(),
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 16,

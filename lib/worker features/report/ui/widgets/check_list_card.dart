@@ -2,6 +2,7 @@ import 'package:celebritysystems_mobile/worker%20features/report/data/models/rep
 import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20cubit/report_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CheckListCardWidget extends StatefulWidget {
   @override
@@ -49,18 +50,18 @@ class _CheckListCardWidgetState extends State<CheckListCardWidget> {
   }
 
   List<Map<String, dynamic>> checklistItems = [
-    {'name': 'Data cables (Cat5/Cat6/RJ45)', 'status': 'OK'},
-    {'name': 'Power Cables', 'status': 'OK'},
-    {'name': 'Power supplies', 'status': 'OK'},
-    {'name': 'LED Modules', 'status': 'OK'},
-    {'name': 'Cooling Systems', 'status': 'OK'},
-    {'name': 'Service lights & sockets', 'status': 'OK'},
-    {'name': 'Operating Computers', 'status': 'OK'},
-    {'name': 'Software', 'status': 'OK'},
-    {'name': 'Power DBs', 'status': 'OK'},
-    {'name': 'Media Converters', 'status': 'OK'},
-    {'name': 'Control Systems', 'status': 'OK'},
-    {'name': 'Video Processors', 'status': 'OK'},
+    {'name': 'data_cables'.tr(), 'status': 'ok'.tr()},
+    {'name': 'power_cable'.tr(), 'status': 'ok'.tr()},
+    {'name': 'power_supplies'.tr(), 'status': 'ok'.tr()},
+    {'name': 'led_modules'.tr(), 'status': 'ok'.tr()},
+    {'name': 'cooling_systems'.tr(), 'status': 'ok'.tr()},
+    {'name': 'Service lights & sockets', 'status': 'ok'.tr()},
+    {'name': 'Operating Computers', 'status': 'ok'.tr()},
+    {'name': 'Software', 'status': 'ok'.tr()},
+    {'name': 'Power DBs', 'status': 'ok'.tr()},
+    {'name': 'Media Converters', 'status': 'ok'.tr()},
+    {'name': 'Control Systems', 'status': 'ok'.tr()},
+    {'name': 'Video Processors', 'status': 'ok'.tr()},
   ];
 
   Widget _buildChecklistCard() {
@@ -71,8 +72,8 @@ class _CheckListCardWidgetState extends State<CheckListCardWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Equipment Checklist',
+            Text(
+              'equipment_checklist'.tr(),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -86,15 +87,15 @@ class _CheckListCardWidgetState extends State<CheckListCardWidget> {
               itemCount: checklistItems.length,
               itemBuilder: (context, index) {
                 final item = checklistItems[index];
-                final isOK = item['status'] == 'OK';
+                final isOK = item['status'] == 'ok'.tr();
 
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (checklistItems[index]['status'] == 'OK') {
-                        checklistItems[index]['status'] = 'X';
-                      } else if (checklistItems[index]['status'] == 'X') {
-                        checklistItems[index]['status'] = 'OK';
+                      if (checklistItems[index]['status'] == 'ok'.tr()) {
+                        checklistItems[index]['status'] = 'issue'.tr();
+                      } else if (checklistItems[index]['status'] == 'issue'.tr()) {
+                        checklistItems[index]['status'] = 'ok'.tr();
                       }
 
                       context.read<ReportCubit>().reportRequest?.checklist =
@@ -137,7 +138,7 @@ class _CheckListCardWidgetState extends State<CheckListCardWidget> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              isOK ? 'OK' : 'Issue',
+                              isOK ? 'ok'.tr() : 'issue'.tr(),
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,

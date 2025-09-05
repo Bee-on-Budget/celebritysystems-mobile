@@ -9,6 +9,7 @@ import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login
 import 'package:celebritysystems_mobile/features/login/logic/user%20cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class LoginBlocListener extends StatelessWidget {
   const LoginBlocListener({super.key});
@@ -75,13 +76,13 @@ class LoginBlocListener extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text("Access Denied"),
+                  title: const Text("access_denied".tr()),
                   content:
-                      const Text("You are not authorized to access this app."),
+                      const Text("you_are_not_authorized_to_access_this_app".tr()),
                   actions: [
                     TextButton(
                       onPressed: () => context.pop(),
-                      child: const Text("OK"),
+                      child: const Text("ok".tr()),
                     ),
                   ],
                 ),
@@ -102,7 +103,7 @@ class LoginBlocListener extends StatelessWidget {
 
           case Error(:final error):
             setupErrorState(
-                context, "Invalid credintial. Check your email and password");
+                context, "invalid_credential_check_email_password".tr());
             break;
 
           default:
@@ -122,12 +123,12 @@ class LoginBlocListener extends StatelessWidget {
           color: Colors.red,
           size: 32,
         ),
-        title: const Text("Login Error"),
+        title: const Text("login_error".tr()),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => context.pop(),
-            child: const Text("OK"),
+            child: const Text("ok".tr()),
           ),
         ],
       ),

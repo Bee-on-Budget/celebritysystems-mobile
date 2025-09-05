@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -124,7 +125,7 @@ class _SplashPageState extends State<SplashPage> {
                     const CircularProgressIndicator(),
                     SizedBox(height: 20.h),
                     Text(
-                      'Redirecting to dashboard...',
+                      'redirecting_to_dashboard'.tr(),
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.grey[600],
@@ -160,7 +161,7 @@ class _SplashPageState extends State<SplashPage> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: const Text('Redirected to Dashboard'),
+                title: Text('redirected_to_dashboard'.tr()),
                 content: const Text(
                   'You have been redirected to the web dashboard. You can now close this app or return to login.',
                 ),
@@ -170,13 +171,13 @@ class _SplashPageState extends State<SplashPage> {
                       Navigator.of(context).pop();
                       context.pushReplacementNamed(Routes.loginScreen);
                     },
-                    child: const Text('Back to Login'),
+                    child: Text('back_to_login'.tr()),
                   ),
                   TextButton(
                     onPressed: () {
                       SystemNavigator.pop(); // Close the app
                     },
-                    child: const Text('Close App'),
+                    child: Text('close_app'.tr()),
                   ),
                 ],
               );
@@ -199,7 +200,7 @@ class _SplashPageState extends State<SplashPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Cannot Open Dashboard'),
+            title: Text('cannot_open_dashboard'.tr()),
             content: const Text(
               'Unable to open the web dashboard. Please check your internet connection or contact support.',
             ),
@@ -209,7 +210,7 @@ class _SplashPageState extends State<SplashPage> {
                   Navigator.of(context).pop();
                   context.pushReplacementNamed(Routes.loginScreen);
                 },
-                child: const Text('Back to Login'),
+                child: Text('back_to_login'.tr()),
               ),
             ],
           );

@@ -102,7 +102,7 @@ class _CelebrityAppState extends State<CelebrityApp> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(notification.body ?? 'New notification'),
+        content: Text(notification.body ?? 'new_notification'.tr()),
         duration: const Duration(seconds: 3),
         backgroundColor: Colors.blueGrey[800],
         behavior: SnackBarBehavior.floating,
@@ -110,7 +110,7 @@ class _CelebrityAppState extends State<CelebrityApp> {
           borderRadius: BorderRadius.circular(10),
         ),
         action: SnackBarAction(
-          label: 'View',
+          label: 'view'.tr(),
           textColor: Colors.white,
           onPressed: () {
             final data = notification.additionalData;
@@ -135,7 +135,7 @@ class _CelebrityAppState extends State<CelebrityApp> {
         child: MaterialApp(
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
-          title: 'Celebrity App',
+          title: 'celebrity_app'.tr(),
           theme: AppTheme.lightTheme,
           initialRoute: Routes.splashScreen,
           onGenerateRoute: widget.appRouter.generateRoute,

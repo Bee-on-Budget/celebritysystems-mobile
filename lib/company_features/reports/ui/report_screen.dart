@@ -14,6 +14,7 @@ import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // Add this model class for the analytics response
 class AnalyticsResponse {
@@ -113,7 +114,7 @@ class _ReportScreenState extends State<ReportScreen> {
               SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Please select screens and both start and end dates',
+                  'please_select_screens_and_both_dates'.tr(),
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
               ),
@@ -143,7 +144,7 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
             ),
             SizedBox(width: 12),
-            Text('Getting analytics...'),
+            Text('getting_analytics'.tr()),
           ],
         ),
         backgroundColor: ColorsManager.royalIndigo,
@@ -200,7 +201,7 @@ class _ReportScreenState extends State<ReportScreen> {
       initialDate: startDate ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-      helpText: 'Select Start Date',
+      helpText: 'select_start_date'.tr(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -232,7 +233,7 @@ class _ReportScreenState extends State<ReportScreen> {
       initialDate: endDate ?? startDate ?? DateTime.now(),
       firstDate: startDate ?? DateTime(2020),
       lastDate: DateTime(2030),
-      helpText: 'Select End Date',
+      helpText: 'select_end_date'.tr(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -255,7 +256,7 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   String _formatDate(DateTime? date) {
-    if (date == null) return 'Select Date';
+    if (date == null) return 'select_date'.tr();
     return '${date.day}/${date.month}/${date.year}';
   }
 
@@ -273,7 +274,7 @@ class _ReportScreenState extends State<ReportScreen> {
               SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Please select screens and both start and end dates',
+                  'please_select_screens_and_both_dates'.tr(),
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
               ),
@@ -836,7 +837,7 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  company.name ?? 'No Name',
+                                                  company.name ?? 'no_name'.tr(),
                                                   style: TextStyle(
                                                     fontSize: 20,
                                                     fontWeight: FontWeight.bold,

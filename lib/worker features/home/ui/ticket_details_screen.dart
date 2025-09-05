@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TicketDetailsScreen extends StatelessWidget {
   final OneTicketResponse ticket;
@@ -23,7 +24,7 @@ class TicketDetailsScreen extends StatelessWidget {
       backgroundColor: ColorsManager.mistWhite,
       appBar: AppBar(
         title: Text(
-          "Ticket Details",
+          "ticket_details".tr(),
           style: TextStyle(fontSize: 20.sp),
         ),
         backgroundColor: ColorsManager.coralBlaze,
@@ -58,11 +59,11 @@ class TicketDetailsScreen extends StatelessWidget {
               ),
               Divider(height: 40.h),
               _header("📄 Details"),
-              _info("Company", ticket.companyName ?? ""),
-              _info("Screen", ticket.screenName ?? ""),
-              _info("Assigned To", ticket.assignedToWorkerName ?? ""),
-              _info("Assigned By", ticket.assignedBySupervisorName ?? ""),
-              _info("Created At", _formatDate(ticket.createdAt ?? "")),
+              _info("company".tr(), ticket.companyName ?? ""),
+              _info("screen_name".tr(), ticket.screenName ?? ""),
+              _info("assigned_to".tr(), ticket.assignedToWorkerName ?? ""),
+              _info("assigned_by".tr(), ticket.assignedBySupervisorName ?? ""),
+              _info("created_at".tr(), _formatDate(ticket.createdAt ?? "")),
               Divider(height: 40.h),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.r),
@@ -134,7 +135,7 @@ class TicketDetailsScreen extends StatelessWidget {
                       child: ticket.status == "OPEN"
                           ? Chip(
                               label: Text(
-                                "Submit Report",
+                                "submit_report".tr(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14.sp),
                               ),

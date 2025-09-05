@@ -7,6 +7,7 @@ import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ContractScreen extends StatefulWidget {
   const ContractScreen({super.key});
@@ -53,8 +54,8 @@ class _ContractScreenState extends State<ContractScreen>
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        title: const Text(
-          'Contracts',
+        title: Text(
+          'contracts'.tr(),
           style: TextStyle(
             color: Color(0xFF1E293B),
             fontWeight: FontWeight.w600,
@@ -96,18 +97,18 @@ class _ContractScreenState extends State<ContractScreen>
                     child: Row(
                       children: [
                         Expanded(
-                          child: _buildStatItem('Total Contracts',
+                          child: _buildStatItem('total_contracts'.tr(),
                               '${contracts.length}', Icons.description),
                         ),
                         Container(width: 1, height: 40, color: Colors.white24),
                         Expanded(
                           child:
-                              _buildStatItem('Active', '2', Icons.check_circle),
+                              _buildStatItem('active'.tr(), '2', Icons.check_circle),
                         ),
                         Container(width: 1, height: 40, color: Colors.white24),
                         Expanded(
                           child: _buildStatItem(
-                              'Value',
+                              'value'.tr(),
                               '\$${contracts.fold(0.0, (sum, c) => sum + c.contractValue).toStringAsFixed(0)}',
                               Icons.attach_money),
                         ),
@@ -247,7 +248,7 @@ class _ContractScreenState extends State<ContractScreen>
                       ),
                     ),
                     _buildStatusChip(
-                        isExpired ? 'Expired' : 'Active', isExpired),
+                        isExpired ? 'expired'.tr() : 'active'.tr(), isExpired),
                   ],
                 ),
               ),
@@ -262,7 +263,7 @@ class _ContractScreenState extends State<ContractScreen>
                       children: [
                         Expanded(
                           child: _buildInfoItem(
-                            'Duration',
+                            'duration'.tr(),
                             contract.durationType.toLowerCase().replaceFirst(
                                 contract.durationType[0],
                                 contract.durationType[0].toUpperCase()),
@@ -271,14 +272,14 @@ class _ContractScreenState extends State<ContractScreen>
                         ),
                         Expanded(
                           child: _buildInfoItem(
-                            'Value',
+                            'value'.tr(),
                             '\$${contract.contractValue.toStringAsFixed(0)}',
                             Icons.attach_money,
                           ),
                         ),
                         Expanded(
                           child: _buildInfoItem(
-                            'Type',
+                            'type'.tr(),
                             contract.operatorType.toLowerCase().replaceFirst(
                                 contract.operatorType[0],
                                 contract.operatorType[0].toUpperCase()),
@@ -303,8 +304,8 @@ class _ContractScreenState extends State<ContractScreen>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Start Date',
+                                Text(
+                                  'start_date'.tr(),
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Color(0xFF64748B),
@@ -335,8 +336,8 @@ class _ContractScreenState extends State<ContractScreen>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                const Text(
-                                  'End Date',
+                                Text(
+                                  'end_date'.tr(),
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Color(0xFF64748B),
@@ -501,18 +502,18 @@ class _ContractScreenState extends State<ContractScreen>
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
+      'jan'.tr(),
+      'feb'.tr(),
+      'mar'.tr(),
+      'apr'.tr(),
+      'may'.tr(),
+      'jun'.tr(),
+      'jul'.tr(),
+      'aug'.tr(),
+      'sep'.tr(),
+      'oct'.tr(),
+      'nov'.tr(),
+      'dec'.tr()
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }

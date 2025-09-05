@@ -6,6 +6,7 @@ import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // Models
 // class CompanyScreenModelTest {
@@ -67,7 +68,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
   }
 
   String formatDateTime(DateTime? dateTime) {
-    if (dateTime == null) return 'N/A';
+    if (dateTime == null) return 'not_provided'.tr();
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
@@ -76,7 +77,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('Screen History',
+        title: Text('screen_page'.tr(),
             style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
@@ -91,7 +92,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
               return customErrorWidget(state);
             }
             if (state is Loading) {
-              return customLoadingWidget("Loading your data");
+              return customLoadingWidget("loading".tr());
             }
             if (state is Success) {
               final ticketsHistory = state.data;
@@ -125,7 +126,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                             Icon(Icons.tv, color: Colors.white, size: 28),
                             SizedBox(width: 12),
                             Text(
-                              'Screen Details',
+                              'screen_details'.tr(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -136,12 +137,12 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                         ),
                         SizedBox(height: 16),
                         _buildDetailRow(
-                            'Name', widget.screen.name, Icons.label),
+                            'screen_name'.tr(), widget.screen.name, Icons.label),
                         _buildDetailRow(
-                            'Type', widget.screen.screenType, Icons.category),
-                        _buildDetailRow('Location', widget.screen.location,
+                            'type'.tr(), widget.screen.screenType, Icons.category),
+                        _buildDetailRow('location'.tr(), widget.screen.location,
                             Icons.location_on),
-                        _buildDetailRow('Solution', widget.screen.solutionType,
+                        _buildDetailRow('solution_type'.tr(), widget.screen.solutionType,
                             Icons.build),
                       ],
                     ),
@@ -155,7 +156,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                       Icon(Icons.assignment, color: Colors.grey[700], size: 28),
                       SizedBox(width: 12),
                       Text(
-                        'Ticket History',
+                        'tickets'.tr(),
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -171,7 +172,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '${ticketsHistory.length} tickets',
+                          '${ticketsHistory.length} ${'tickets'.tr()}',
                           style: TextStyle(
                             color: Colors.blue[800],
                             fontWeight: FontWeight.w600,
@@ -297,7 +298,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                                     ),
                                     SizedBox(height: 8),
                                     Text(
-                                      'Opened: ${formatDateTime(ticket.openedAt)}',
+                                      '${'created_at'.tr()}: ${formatDateTime(ticket.openedAt)}',
                                       style: TextStyle(
                                         color: Colors.grey[500],
                                         fontSize: 12,
@@ -345,7 +346,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
           ),
           Expanded(
             child: Text(
-              value ?? 'N/A',
+              value ?? 'not_provided'.tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -365,7 +366,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Ticket Details Section
-          _buildSectionHeader('Ticket Information', Icons.info_outline),
+          _buildSectionHeader('ticket_details'.tr(), Icons.info_outline),
           SizedBox(height: 12),
 
           if (ticket.ticketImageUrl != null) ...[
@@ -387,10 +388,10 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
           ],
 
           _buildInfoGrid([
-            {'label': 'Created By', 'value': ticket.createdBy},
-            {'label': 'Assigned Worker', 'value': ticket.assignedToWorkerName},
-            {'label': 'Supervisor', 'value': ticket.assignedBySupervisorName},
-            {'label': 'Service Type', 'value': ticket.serviceTypeDisplayName},
+            {'label': 'assigned_by'.tr(), 'value': ticket.createdBy},
+            {'label': 'assigned_to'.tr(), 'value': ticket.assignedToWorkerName},
+            {'label': 'assigned_by'.tr(), 'value': ticket.assignedBySupervisorName},
+            {'label': 'service_type'.tr(), 'value': ticket.serviceTypeDisplayName},
           ]),
 
           SizedBox(height: 16),
@@ -400,7 +401,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
           // Worker Report Section
           if (ticket.workerReport != null) ...[
             SizedBox(height: 24),
-            _buildSectionHeader('Worker Report', Icons.assignment_turned_in),
+            _buildSectionHeader('service_report'.tr(), Icons.assignment_turned_in),
             SizedBox(height: 12),
             _buildWorkerReport(ticket.workerReport!),
           ],
@@ -446,7 +447,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                     ),
                     Expanded(
                       child: Text(
-                        item['value'] ?? 'Not assigned',
+                        item['value'] ?? 'not_provided'.tr(),
                         style: TextStyle(color: Colors.grey[800]),
                       ),
                     ),
@@ -459,21 +460,21 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
 
   Widget _buildTimelineInfo(TicketHistoryResponse ticket) {
     final timeline = [
-      {'label': 'Opened', 'time': ticket.openedAt, 'icon': Icons.schedule},
+      {'label': 'created_at'.tr(), 'time': ticket.openedAt, 'icon': Icons.schedule},
       {
-        'label': 'In Progress',
+        'label': 'assigned'.tr(),
         'time': ticket.inProgressAt,
         'icon': Icons.play_arrow
       },
-      {'label': 'Resolved', 'time': ticket.resolvedAt, 'icon': Icons.check},
-      {'label': 'Closed', 'time': ticket.closedAt, 'icon': Icons.check_circle},
+      {'label': 'completed'.tr(), 'time': ticket.resolvedAt, 'icon': Icons.check},
+      {'label': 'completed'.tr(), 'time': ticket.closedAt, 'icon': Icons.check_circle},
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Timeline:',
+          '${'created_at'.tr()}:',
           style: TextStyle(
             fontWeight: FontWeight.w500,
             color: Colors.grey[600],
@@ -525,15 +526,15 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Report Date: ${formatDateTime(report.reportDate)}',
+                '${'service_date'.tr()}: ${formatDateTime(report.reportDate)}',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               SizedBox(height: 8),
-              Text('Defects Found:',
+              Text('${'defects_found'.tr()}:',
                   style: TextStyle(fontWeight: FontWeight.w500)),
               Text(report.defectsFound),
               SizedBox(height: 8),
-              Text('Solutions Provided:',
+              Text('${'solutions_implemented'.tr()}:',
                   style: TextStyle(fontWeight: FontWeight.w500)),
               Text(report.solutionsProvided),
             ],
@@ -544,7 +545,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
 
         // Checklist - same as before
         Text(
-          'Checklist:',
+          '${'equipment_checklist'.tr()}:',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
@@ -594,7 +595,7 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
 
         // Solution image
         Text(
-          'Solution Image:',
+          'ticket_image'.tr(),
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,

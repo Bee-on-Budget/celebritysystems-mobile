@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../theming/colors.dart';
 
@@ -49,7 +50,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error picking image: $e'),
+            content: Text('${'error_picking_image'.tr()}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -66,8 +67,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Select Image Source',
+              Text(
+                'select_image_source'.tr(),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -84,7 +85,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                         _pickImage(ImageSource.camera);
                       },
                       icon: const Icon(Icons.camera_alt),
-                      label: const Text('Camera'),
+                      label: Text('camera'.tr()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorsManager.coralBlaze,
                         foregroundColor: Colors.white,
@@ -100,7 +101,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                         _pickImage(ImageSource.gallery);
                       },
                       icon: const Icon(Icons.photo_library),
-                      label: const Text('Gallery'),
+                      label: Text('gallery'.tr()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorsManager.coralBlaze,
                         foregroundColor: Colors.white,
@@ -130,8 +131,8 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Ticket Image',
+        Text(
+          'ticket_image'.tr(),
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -193,7 +194,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Add Photo',
+                      'add_photo'.tr(),
                       style: TextStyle(
                         fontSize: 16,
                         color: ColorsManager.slateGray.withValues(alpha: 0.6),
@@ -203,7 +204,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     ElevatedButton.icon(
                       onPressed: _showImageSourceDialog,
                       icon: const Icon(Icons.camera_alt),
-                      label: const Text('Select Image'),
+                      label: Text('select_image'.tr()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorsManager.coralBlaze,
                         foregroundColor: Colors.white,
