@@ -8,6 +8,7 @@ import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/company_features/create_company_ticket/ui/widget/service_type_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -65,7 +66,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     }
 
     if (_selectedScreenModel == null) {
-      _showErrorSnackBar('Please select a screen/section');
+      _showErrorSnackBar('please_select_a_screen'.tr());
       return false;
     }
 
@@ -112,7 +113,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
       body: BlocConsumer<CreateTicketCubit, CreateTicketState>(
         listener: (context, state) {
           if (state is Success) {
-            _showSuccessSnackBar('Support ticket created successfully!');
+            _showSuccessSnackBar('support_ticket_created_successfully'.tr());
             // context.pop();
             context.pushNamedAndRemoveUntil(
               Routes.companyHomeScreen,
@@ -174,7 +175,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           ),
           SizedBox(width: 12),
           Text(
-            'Create Support Ticket',
+            'create_support_ticket'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -219,17 +220,17 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           ),
         ],
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Icon(
+          const Icon(
             Icons.support_agent,
             size: 48,
             color: ColorsManager.coralBlaze,
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            'Submit a Support Request',
-            style: TextStyle(
+            'submit_a_support_request'.tr(),
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: ColorsManager.slateGray,
@@ -237,7 +238,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           ),
           SizedBox(height: 4),
           Text(
-            'Fill in the details below to create your ticket',
+            'fill_in_the_details_below_to_create_your_ticket'.tr(),
             style: TextStyle(
               fontSize: 14,
               color: ColorsManager.slateGray,
@@ -257,7 +258,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
       child: DropdownButtonFormField<CompanyScreenModel>(
         value: _selectedScreenModel,
         decoration: InputDecoration(
-          labelText: 'Screen/Section *',
+          labelText: 'screen*'.tr(),
           prefixIcon: const Icon(Icons.computer),
           filled: true,
           fillColor: Colors.transparent,
@@ -267,7 +268,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           ),
           hintStyle: const TextStyle(color: ColorsManager.slateGray),
         ),
-        hint: const Text('Select affected screen'),
+        hint: Text('select_affected_screen'.tr()),
         items: widget.screensList.map((CompanyScreenModel screen) {
           return DropdownMenuItem<CompanyScreenModel>(
             value: screen,
@@ -277,7 +278,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
         onChanged: _onScreenSelected,
         validator: (value) {
           if (value == null) {
-            return 'Please select a screen/section';
+            return 'please_select_a_screen'.tr();
           }
           return null;
         },
@@ -288,7 +289,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
   }
 
   String _getScreenDisplayName(CompanyScreenModel screen) {
-    String displayName = screen.name ?? 'Unknown';
+    String displayName = screen.name ?? 'unknown'.tr();
     if (screen.location != null) {
       displayName += ' (${screen.location})';
     } else if (screen.screenType != null) {
@@ -348,9 +349,9 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Text(
-            'Screen Details',
+            'screen_details'.tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -366,31 +367,31 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     final details = <Widget>[];
     final screen = _selectedScreenModel!;
 
-    details.add(
-        _buildDetailRow('Screen Name', screen.name ?? 'N/A', Icons.computer));
+    details.add(_buildDetailRow(
+        'screen_name'.tr(), screen.name ?? 'N/A', Icons.computer));
 
     if (screen.screenType != null) {
       details.add(const SizedBox(height: 12));
-      details.add(
-          _buildDetailRow('Screen Type', screen.screenType!, Icons.category));
+      details.add(_buildDetailRow(
+          'Screen_type'.tr(), screen.screenType!, Icons.category));
     }
 
     if (screen.location != null) {
       details.add(const SizedBox(height: 12));
-      details.add(
-          _buildDetailRow('Location', screen.location!, Icons.location_on));
+      details.add(_buildDetailRow(
+          'location'.tr(), screen.location!, Icons.location_on));
     }
 
     if (screen.solutionType != null) {
       details.add(const SizedBox(height: 12));
-      details.add(
-          _buildDetailRow('Solution Type', screen.solutionType!, Icons.build));
+      details.add(_buildDetailRow(
+          'solution_type'.tr(), screen.solutionType!, Icons.build));
     }
 
     if (screen.id != null) {
       details.add(const SizedBox(height: 12));
-      details
-          .add(_buildDetailRow('Screen ID', screen.id.toString(), Icons.tag));
+      details.add(
+          _buildDetailRow('screen_id'.tr(), screen.id.toString(), Icons.tag));
     }
 
     return details;
@@ -436,12 +437,12 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
 
   Widget _buildTitleField() {
     return CustomTextField(
-      label: 'Ticket Title *',
+      label: 'ticket_title*'.tr(),
       icon: Icons.title,
       controller: _titleController,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
-          return 'Please enter a ticket title';
+          return 'please_enter_a_ticket_title'.tr();
         }
         if (value.trim().length < 5) {
           return 'Title must be at least 5 characters long';
@@ -461,7 +462,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
         controller: _descriptionController,
         maxLines: 4,
         decoration: InputDecoration(
-          labelText: 'Description *',
+          labelText: 'description*'.tr(),
           prefixIcon: const Icon(Icons.description),
           filled: true,
           fillColor: Colors.transparent,
@@ -469,15 +470,15 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
-          hintText: 'Describe the issue in detail...',
+          hintText: 'describe_the_issue_in_detail'.tr(),
           hintStyle: const TextStyle(color: ColorsManager.slateGray),
         ),
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
-            return 'Please enter a description';
+            return 'please_enter_a_description'.tr();
           }
           if (value.trim().length < 10) {
-            return 'Description must be at least 10 characters long';
+            return 'description_must_be_at_least_10_characters_long'.tr();
           }
           return null;
         },
@@ -500,16 +501,16 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.attach_file,
                 color: ColorsManager.coralBlaze,
               ),
               SizedBox(width: 8),
               Text(
-                'Attachment (Optional)',
-                style: TextStyle(
+                'attachment_optional'.tr(),
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   color: ColorsManager.slateGray,
                 ),
@@ -517,8 +518,8 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Add a screenshot or image to help us understand the issue',
+          Text(
+            'add_a_screenshot_or_image_to_help_us_understand_the_issue'.tr(),
             style: TextStyle(
               fontSize: 12,
               color: ColorsManager.slateGray,
@@ -537,7 +538,8 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     final isLoading = state is Loading;
 
     return PrimaryButton(
-      text: isLoading ? 'Creating Ticket...' : 'Create Support Ticket',
+      text:
+          isLoading ? 'creating_ticket...'.tr() : 'create_support_ticket'.tr(),
       onPressed: _submitTicket, //isLoading ? null : _submitTicket,
       // isLoading: isLoading,
     );
@@ -555,7 +557,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           width: 1,
         ),
       ),
-      child: const Row(
+      child: Row(
         children: [
           Icon(
             Icons.info_outline,
@@ -565,8 +567,9 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Our support team will review your ticket and respond within 24 hours.',
-              style: TextStyle(
+              'our_support_team_will_review_your_ticket_and_respond_within_24_hours'
+                  .tr(),
+              style: const TextStyle(
                 fontSize: 12,
                 color: ColorsManager.slateGray,
               ),
