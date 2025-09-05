@@ -7,6 +7,7 @@ import 'package:celebritysystems_mobile/company_features/screens/ui/screen_page.
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/features/login/logic/user cubit/user_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -93,22 +94,22 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
           unselectedItemColor: Colors.grey,
           backgroundColor: Colors.white,
           elevation: 8,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.confirmation_number),
-              label: 'Tickets',
+              label: 'tickets'.tr(),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.screen_share),
-              label: 'Screen',
+              label: 'screens'.tr(),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.assessment),
-              label: 'Reports',
+              label: 'reports'.tr(),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.business),
-              label: 'Company',
+              label: 'company'.tr(),
             ),
           ],
         ),

@@ -14,5 +14,12 @@
     "logout": "تسجيل الخروج",
     "are_you_sure_you_want_to_logout": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
     "no": "لا",
-    "yes": "نعم"
+    "yes": "نعم",
+    "failed_to_load_company_tickets": "تعذّر تحميل تذاكر الشركة",
+    "failed_to_load_screens": "تعذّر تحميل الشاشات",
+    "//commentDashboard": "لوحة التحكم",
+    "tickets": "التذاكر",
+    "screens": "الشاشات",
+    "reports": "التقارير",
+    "company": "الشركة"
 }

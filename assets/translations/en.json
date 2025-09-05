@@ -15,9 +15,14 @@
     "are_you_sure_you_want_to_logout":"Are you sure you want to logout?",
     "no":"No",
     "yes":"Yes",
-
     "failed_to_load_company_tickets":"Failed to load company tickets",
-    "failed_to_load_screens":"Failed to load screens"
+    "failed_to_load_screens":"Failed to load screens",
+
+    "//commentDashboard":"....",
+    "tickets":"Tickest",
+    "screens":"Screens",
+    "reports":"Reports",
+    "company":"Company"
 
 
 
