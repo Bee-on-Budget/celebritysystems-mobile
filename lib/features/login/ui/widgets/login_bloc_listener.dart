@@ -76,13 +76,13 @@ class LoginBlocListener extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text("access_denied".tr()),
+                  title: Text("access_denied".tr()),
                   content:
-                      const Text("you_are_not_authorized_to_access_this_app".tr()),
+                      Text("you_are_not_authorized_to_access_this_app".tr()),
                   actions: [
                     TextButton(
                       onPressed: () => context.pop(),
-                      child: const Text("ok".tr()),
+                      child: Text("ok".tr()),
                     ),
                   ],
                 ),
@@ -123,12 +123,12 @@ class LoginBlocListener extends StatelessWidget {
           color: Colors.red,
           size: 32,
         ),
-        title: const Text("login_error".tr()),
+        title: Text("login_error".tr()),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => context.pop(),
-            child: const Text("ok".tr()),
+            child: Text("ok".tr()),
           ),
         ],
       ),

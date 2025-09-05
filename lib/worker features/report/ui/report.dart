@@ -132,7 +132,7 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
                     'led_screen_service_report'.tr(),
                     style: TextStyle(

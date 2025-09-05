@@ -102,8 +102,8 @@ class _ContractScreenState extends State<ContractScreen>
                         ),
                         Container(width: 1, height: 40, color: Colors.white24),
                         Expanded(
-                          child:
-                              _buildStatItem('active'.tr(), '2', Icons.check_circle),
+                          child: _buildStatItem(
+                              'active'.tr(), '2', Icons.check_circle),
                         ),
                         Container(width: 1, height: 40, color: Colors.white24),
                         Expanded(
@@ -398,7 +398,7 @@ class _ContractScreenState extends State<ContractScreen>
                           if (contract.screenIds.isNotEmpty) ...[
                             Expanded(
                               child: _buildBadgeSection(
-                                'Screens',
+                                'screens'.tr(),
                                 contract.screenIds.map((id) => '#$id').toList(),
                                 const Color(0xFF06B6D4),
                               ),

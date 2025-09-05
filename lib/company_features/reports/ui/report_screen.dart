@@ -391,7 +391,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
                 SizedBox(width: 12),
                 Text(
-                  'Select Date Range',
+                  'select_date_range'.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -406,7 +406,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 // Start Date Picker
                 Expanded(
                   child: _buildDatePickerCard(
-                    'Start Date',
+                    'start_date'.tr(),
                     _formatDate(startDate),
                     startDate != null,
                     () => _selectStartDate(context),
@@ -416,7 +416,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 // End Date Picker
                 Expanded(
                   child: _buildDatePickerCard(
-                    'End Date',
+                    'end_date'.tr(),
                     _formatDate(endDate),
                     endDate != null,
                     () => _selectEndDate(context),
@@ -549,7 +549,7 @@ class _ReportScreenState extends State<ReportScreen> {
               ),
               SizedBox(width: 12),
               Text(
-                'Selection Summary',
+                'selection_summary'.tr(),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -562,7 +562,7 @@ class _ReportScreenState extends State<ReportScreen> {
           if (selectedCardIds.isNotEmpty) ...[
             _buildSummaryRow(
               Icons.screen_share_rounded,
-              'Selected Screens',
+              'selected_screens'.tr(),
               '${selectedCardIds.length}',
               ColorsManager.royalIndigo,
             ),
@@ -571,7 +571,7 @@ class _ReportScreenState extends State<ReportScreen> {
           if (startDate != null || endDate != null) ...[
             _buildSummaryRow(
               Icons.calendar_today_rounded,
-              'Date Range',
+              'date_range'.tr(),
               '${_formatDate(startDate)} - ${_formatDate(endDate)}',
               ColorsManager.coralBlaze,
             ),
@@ -630,7 +630,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         ),
                       ),
                       SizedBox(width: 12),
-                      Text('Generating report...'),
+                      Text('generating_report'.tr()),
                     ],
                   ),
                   backgroundColor: ColorsManager.royalIndigo,
@@ -689,7 +689,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   ),
                   SizedBox(width: 12),
                   Text(
-                    'Report Generator',
+                    'report_generator'.tr(),
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -748,11 +748,11 @@ class _ReportScreenState extends State<ReportScreen> {
                   builder: (context, state) {
                     if (state is company_state.Error) {
                       return Center(
-                        child: Text("Error"),
+                        child: Text("error".tr()),
                       );
                     } else if (state is company_state.Loading) {
                       return Center(
-                        child: Text("Loading"),
+                        child: Text("loading".tr()),
                       );
                     } else if (state is company_state.Success) {
                       final List<CompanyScreenModel> screens = state.data;
@@ -837,7 +837,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  company.name ?? 'no_name'.tr(),
+                                                  company.name ??
+                                                      'no_name'.tr(),
                                                   style: TextStyle(
                                                     fontSize: 20,
                                                     fontWeight: FontWeight.bold,
@@ -913,7 +914,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       );
                     }
                     return Center(
-                      child: Text("No State"),
+                      child: Text("no_state".tr()),
                     );
                   },
                 ),
@@ -931,7 +932,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     heroTag: 'analytics_button',
                     onPressed: _getAnalytics,
                     label: Text(
-                      _canGenerateReport() ? 'Get Analytics' : 'Select Data',
+                      _canGenerateReport()
+                          ? 'get_analytics'.tr()
+                          : 'select_data'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -959,7 +962,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     heroTag: 'generate_report_button',
                     onPressed: _generateReport,
                     label: Text(
-                      _canGenerateReport() ? 'Generate Report' : 'Select Data',
+                      _canGenerateReport()
+                          ? 'generate_report'.tr()
+                          : 'select_data'.tr(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -1013,7 +1018,7 @@ class _ReportScreenState extends State<ReportScreen> {
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
-                'Service Analytics',
+                'service_analytics'.tr(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: ColorsManager.graphiteBlack,
@@ -1036,7 +1041,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 // Total Tickets
                 _buildAnalyticsItem(
                   Icons.confirmation_number_rounded,
-                  'Total Tickets',
+                  'total_tickets'.tr(),
                   '${analyticsData.totalTickets}',
                   ColorsManager.royalIndigo,
                 ),
@@ -1045,7 +1050,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 // Average Resolution Time
                 _buildAnalyticsItem(
                   Icons.timer_rounded,
-                  'Average Resolution Time',
+                  'average_resolution_time'.tr(),
                   analyticsData.averageResolutionTimeFormatted,
                   ColorsManager.coralBlaze,
                 ),
@@ -1075,7 +1080,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            'Service Type Breakdown',
+                            'service_type_breakdown'.tr(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: ColorsManager.graphiteBlack,
@@ -1164,7 +1169,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             ),
                             SizedBox(width: 8.w),
                             Text(
-                              'Average Time by Type',
+                              'average_time_by_type'.tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: ColorsManager.graphiteBlack,
@@ -1230,7 +1235,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 minimumSize: Size(double.infinity, 44.h),
               ),
               child: Text(
-                'Close',
+                'close'.tr(),
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
               ),
             ),
@@ -1302,7 +1307,7 @@ class _ReportScreenState extends State<ReportScreen> {
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
-                'Generated Report',
+                'generated_report'.tr(),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: ColorsManager.graphiteBlack,
@@ -1324,27 +1329,27 @@ class _ReportScreenState extends State<ReportScreen> {
               children: [
                 _buildSummaryItem(
                   Icons.screen_share_rounded,
-                  'Report Type',
+                  'report_type'.tr(),
                   reportData.reportType,
                   ColorsManager.royalIndigo,
                 ),
                 SizedBox(height: 12.h),
                 _buildSummaryItem(
                   Icons.calendar_today_rounded,
-                  'Date Range',
+                  'date_range'.tr(),
                   '${reportData.startDate} - ${reportData.endDate}',
                   ColorsManager.coralBlaze,
                 ),
                 SizedBox(height: 12.h),
                 _buildSummaryItem(
                   Icons.info_outline_rounded,
-                  'Total Components',
+                  'total_components'.tr(),
                   '${reportData.totalCounts.overallTotal}',
                   ColorsManager.slateGray,
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'Component Breakdown:',
+                  'component_breakdown'.tr() + ':',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: ColorsManager.graphiteBlack,
@@ -1403,7 +1408,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 minimumSize: Size(double.infinity, 44.h),
               ),
               child: Text(
-                'Close',
+                'close'.tr(),
                 style: TextStyle(fontSize: 14.sp),
               ),
             ),
@@ -1496,3 +1501,1502 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 }
+
+// import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+// import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_cubit.dart';
+// import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_state.dart'
+//     as company_state;
+// import 'package:celebritysystems_mobile/company_features/reports/data/models/analytics_request.dart';
+// import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
+// import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
+// import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_cubit.dart';
+// import 'package:celebritysystems_mobile/company_features/reports/logic/cubit/report_state.dart';
+// import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
+// import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+// import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+// import 'package:celebritysystems_mobile/core/theming/colors.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:easy_localization/easy_localization.dart';
+
+// Add this model class for the analytics response
+// class AnalyticsResponse {
+//   final String averageResolutionTime;
+//   final String averageResolutionTimeFormatted;
+//   final Map<String, int> serviceTypeCounts;
+//   final Map<String, String> averageTimeByServiceType;
+//   final int totalTickets;
+
+//   AnalyticsResponse({
+//     required this.averageResolutionTime,
+//     required this.averageResolutionTimeFormatted,
+//     required this.serviceTypeCounts,
+//     required this.averageTimeByServiceType,
+//     required this.totalTickets,
+//   });
+
+//   factory AnalyticsResponse.fromJson(Map<String, dynamic> json) {
+//     return AnalyticsResponse(
+//       averageResolutionTime: json['averageResolutionTime'] ?? '',
+//       averageResolutionTimeFormatted:
+//           json['averageResolutionTimeFormatted'] ?? '',
+//       serviceTypeCounts: Map<String, int>.from(json['serviceTypeCounts'] ?? {}),
+//       averageTimeByServiceType:
+//           Map<String, String>.from(json['averageTimeByServiceType'] ?? {}),
+//       totalTickets: json['totalTickets'] ?? 0,
+//     );
+//   }
+// }
+
+// class ReportScreen extends StatefulWidget {
+//   const ReportScreen({
+//     super.key,
+//   });
+
+//   @override
+//   State<ReportScreen> createState() => _ReportScreenState();
+// }
+
+// class _ReportScreenState extends State<ReportScreen> {
+//   // List to store selected card IDs
+//   List<int> selectedCardIds = [];
+
+//   // Date selection variables
+//   DateTime? startDate;
+//   DateTime? endDate;
+
+//   // Report cubit
+//   late ReportCubit _reportCubit;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _reportCubit = getIt<ReportCubit>();
+//     _loadCompanyScreens();
+//   }
+
+//   Future<void> _loadCompanyScreens() async {
+//     int companyId = await SharedPrefHelper.getInt(SharedPrefKeys.companyId);
+//     if (!mounted) return; // ✅ ensures widget is still in the tree
+//     context.read<CompanyHomeCubit>().loadCompanyScreensData(companyId);
+//   }
+
+//   @override
+//   void dispose() {
+//     _reportCubit.close();
+//     super.dispose();
+//   }
+
+//   void _toggleCardSelection(int? cardId) {
+//     if (cardId == null) return;
+
+//     setState(() {
+//       if (selectedCardIds.contains(cardId)) {
+//         selectedCardIds.remove(cardId);
+//       } else {
+//         selectedCardIds.add(cardId);
+//       }
+//     });
+
+//     // Print selected IDs for debugging
+//     print('Selected Card IDs: $selectedCardIds');
+//   }
+
+//   bool _isCardSelected(int? cardId) {
+//     return cardId != null && selectedCardIds.contains(cardId);
+//   }
+
+//   // Add this method to handle analytics request
+//   void _getAnalytics() {
+//     if (!_canGenerateReport()) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Row(
+//             children: [
+//               Icon(Icons.warning_amber_rounded, color: Colors.white),
+//               SizedBox(width: 12),
+//               Expanded(
+//                 child: Text(
+//                   'please_select_screens_and_both_dates'.tr(),
+//                   style: TextStyle(fontWeight: FontWeight.w500),
+//                 ),
+//               ),
+//             ],
+//           ),
+//           backgroundColor: ColorsManager.softCrimson,
+//           behavior: SnackBarBehavior.floating,
+//           shape:
+//               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//           margin: EdgeInsets.all(16),
+//         ),
+//       );
+//       return;
+//     }
+
+//     // Show loading
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       SnackBar(
+//         content: Row(
+//           children: [
+//             SizedBox(
+//               width: 20,
+//               height: 20,
+//               child: CircularProgressIndicator(
+//                 strokeWidth: 2,
+//                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+//               ),
+//             ),
+//             SizedBox(width: 12),
+//             Text('getting_analytics'.tr()),
+//           ],
+//         ),
+//         backgroundColor: ColorsManager.royalIndigo,
+//         duration: Duration(seconds: 2),
+//       ),
+//     );
+
+//     // TODO: Replace this with actual API call
+//     // For now, simulate API call with mock data
+//     Future.delayed(Duration(seconds: 2), () {
+//       final mockResponse = {
+//         "averageResolutionTime": "PT12H4M56S",
+//         "averageResolutionTimeFormatted": "12 hours 4 minutes",
+//         "serviceTypeCounts": {
+//           "Preventive Maintenance": 1,
+//           "Emergency Service": 1,
+//           "Regular Service": 1,
+//           "Unspecified": 5
+//         },
+//         "averageTimeByServiceType": {"Unspecified": "PT12H4M56S"},
+//         "totalTickets": 8
+//       };
+
+//       final analyticsData = AnalyticsResponse.fromJson(mockResponse);
+//       _showAnalyticsDialog(analyticsData);
+//     });
+
+//     // TODO: Implement actual API call like this:
+//     /*
+//     final request = {
+//       'screenIds': selectedCardIds,
+//       'startDate': startDate!.toIso8601String().split('T')[0],
+//       'endDate': endDate!.toIso8601String().split('T')[0],
+//     };
+
+//     // Call your analytics API endpoint here
+//     // _analyticsService.getAnalytics(request);
+//     */
+//     // Create the request
+//     final request = AnalyticsRequest(
+//       screenIds: selectedCardIds,
+//       startDate:
+//           startDate!.toIso8601String().split('T')[0], // Format as YYYY-MM-DD
+//       endDate: endDate!.toIso8601String().split('T')[0], // Format as YYYY-MM-DD
+//     );
+
+//     // Call the cubit to generate report
+//     _reportCubit.getAnalytics(request);
+//   }
+
+//   Future<void> _selectStartDate(BuildContext context) async {
+//     final DateTime? picked = await showDatePicker(
+//       context: context,
+//       initialDate: startDate ?? DateTime.now(),
+//       firstDate: DateTime(2020),
+//       lastDate: DateTime(2030),
+//       helpText: 'select_start_date'.tr(),
+//       builder: (context, child) {
+//         return Theme(
+//           data: Theme.of(context).copyWith(
+//             colorScheme: ColorScheme.light(
+//               primary: ColorsManager.royalIndigo,
+//               onPrimary: Colors.white,
+//               surface: Colors.white,
+//               onSurface: ColorsManager.graphiteBlack,
+//             ),
+//           ),
+//           child: child!,
+//         );
+//       },
+//     );
+//     if (picked != null && picked != startDate) {
+//       setState(() {
+//         startDate = picked;
+//         // If end date is before start date, reset end date
+//         if (endDate != null && endDate!.isBefore(picked)) {
+//           endDate = null;
+//         }
+//       });
+//     }
+//   }
+
+//   Future<void> _selectEndDate(BuildContext context) async {
+//     final DateTime? picked = await showDatePicker(
+//       context: context,
+//       initialDate: endDate ?? startDate ?? DateTime.now(),
+//       firstDate: startDate ?? DateTime(2020),
+//       lastDate: DateTime(2030),
+//       helpText: 'select_end_date'.tr(),
+//       builder: (context, child) {
+//         return Theme(
+//           data: Theme.of(context).copyWith(
+//             colorScheme: ColorScheme.light(
+//               primary: ColorsManager.royalIndigo,
+//               onPrimary: Colors.white,
+//               surface: Colors.white,
+//               onSurface: ColorsManager.graphiteBlack,
+//             ),
+//           ),
+//           child: child!,
+//         );
+//       },
+//     );
+//     if (picked != null && picked != endDate) {
+//       setState(() {
+//         endDate = picked;
+//       });
+//     }
+//   }
+
+//   String _formatDate(DateTime? date) {
+//     if (date == null) return 'select_date'.tr();
+//     return '${date.day}/${date.month}/${date.year}';
+//   }
+
+//   bool _canGenerateReport() {
+//     return selectedCardIds.isNotEmpty && startDate != null && endDate != null;
+//   }
+
+//   void _generateReport() {
+//     if (!_canGenerateReport()) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Row(
+//             children: [
+//               Icon(Icons.warning_amber_rounded, color: Colors.white),
+//               SizedBox(width: 12),
+//               Expanded(
+//                 child: Text(
+//                   'please_select_screens_and_both_dates'.tr(),
+//                   style: TextStyle(fontWeight: FontWeight.w500),
+//                 ),
+//               ),
+//             ],
+//           ),
+//           backgroundColor: ColorsManager.softCrimson,
+//           behavior: SnackBarBehavior.floating,
+//           shape:
+//               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//           margin: EdgeInsets.all(16),
+//         ),
+//       );
+//       return;
+//     }
+
+//     // Create the request
+//     final request = GenerateReportRequest(
+//       screenIds: selectedCardIds,
+//       startDate:
+//           startDate!.toIso8601String().split('T')[0], // Format as YYYY-MM-DD
+//       endDate: endDate!.toIso8601String().split('T')[0], // Format as YYYY-MM-DD
+//       reportType: 'SUMMARY',
+//     );
+
+//     // Call the cubit to generate report
+//     _reportCubit.generateReport(request);
+//   }
+
+//   Widget _buildSummaryItem(
+//       IconData icon, String title, String value, Color color) {
+//     return Row(
+//       children: [
+//         Container(
+//           padding: EdgeInsets.all(8.r),
+//           decoration: BoxDecoration(
+//             color: color.withOpacity(0.1),
+//             borderRadius: BorderRadius.circular(8.r),
+//           ),
+//           child: Icon(icon, color: color, size: 20.sp),
+//         ),
+//         SizedBox(width: 12.w),
+//         Expanded(
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Text(
+//                 title,
+//                 style: TextStyle(
+//                   fontSize: 12.sp,
+//                   color: ColorsManager.slateGray,
+//                   fontWeight: FontWeight.w500,
+//                 ),
+//               ),
+//               Text(
+//                 value,
+//                 style: TextStyle(
+//                   fontSize: 14.sp,
+//                   color: ColorsManager.graphiteBlack,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+
+//   Widget _buildDatePickerSection() {
+//     return Container(
+//       margin: EdgeInsets.all(20),
+//       decoration: BoxDecoration(
+//         gradient: LinearGradient(
+//           begin: Alignment.topLeft,
+//           end: Alignment.bottomRight,
+//           colors: [
+//             ColorsManager.royalIndigo.withOpacity(0.05),
+//             ColorsManager.coralBlaze.withOpacity(0.05),
+//           ],
+//         ),
+//         borderRadius: BorderRadius.circular(20),
+//         border: Border.all(
+//           color: ColorsManager.paleLavenderBlue.withOpacity(0.3),
+//           width: 1,
+//         ),
+//       ),
+//       child: Container(
+//         padding: EdgeInsets.all(24),
+//         decoration: BoxDecoration(
+//           color: Colors.white.withOpacity(0.8),
+//           borderRadius: BorderRadius.circular(20),
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               children: [
+//                 Container(
+//                   padding: EdgeInsets.all(8),
+//                   decoration: BoxDecoration(
+//                     gradient: LinearGradient(
+//                       colors: [
+//                         ColorsManager.royalIndigo,
+//                         ColorsManager.coralBlaze
+//                       ],
+//                     ),
+//                     borderRadius: BorderRadius.circular(12),
+//                   ),
+//                   child: Icon(
+//                     Icons.date_range_rounded,
+//                     color: Colors.white,
+//                     size: 20,
+//                   ),
+//                 ),
+//                 SizedBox(width: 12),
+//                 Text(
+//                   'Select Date Range',
+//                   style: TextStyle(
+//                     fontSize: 18,
+//                     fontWeight: FontWeight.bold,
+//                     color: ColorsManager.graphiteBlack,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 20),
+//             Row(
+//               children: [
+//                 // Start Date Picker
+//                 Expanded(
+//                   child: _buildDatePickerCard(
+//                     'Start Date',
+//                     _formatDate(startDate),
+//                     startDate != null,
+//                     () => _selectStartDate(context),
+//                   ),
+//                 ),
+//                 SizedBox(width: 16),
+//                 // End Date Picker
+//                 Expanded(
+//                   child: _buildDatePickerCard(
+//                     'End Date',
+//                     _formatDate(endDate),
+//                     endDate != null,
+//                     () => _selectEndDate(context),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildDatePickerCard(
+//       String label, String value, bool isSelected, VoidCallback onTap) {
+//     return InkWell(
+//       onTap: onTap,
+//       borderRadius: BorderRadius.circular(16),
+//       child: Container(
+//         padding: EdgeInsets.all(16),
+//         decoration: BoxDecoration(
+//           color: isSelected
+//               ? ColorsManager.royalIndigo.withOpacity(0.1)
+//               : Colors.white,
+//           borderRadius: BorderRadius.circular(16),
+//           border: Border.all(
+//             color: isSelected
+//                 ? ColorsManager.royalIndigo
+//                 : ColorsManager.paleLavenderBlue,
+//             width: isSelected ? 2 : 1,
+//           ),
+//           boxShadow: isSelected
+//               ? [
+//                   BoxShadow(
+//                     color: ColorsManager.royalIndigo.withOpacity(0.2),
+//                     blurRadius: 8,
+//                     offset: Offset(0, 4),
+//                   ),
+//                 ]
+//               : [
+//                   BoxShadow(
+//                     color: Colors.black.withOpacity(0.05),
+//                     blurRadius: 4,
+//                     offset: Offset(0, 2),
+//                   ),
+//                 ],
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               children: [
+//                 Icon(
+//                   Icons.calendar_today_rounded,
+//                   size: 20,
+//                   color: isSelected
+//                       ? ColorsManager.royalIndigo
+//                       : ColorsManager.slateGray,
+//                 ),
+//                 SizedBox(width: 8),
+//                 Text(
+//                   label,
+//                   style: TextStyle(
+//                     fontSize: 12,
+//                     color: isSelected
+//                         ? ColorsManager.royalIndigo
+//                         : ColorsManager.slateGray,
+//                     fontWeight: FontWeight.w500,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(height: 8),
+//             Text(
+//               value,
+//               style: TextStyle(
+//                 fontSize: 16,
+//                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+//                 color: isSelected
+//                     ? ColorsManager.royalIndigo
+//                     : ColorsManager.graphiteBlack,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildSelectionSummary() {
+//     if (selectedCardIds.isEmpty && startDate == null && endDate == null) {
+//       return SizedBox.shrink();
+//     }
+
+//     return Container(
+//       width: double.infinity,
+//       margin: EdgeInsets.symmetric(horizontal: 20),
+//       padding: EdgeInsets.all(20),
+//       decoration: BoxDecoration(
+//         gradient: LinearGradient(
+//           begin: Alignment.topLeft,
+//           end: Alignment.bottomRight,
+//           colors: [
+//             ColorsManager.royalIndigo.withOpacity(0.1),
+//             ColorsManager.coralBlaze.withOpacity(0.1),
+//           ],
+//         ),
+//         borderRadius: BorderRadius.circular(16),
+//         border: Border.all(
+//           color: ColorsManager.royalIndigo.withOpacity(0.2),
+//           width: 1,
+//         ),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             children: [
+//               Container(
+//                 padding: EdgeInsets.all(8),
+//                 decoration: BoxDecoration(
+//                   color: ColorsManager.royalIndigo,
+//                   borderRadius: BorderRadius.circular(10),
+//                 ),
+//                 child: Icon(
+//                   Icons.summarize_rounded,
+//                   color: Colors.white,
+//                   size: 20,
+//                 ),
+//               ),
+//               SizedBox(width: 12),
+//               Text(
+//                 'Selection Summary',
+//                 style: TextStyle(
+//                   fontSize: 16,
+//                   fontWeight: FontWeight.bold,
+//                   color: ColorsManager.royalIndigo,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           SizedBox(height: 16),
+//           if (selectedCardIds.isNotEmpty) ...[
+//             _buildSummaryRow(
+//               Icons.screen_share_rounded,
+//               'Selected Screens',
+//               '${selectedCardIds.length}',
+//               ColorsManager.royalIndigo,
+//             ),
+//             SizedBox(height: 8),
+//           ],
+//           if (startDate != null || endDate != null) ...[
+//             _buildSummaryRow(
+//               Icons.calendar_today_rounded,
+//               'Date Range',
+//               '${_formatDate(startDate)} - ${_formatDate(endDate)}',
+//               ColorsManager.coralBlaze,
+//             ),
+//           ],
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _buildSummaryRow(
+//       IconData icon, String label, String value, Color color) {
+//     return Row(
+//       children: [
+//         Icon(icon, color: color, size: 18),
+//         SizedBox(width: 8),
+//         Text(
+//           '$label: ',
+//           style: TextStyle(
+//             fontWeight: FontWeight.w600,
+//             color: ColorsManager.graphiteBlack,
+//           ),
+//         ),
+//         Text(
+//           value,
+//           style: TextStyle(
+//             fontWeight: FontWeight.w500,
+//             color: color,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//       create: (context) => _reportCubit,
+//       child: BlocBuilder<ReportCubit, ReportState<dynamic>>(
+//         //TODO
+//         builder: (context, state) {
+//           // Handle state changes
+//           if (state is Loading<GenerateReportResponse>) {
+//             // Show loading indicator
+//             WidgetsBinding.instance.addPostFrameCallback((_) {
+//               ScaffoldMessenger.of(context).showSnackBar(
+//                 SnackBar(
+//                   content: Row(
+//                     children: [
+//                       SizedBox(
+//                         width: 20,
+//                         height: 20,
+//                         child: CircularProgressIndicator(
+//                           strokeWidth: 2,
+//                           valueColor:
+//                               AlwaysStoppedAnimation<Color>(Colors.white),
+//                         ),
+//                       ),
+//                       SizedBox(width: 12),
+//                       Text('Generating report...'),
+//                     ],
+//                   ),
+//                   backgroundColor: ColorsManager.royalIndigo,
+//                   duration: Duration(seconds: 2),
+//                 ),
+//               );
+//             });
+//           } else if (state is Success<GenerateReportResponse>) {
+//             // Show success dialog with report data
+//             WidgetsBinding.instance.addPostFrameCallback((_) {
+//               _showReportResultsDialog(state.data);
+//             });
+//           } else if (state is Error<GenerateReportResponse>) {
+//             // Show error message
+//             WidgetsBinding.instance.addPostFrameCallback((_) {
+//               ScaffoldMessenger.of(context).showSnackBar(
+//                 SnackBar(
+//                   content: Text(state.error),
+//                   backgroundColor: ColorsManager.softCrimson,
+//                 ),
+//               );
+//             });
+//           }
+
+//           return Scaffold(
+//             backgroundColor: ColorsManager.mistWhite,
+//             appBar: AppBar(
+//               automaticallyImplyLeading: false,
+//               elevation: 0,
+//               backgroundColor: Colors.transparent,
+//               flexibleSpace: Container(
+//                 decoration: BoxDecoration(
+//                   gradient: LinearGradient(
+//                     begin: Alignment.topLeft,
+//                     end: Alignment.bottomRight,
+//                     colors: [
+//                       ColorsManager.royalIndigo,
+//                       ColorsManager.coralBlaze,
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//               title: Row(
+//                 children: [
+//                   Container(
+//                     padding: EdgeInsets.all(8),
+//                     decoration: BoxDecoration(
+//                       color: Colors.white.withOpacity(0.2),
+//                       borderRadius: BorderRadius.circular(10),
+//                     ),
+//                     child: Icon(
+//                       Icons.assessment_rounded,
+//                       color: Colors.white,
+//                       size: 24,
+//                     ),
+//                   ),
+//                   SizedBox(width: 12),
+//                   Text(
+//                     'Report Generator',
+//                     style: TextStyle(
+//                       color: Colors.white,
+//                       fontWeight: FontWeight.bold,
+//                       fontSize: 20,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               actions: [
+//                 // Show count of selected items
+//                 Container(
+//                   margin: EdgeInsets.only(right: 20),
+//                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//                   decoration: BoxDecoration(
+//                     color: Colors.white.withOpacity(0.2),
+//                     borderRadius: BorderRadius.circular(20),
+//                     border: Border.all(color: Colors.white.withOpacity(0.3)),
+//                   ),
+//                   child: Row(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       Icon(
+//                         Icons.check_circle_rounded,
+//                         color: Colors.white,
+//                         size: 18,
+//                       ),
+//                       SizedBox(width: 8),
+//                       Text(
+//                         '${selectedCardIds.length}',
+//                         style: TextStyle(
+//                           color: Colors.white,
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 16,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             body: Column(
+//               children: [
+//                 // Date Picker Section
+//                 _buildDatePickerSection(),
+
+//                 // Selection Summary
+//                 _buildSelectionSummary(),
+
+//                 if (selectedCardIds.isNotEmpty ||
+//                     startDate != null ||
+//                     endDate != null)
+//                   SizedBox(height: 20),
+
+//                 // Cards list
+//                 BlocBuilder<CompanyHomeCubit, company_state.CompanyHomeState>(
+//                   builder: (context, state) {
+//                     if (state is company_state.Error) {
+//                       return Center(
+//                         child: Text("Error"),
+//                       );
+//                     } else if (state is company_state.Loading) {
+//                       return Center(
+//                         child: Text("Loading"),
+//                       );
+//                     } else if (state is company_state.Success) {
+//                       final List<CompanyScreenModel> screens = state.data;
+//                       return Expanded(
+//                         child: ListView.builder(
+//                           padding: EdgeInsets.symmetric(horizontal: 20),
+//                           itemCount: screens.length,
+//                           itemBuilder: (context, index) {
+//                             final company = screens[index];
+//                             final isSelected = _isCardSelected(company.id);
+
+//                             return Container(
+//                               margin: EdgeInsets.only(bottom: 16),
+//                               child: Card(
+//                                 elevation: isSelected ? 12 : 4,
+//                                 shadowColor: isSelected
+//                                     ? ColorsManager.royalIndigo.withOpacity(0.3)
+//                                     : Colors.black.withOpacity(0.1),
+//                                 shape: RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.circular(20),
+//                                 ),
+//                                 child: InkWell(
+//                                   onTap: () => _toggleCardSelection(company.id),
+//                                   borderRadius: BorderRadius.circular(20),
+//                                   child: Container(
+//                                     decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(20),
+//                                       gradient: isSelected
+//                                           ? LinearGradient(
+//                                               begin: Alignment.topLeft,
+//                                               end: Alignment.bottomRight,
+//                                               colors: [
+//                                                 ColorsManager.royalIndigo
+//                                                     .withOpacity(0.1),
+//                                                 ColorsManager.coralBlaze
+//                                                     .withOpacity(0.05),
+//                                               ],
+//                                             )
+//                                           : null,
+//                                       border: isSelected
+//                                           ? Border.all(
+//                                               color: ColorsManager.royalIndigo,
+//                                               width: 2,
+//                                             )
+//                                           : null,
+//                                     ),
+//                                     child: Padding(
+//                                       padding: EdgeInsets.all(20),
+//                                       child: Row(
+//                                         children: [
+//                                           // Selection indicator
+//                                           Container(
+//                                             width: 28,
+//                                             height: 28,
+//                                             decoration: BoxDecoration(
+//                                               shape: BoxShape.circle,
+//                                               border: Border.all(
+//                                                 color: isSelected
+//                                                     ? ColorsManager.royalIndigo
+//                                                     : ColorsManager
+//                                                         .paleLavenderBlue,
+//                                                 width: 2,
+//                                               ),
+//                                               color: isSelected
+//                                                   ? ColorsManager.royalIndigo
+//                                                   : Colors.transparent,
+//                                             ),
+//                                             child: isSelected
+//                                                 ? Icon(
+//                                                     Icons.check_rounded,
+//                                                     color: Colors.white,
+//                                                     size: 18,
+//                                                   )
+//                                                 : null,
+//                                           ),
+//                                           SizedBox(width: 20),
+
+//                                           // Card content
+//                                           Expanded(
+//                                             child: Column(
+//                                               crossAxisAlignment:
+//                                                   CrossAxisAlignment.start,
+//                                               children: [
+//                                                 Text(
+//                                                   company.name ?? 'no_name'.tr(),
+//                                                   style: TextStyle(
+//                                                     fontSize: 20,
+//                                                     fontWeight: FontWeight.bold,
+//                                                     color: isSelected
+//                                                         ? ColorsManager
+//                                                             .royalIndigo
+//                                                         : ColorsManager
+//                                                             .graphiteBlack,
+//                                                   ),
+//                                                 ),
+//                                                 SizedBox(height: 12),
+//                                                 if (company.screenType != null)
+//                                                   _buildInfoRow(
+//                                                     Icons.category_rounded,
+//                                                     company.screenType!,
+//                                                     isSelected,
+//                                                   ),
+//                                                 if (company.location != null)
+//                                                   _buildInfoRow(
+//                                                     Icons.location_on_rounded,
+//                                                     company.location!,
+//                                                     isSelected,
+//                                                   ),
+//                                                 if (company.solutionType !=
+//                                                     null)
+//                                                   _buildInfoRow(
+//                                                     Icons.settings_rounded,
+//                                                     company.solutionType!,
+//                                                     isSelected,
+//                                                   ),
+//                                                 if (company.id != null)
+//                                                   Padding(
+//                                                     padding:
+//                                                         EdgeInsets.only(top: 8),
+//                                                     child: Container(
+//                                                       padding:
+//                                                           EdgeInsets.symmetric(
+//                                                         horizontal: 12,
+//                                                         vertical: 6,
+//                                                       ),
+//                                                       decoration: BoxDecoration(
+//                                                         color: ColorsManager
+//                                                             .paleLavenderBlue
+//                                                             .withOpacity(0.5),
+//                                                         borderRadius:
+//                                                             BorderRadius
+//                                                                 .circular(12),
+//                                                       ),
+//                                                       child: Text(
+//                                                         'ID: ${company.id}',
+//                                                         style: TextStyle(
+//                                                           fontSize: 12,
+//                                                           color: ColorsManager
+//                                                               .slateGray,
+//                                                           fontWeight:
+//                                                               FontWeight.w500,
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                   ),
+//                                               ],
+//                                             ),
+//                                           ),
+//                                         ],
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             );
+//                           },
+//                         ),
+//                       );
+//                     }
+//                     return Center(
+//                       child: Text("No State"),
+//                     );
+//                   },
+//                 ),
+//               ],
+//             ),
+
+//             // Multiple floating action buttons
+//             floatingActionButton: Column(
+//               mainAxisAlignment: MainAxisAlignment.end,
+//               children: [
+//                 // Analytics Button
+//                 Container(
+//                   margin: EdgeInsets.only(bottom: 16),
+//                   child: FloatingActionButton.extended(
+//                     heroTag: 'analytics_button',
+//                     onPressed: _getAnalytics,
+//                     label: Text(
+//                       _canGenerateReport() ? 'Get Analytics' : 'Select Data',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                     icon: Icon(
+//                       _canGenerateReport()
+//                           ? Icons.analytics_rounded
+//                           : Icons.warning_rounded,
+//                       size: 24,
+//                     ),
+//                     backgroundColor: _canGenerateReport()
+//                         ? ColorsManager.coralBlaze
+//                         : ColorsManager.slateGray,
+//                     elevation: 8,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(16),
+//                     ),
+//                   ),
+//                 ),
+//                 // Generate Report Button
+//                 Container(
+//                   margin: EdgeInsets.only(bottom: 20),
+//                   child: FloatingActionButton.extended(
+//                     heroTag: 'generate_report_button',
+//                     onPressed: _generateReport,
+//                     label: Text(
+//                       _canGenerateReport() ? 'Generate Report' : 'Select Data',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                     icon: Icon(
+//                       _canGenerateReport()
+//                           ? Icons.rocket_launch_rounded
+//                           : Icons.warning_rounded,
+//                       size: 24,
+//                     ),
+//                     backgroundColor: _canGenerateReport()
+//                         ? ColorsManager.royalIndigo
+//                         : ColorsManager.slateGray,
+//                     elevation: 8,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(16),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+
+//   // Add the analytics dialog method
+//   void _showAnalyticsDialog(AnalyticsResponse analyticsData) {
+//     showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(20.r),
+//         ),
+//         title: Row(
+//           children: [
+//             Container(
+//               padding: EdgeInsets.all(8.r),
+//               decoration: BoxDecoration(
+//                 color: ColorsManager.coralBlaze.withOpacity(0.1),
+//                 borderRadius: BorderRadius.circular(8.r),
+//               ),
+//               child: Icon(
+//                 Icons.analytics_rounded,
+//                 color: ColorsManager.coralBlaze,
+//                 size: 24.sp,
+//               ),
+//             ),
+//             SizedBox(width: 12.w),
+//             Expanded(
+//               child: Text(
+//                 'Service Analytics',
+//                 style: TextStyle(
+//                   fontWeight: FontWeight.bold,
+//                   color: ColorsManager.graphiteBlack,
+//                   fontSize: 18.sp,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//         content: Container(
+//           width: double.maxFinite,
+//           constraints: BoxConstraints(
+//             maxHeight: 0.7.sh, // Max 70% of screen height
+//           ),
+//           child: SingleChildScrollView(
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Total Tickets
+//                 _buildAnalyticsItem(
+//                   Icons.confirmation_number_rounded,
+//                   'Total Tickets',
+//                   '${analyticsData.totalTickets}',
+//                   ColorsManager.royalIndigo,
+//                 ),
+//                 SizedBox(height: 16.h),
+
+//                 // Average Resolution Time
+//                 _buildAnalyticsItem(
+//                   Icons.timer_rounded,
+//                   'Average Resolution Time',
+//                   analyticsData.averageResolutionTimeFormatted,
+//                   ColorsManager.coralBlaze,
+//                 ),
+//                 SizedBox(height: 16.h),
+
+//                 // Service Type Counts Section
+//                 Container(
+//                   width: double.infinity,
+//                   padding: EdgeInsets.all(16.w),
+//                   decoration: BoxDecoration(
+//                     color: ColorsManager.paleLavenderBlue.withOpacity(0.1),
+//                     borderRadius: BorderRadius.circular(12.r),
+//                     border: Border.all(
+//                       color: ColorsManager.paleLavenderBlue.withOpacity(0.3),
+//                       width: 1,
+//                     ),
+//                   ),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Row(
+//                         children: [
+//                           Icon(
+//                             Icons.category_rounded,
+//                             color: ColorsManager.royalIndigo,
+//                             size: 20.sp,
+//                           ),
+//                           SizedBox(width: 8.w),
+//                           Text(
+//                             'Service Type Breakdown',
+//                             style: TextStyle(
+//                               fontWeight: FontWeight.bold,
+//                               color: ColorsManager.graphiteBlack,
+//                               fontSize: 16.sp,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                       SizedBox(height: 12.h),
+//                       ...analyticsData.serviceTypeCounts.entries
+//                           .map(
+//                             (entry) => Padding(
+//                               padding: EdgeInsets.only(bottom: 8.h),
+//                               child: Row(
+//                                 children: [
+//                                   Container(
+//                                     width: 8.w,
+//                                     height: 8.h,
+//                                     decoration: BoxDecoration(
+//                                       color: _getServiceTypeColor(entry.key),
+//                                       shape: BoxShape.circle,
+//                                     ),
+//                                   ),
+//                                   SizedBox(width: 12.w),
+//                                   Expanded(
+//                                     child: Text(
+//                                       entry.key,
+//                                       style: TextStyle(
+//                                         color: ColorsManager.graphiteBlack,
+//                                         fontSize: 14.sp,
+//                                         fontWeight: FontWeight.w500,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   Container(
+//                                     padding: EdgeInsets.symmetric(
+//                                       horizontal: 8.w,
+//                                       vertical: 4.h,
+//                                     ),
+//                                     decoration: BoxDecoration(
+//                                       color: _getServiceTypeColor(entry.key)
+//                                           .withOpacity(0.1),
+//                                       borderRadius: BorderRadius.circular(8.r),
+//                                     ),
+//                                     child: Text(
+//                                       '${entry.value}',
+//                                       style: TextStyle(
+//                                         color: _getServiceTypeColor(entry.key),
+//                                         fontWeight: FontWeight.bold,
+//                                         fontSize: 14.sp,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           )
+//                           .toList(),
+//                     ],
+//                   ),
+//                 ),
+
+//                 // Average Time by Service Type (if available)
+//                 if (analyticsData.averageTimeByServiceType.isNotEmpty) ...[
+//                   SizedBox(height: 16.h),
+//                   Container(
+//                     width: double.infinity,
+//                     padding: EdgeInsets.all(16.w),
+//                     decoration: BoxDecoration(
+//                       color: ColorsManager.coralBlaze.withOpacity(0.05),
+//                       borderRadius: BorderRadius.circular(12.r),
+//                       border: Border.all(
+//                         color: ColorsManager.coralBlaze.withOpacity(0.2),
+//                         width: 1,
+//                       ),
+//                     ),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Row(
+//                           children: [
+//                             Icon(
+//                               Icons.schedule_rounded,
+//                               color: ColorsManager.coralBlaze,
+//                               size: 20.sp,
+//                             ),
+//                             SizedBox(width: 8.w),
+//                             Text(
+//                               'Average Time by Type',
+//                               style: TextStyle(
+//                                 fontWeight: FontWeight.bold,
+//                                 color: ColorsManager.graphiteBlack,
+//                                 fontSize: 16.sp,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                         SizedBox(height: 12.h),
+//                         ...analyticsData.averageTimeByServiceType.entries
+//                             .map(
+//                               (entry) => Padding(
+//                                 padding: EdgeInsets.only(bottom: 8.h),
+//                                 child: Row(
+//                                   mainAxisAlignment:
+//                                       MainAxisAlignment.spaceBetween,
+//                                   children: [
+//                                     Expanded(
+//                                       child: Text(
+//                                         entry.key,
+//                                         style: TextStyle(
+//                                           color: ColorsManager.graphiteBlack,
+//                                           fontSize: 14.sp,
+//                                           fontWeight: FontWeight.w500,
+//                                         ),
+//                                       ),
+//                                     ),
+//                                     Text(
+//                                       _formatDuration(entry.value),
+//                                       style: TextStyle(
+//                                         color: ColorsManager.coralBlaze,
+//                                         fontWeight: FontWeight.bold,
+//                                         fontSize: 14.sp,
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             )
+//                             .toList(),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ],
+//             ),
+//           ),
+//         ),
+//         actions: [
+//           Container(
+//             width: double.infinity,
+//             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+//             child: ElevatedButton(
+//               onPressed: () {
+//                 Navigator.pop(context);
+//               },
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: ColorsManager.coralBlaze,
+//                 foregroundColor: Colors.white,
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12.r),
+//                 ),
+//                 minimumSize: Size(double.infinity, 44.h),
+//               ),
+//               child: Text(
+//                 'Close',
+//                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   // Helper method to get colors for different service types
+//   Color _getServiceTypeColor(String serviceType) {
+//     switch (serviceType.toLowerCase()) {
+//       case 'preventive maintenance':
+//         return Colors.green;
+//       case 'emergency service':
+//         return Colors.red;
+//       case 'regular service':
+//         return Colors.blue;
+//       case 'unspecified':
+//       default:
+//         return ColorsManager.slateGray;
+//     }
+//   }
+
+//   // Helper method to format duration strings
+//   String _formatDuration(String duration) {
+//     if (duration.startsWith('PT')) {
+//       // Parse ISO 8601 duration format
+//       final regex = RegExp(r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?');
+//       final match = regex.firstMatch(duration);
+
+//       if (match != null) {
+//         final hours = match.group(1) != null ? int.parse(match.group(1)!) : 0;
+//         final minutes = match.group(2) != null ? int.parse(match.group(2)!) : 0;
+
+//         if (hours > 0 && minutes > 0) {
+//           return '${hours}h ${minutes}m';
+//         } else if (hours > 0) {
+//           return '${hours}h';
+//         } else if (minutes > 0) {
+//           return '${minutes}m';
+//         }
+//       }
+//     }
+//     return duration;
+//   }
+
+//   void _showReportResultsDialog(GenerateReportResponse reportData) {
+//     showDialog(
+//       context: context,
+//       builder: (context) => AlertDialog(
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(20.r),
+//         ),
+//         title: Row(
+//           children: [
+//             Container(
+//               padding: EdgeInsets.all(8.r),
+//               decoration: BoxDecoration(
+//                 color: ColorsManager.royalIndigo.withOpacity(0.1),
+//                 borderRadius: BorderRadius.circular(8.r),
+//               ),
+//               child: Icon(
+//                 Icons.assessment_rounded,
+//                 color: ColorsManager.royalIndigo,
+//                 size: 24.sp,
+//               ),
+//             ),
+//             SizedBox(width: 12.w),
+//             Expanded(
+//               child: Text(
+//                 'Generated Report',
+//                 style: TextStyle(
+//                   fontWeight: FontWeight.bold,
+//                   color: ColorsManager.graphiteBlack,
+//                   fontSize: 16.sp,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//         content: Container(
+//           width: double.maxFinite,
+//           constraints: BoxConstraints(
+//             maxHeight: 0.6.sh, // Max 60% of screen height
+//           ),
+//           child: SingleChildScrollView(
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 _buildSummaryItem(
+//                   Icons.screen_share_rounded,
+//                   'Report Type',
+//                   reportData.reportType,
+//                   ColorsManager.royalIndigo,
+//                 ),
+//                 SizedBox(height: 12.h),
+//                 _buildSummaryItem(
+//                   Icons.calendar_today_rounded,
+//                   'Date Range',
+//                   '${reportData.startDate} - ${reportData.endDate}',
+//                   ColorsManager.coralBlaze,
+//                 ),
+//                 SizedBox(height: 12.h),
+//                 _buildSummaryItem(
+//                   Icons.info_outline_rounded,
+//                   'Total Components',
+//                   '${reportData.totalCounts.overallTotal}',
+//                   ColorsManager.slateGray,
+//                 ),
+//                 SizedBox(height: 16.h),
+//                 Text(
+//                   'Component Breakdown:',
+//                   style: TextStyle(
+//                     fontWeight: FontWeight.bold,
+//                     color: ColorsManager.graphiteBlack,
+//                     fontSize: 14.sp,
+//                   ),
+//                 ),
+//                 SizedBox(height: 8.h),
+//                 ...reportData.totalCounts.componentTotals.entries
+//                     .map(
+//                       (entry) => Padding(
+//                         padding: EdgeInsets.only(bottom: 4.h),
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             Expanded(
+//                               child: Text(
+//                                 entry.key,
+//                                 style: TextStyle(
+//                                   color: ColorsManager.slateGray,
+//                                   fontSize: 14.sp,
+//                                 ),
+//                               ),
+//                             ),
+//                             Text(
+//                               '${entry.value}',
+//                               style: TextStyle(
+//                                 color: ColorsManager.royalIndigo,
+//                                 fontWeight: FontWeight.bold,
+//                                 fontSize: 14.sp,
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     )
+//                     .toList(),
+//               ],
+//             ),
+//           ),
+//         ),
+//         actions: [
+//           Container(
+//             width: double.infinity,
+//             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+//             child: ElevatedButton(
+//               onPressed: () {
+//                 Navigator.pop(context);
+//                 _reportCubit.resetState();
+//               },
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: ColorsManager.royalIndigo,
+//                 foregroundColor: Colors.white,
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12.r),
+//                 ),
+//                 minimumSize: Size(double.infinity, 44.h),
+//               ),
+//               child: Text(
+//                 'Close',
+//                 style: TextStyle(fontSize: 14.sp),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   // Helper method for analytics items
+//   Widget _buildAnalyticsItem(
+//       IconData icon, String title, String value, Color color) {
+//     return Container(
+//       width: double.infinity,
+//       padding: EdgeInsets.all(16.w),
+//       decoration: BoxDecoration(
+//         color: color.withOpacity(0.05),
+//         borderRadius: BorderRadius.circular(12.r),
+//         border: Border.all(
+//           color: color.withOpacity(0.2),
+//           width: 1,
+//         ),
+//       ),
+//       child: Row(
+//         children: [
+//           Container(
+//             padding: EdgeInsets.all(12.w),
+//             decoration: BoxDecoration(
+//               color: color.withOpacity(0.1),
+//               borderRadius: BorderRadius.circular(10.r),
+//             ),
+//             child: Icon(icon, color: color, size: 24.sp),
+//           ),
+//           SizedBox(width: 16.w),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   title,
+//                   style: TextStyle(
+//                     fontSize: 14.sp,
+//                     color: ColorsManager.slateGray,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//                 SizedBox(height: 4.h),
+//                 Text(
+//                   value,
+//                   style: TextStyle(
+//                     fontSize: 20.sp,
+//                     color: color,
+//                     fontWeight: FontWeight.bold,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _buildInfoRow(IconData icon, String text, bool isSelected) {
+//     return Padding(
+//       padding: EdgeInsets.only(bottom: 8),
+//       child: Row(
+//         children: [
+//           Icon(
+//             icon,
+//             size: 18,
+//             color: isSelected
+//                 ? ColorsManager.royalIndigo.withOpacity(0.7)
+//                 : ColorsManager.slateGray,
+//           ),
+//           SizedBox(width: 8),
+//           Expanded(
+//             child: Text(
+//               text,
+//               style: TextStyle(
+//                 color: isSelected
+//                     ? ColorsManager.royalIndigo.withOpacity(0.8)
+//                     : ColorsManager.slateGray,
+//                 fontWeight: FontWeight.w500,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

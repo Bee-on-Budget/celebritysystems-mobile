@@ -359,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     overlayColor: WidgetStateProperty.all(
                                       Colors.white.withValues(alpha: 0.1),
                                     ),
-                                    tabs: const [
+                                    tabs: [
                                       Tab(
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
