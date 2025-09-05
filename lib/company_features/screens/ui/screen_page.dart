@@ -3,12 +3,14 @@ import 'package:celebritysystems_mobile/company_features/home/logic/company_home
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
+import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
+import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../home/logic/company_home_cubit/company_home_cubit.dart';
-import 'screen_details.dart';
 
 class ScreenPage extends StatefulWidget {
   final int companyId;
@@ -43,13 +45,9 @@ class _ScreenPageState extends State<ScreenPage> {
     return BlocBuilder<CompanyHomeCubit, CompanyHomeState>(
       builder: (context, state) {
         if (state is Error) {
-          return Center(
-            child: Text("Error"),
-          );
+          return customErrorWidget(state);
         } else if (state is Loading) {
-          return Center(
-            child: Text("Loading"),
-          );
+          return customLoadingWidget("loading".tr());
         } else if (state is Success) {
           final List<CompanyScreenModel> screens = state.data;
           return Scaffold(
@@ -86,7 +84,7 @@ class _ScreenPageState extends State<ScreenPage> {
                   ),
                   SizedBox(width: 12),
                   Text(
-                    'Screen Page',
+                    'screen_page'.tr(),
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -181,7 +179,8 @@ class _ScreenPageState extends State<ScreenPage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    company.name ?? 'No Name',
+                                                    company.name ??
+                                                        'no_name'.tr(),
                                                     style: TextStyle(
                                                       fontSize: 20,
                                                       fontWeight:
