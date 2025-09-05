@@ -6,6 +6,9 @@ import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
+import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
+import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,72 +33,12 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileCubit, ProfileState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+    return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         if (state is Loading) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    ColorsManager.coralBlaze,
-                  ),
-                  strokeWidth: 3.w,
-                ),
-                SizedBox(height: 16.h),
-                Text(
-                  'Loading Profile...',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          );
+          return customLoadingWidget("loading_profile".tr());
         } else if (state is Error) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  ColorsManager.coralBlaze,
-                  Colors.red.withValues(alpha: 0.8),
-                ],
-              ),
-            ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64.r,
-                    color: Colors.white,
-                  ),
-                  SizedBox(height: 16.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: Text(
-                      state.error,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return customErrorWidget(state);
         } else if (state is Success<CompanyModel>) {
           final company = state.data;
 
@@ -108,7 +51,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                     context.pushNamed(Routes.contractScreen);
                   },
                   label: Text(
-                    'Explore Contracts',
+                    'explore_contracts'.tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -159,7 +102,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                     ),
                     SizedBox(width: 12.w),
                     Text(
-                      'Company Details',
+                      'company_details'.tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -246,7 +189,9 @@ class CompanyCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: Text(
-                              company.activated ? 'Active' : 'Inactive',
+                              company.activated
+                                  ? 'active'.tr()
+                                  : 'inactive'.tr(),
                               style: TextStyle(
                                 color: company.activated
                                     ? Colors.green[600]
@@ -260,7 +205,7 @@ class CompanyCard extends StatelessWidget {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        '${company.userList.length} users',
+                        '${company.userList.length} ${'users'.tr()}',
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 14.sp,
@@ -277,12 +222,12 @@ class CompanyCard extends StatelessWidget {
               padding: EdgeInsets.only(left: 8.w),
               child: Column(
                 children: [
-                  _buildDetailRow(Icons.phone, 'Phone', company.phone),
+                  _buildDetailRow(Icons.phone, 'phone'.tr(), company.phone),
                   SizedBox(height: 16.h),
-                  _buildDetailRow(Icons.email, 'Email', company.email),
+                  _buildDetailRow(Icons.email, 'email'.tr(), company.email),
                   SizedBox(height: 16.h),
                   _buildDetailRow(
-                      Icons.location_on, 'Location', company.location),
+                      Icons.location_on, 'location'.tr(), company.location),
                   SizedBox(height: 24.h),
                   // Users Section Header
                   Row(
@@ -291,7 +236,7 @@ class CompanyCard extends StatelessWidget {
                           color: ColorsManager.royalIndigo, size: 20.r),
                       SizedBox(width: 8.w),
                       Text(
-                        'Users (${company.userList.length})',
+                        '${'users'.tr()}(${company.userList.length})',
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
@@ -327,7 +272,7 @@ class CompanyCard extends StatelessWidget {
                           ),
                           SizedBox(height: 12.h),
                           Text(
-                            'No users found',
+                            'no_users_found'.tr(),
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colors.grey[600],
@@ -456,9 +401,9 @@ class UserTile extends StatelessWidget {
           SizedBox(width: 8.w),
           Column(
             children: [
-              _buildPermissionBadge('Read', user.canRead),
+              _buildPermissionBadge('read'.tr(), user.canRead),
               SizedBox(height: 6.h),
-              _buildPermissionBadge('Edit', user.canEdit),
+              _buildPermissionBadge('edit'.tr(), user.canEdit),
             ],
           ),
         ],

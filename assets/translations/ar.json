@@ -47,5 +47,19 @@
     "attachment_optional": "مرفق (اختياري)",
     "add_a_screenshot_or_image_to_help_us_understand_the_issue": "أضف لقطة شاشة أو صورة لمساعدتنا على فهم المشكلة",
     "creating_ticket...": "...جاري إنشاء التذكرة",
-    "our_support_team_will_review_your_ticket_and_respond_within_24_hours": ".سيقوم فريق الدعم بمراجعة تذكرتك والرد خلال 24 ساعة"
+    "our_support_team_will_review_your_ticket_and_respond_within_24_hours": ".سيقوم فريق الدعم بمراجعة تذكرتك والرد خلال 24 ساعة",
+    "service_type": "نوع الخدمة",
+    "//commentProfileCompany": "ملف الشركة",
+    "failed_to_load_company_details": "فشل في تحميل تفاصيل الشركة",
+    "loading_profile": "جاري تحميل الملف...",
+    "explore_contracts": "استكشاف العقود",
+    "company_details": "تفاصيل الشركة",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "users": "المستخدمون",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "no_users_found": "لم يتم العثور على مستخدمين",
+    "read": "عرض",
+    "edit": "تعديل"
 }
