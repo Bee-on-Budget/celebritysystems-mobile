@@ -86,33 +86,36 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
       child: Scaffold(
         backgroundColor: ColorsManager.mistWhite,
         body: _screens[_currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          onTap: _onTabTapped,
-          selectedItemColor: ColorsManager.coralBlaze,
-          unselectedItemColor: Colors.grey,
-          backgroundColor: Colors.white,
-          elevation: 8,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.confirmation_number),
-              label: 'tickets'.tr(),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.screen_share),
-              label: 'screens'.tr(),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.assessment),
-              label: 'reports'.tr(),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              label: 'company'.tr(),
-            ),
-          ],
-        ),
+        bottomNavigationBar: Builder(builder: (context) {
+          final locale = context.locale; // force dependency on locale
+          return BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            onTap: _onTabTapped,
+            selectedItemColor: ColorsManager.coralBlaze,
+            unselectedItemColor: Colors.grey,
+            backgroundColor: Colors.white,
+            elevation: 8,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.confirmation_number),
+                label: 'tickets'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.screen_share),
+                label: 'screens'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.assessment),
+                label: 'reports'.tr(),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.business),
+                label: 'company'.tr(),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
