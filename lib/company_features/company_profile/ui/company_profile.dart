@@ -12,6 +12,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CompanyDetailsScreen extends StatefulWidget {
   @override
@@ -226,7 +227,7 @@ class CompanyCard extends StatelessWidget {
                   SizedBox(height: 16.h),
                   _buildDetailRow(Icons.email, 'email'.tr(), company.email),
                   SizedBox(height: 16.h),
-                  _buildDetailRow(
+                  _buildDetailUrlRow(
                       Icons.location_on, 'location'.tr(), company.location),
                   SizedBox(height: 24.h),
                   // Users Section Header
@@ -320,6 +321,49 @@ class CompanyCard extends StatelessWidget {
             ),
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailUrlRow(IconData icon, String label, String url) {
+    final uri = Uri.tryParse(url);
+    final isValid =
+        uri != null && (uri.isScheme("http") || uri.isScheme("https"));
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: ColorsManager.royalIndigo, size: 18.r),
+        SizedBox(width: 12.w),
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.grey[700],
+            fontSize: 14.sp,
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () async {
+              if (isValid && await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              } else {
+                debugPrint("Invalid or unlaunchable URL: $url");
+              }
+            },
+            child: Text(
+              'View the location Maps',
+              style: TextStyle(
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+                fontSize: 14.sp,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
           ),
         ),
       ],

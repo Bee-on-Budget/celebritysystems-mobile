@@ -11,6 +11,7 @@ import 'package:celebritysystems_mobile/company_features/create_company_ticket/u
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/routing/routes.dart';
 import '../../../core/widgets/custom_text_field.dart';
@@ -385,7 +386,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
 
     if (screen.location != null) {
       details.add(const SizedBox(height: 12));
-      details.add(_buildDetailRow(
+      details.add(_buildDetailClickableLinkRow(
           'location'.tr(), screen.location!, Icons.location_on));
     }
 
@@ -433,6 +434,56 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                   color: ColorsManager.slateGray,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailClickableLinkRow(String label, String url, IconData icon) {
+    final uri = Uri.tryParse(url);
+    final isValid =
+        uri != null && (uri.isScheme("http") || uri.isScheme("https"));
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: ColorsManager.coralBlaze.withOpacity(0.7),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: ColorsManager.slateGray,
+                ),
+              ),
+              const SizedBox(height: 2),
+              GestureDetector(
+                onTap: () async {
+                  if (isValid && await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    debugPrint("Invalid or unlaunchable URL: $url");
+                  }
+                },
+                child: Text(
+                  'View the location on Google Maps',
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ),
             ],
