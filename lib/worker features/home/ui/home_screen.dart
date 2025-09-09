@@ -1,5 +1,7 @@
 import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+import 'package:celebritysystems_mobile/core/language_cubit/language_cubit.dart';
+import 'package:celebritysystems_mobile/core/language_cubit/language_state.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
@@ -235,6 +237,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                         ),
                         actions: [
+                          BlocBuilder<LanguageCubit, LanguageState>(
+                            builder: (context, state) {
+                              return IconButton(
+                                icon: Icon(
+                                  Icons.translate,
+                                ),
+                                onPressed: () {
+                                  context
+                                      .read<LanguageCubit>()
+                                      .toggleLanguage(context);
+                                  // context.read<LanguageCubit>().changeLanguage(context, "an");
+                                  setState(() {});
+                                },
+                                tooltip: 'Switch to English',
+                              );
+                            },
+                          ),
                           IconButton(
                             icon: const Icon(
                               Icons.logout,
