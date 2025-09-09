@@ -181,5 +181,10 @@
     "generated_report": "Generated Report",
     "report_type": "Report Type",
     "total_components": "Total Components",
-    "component_breakdown": "Component Breakdown"
+    "component_breakdown": "Component Breakdown",
+    "details":"Details",
+    "status":"Status",
+    "ex_there_was_a_screen_offline":"Ex: There was a screen offline.",
+    "ex_restart_the_router_and_now_is_showing_online":"Ex: Restart the router and now is showing online.",
+    "contract":"Contract"
 }

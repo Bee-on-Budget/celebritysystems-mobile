@@ -229,7 +229,7 @@ class _ContractScreenState extends State<ContractScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Contract #${contract.id}',
+                            '${"contract".tr()} #${contract.id}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -518,88 +518,3 @@ class _ContractScreenState extends State<ContractScreen>
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 }
-
-
-// class Contract {
-//   final int id;
-//   final String info;
-//   final DateTime startContractAt;
-//   final DateTime expiredAt;
-//   final int companyId;
-//   final String supplyType;
-//   final String operatorType;
-//   final String accountName;
-//   final String durationType;
-//   final double contractValue;
-//   final DateTime? createdAt;
-//   final DateTime? updatedAt;
-//   final List<int> screenIds;
-//   final List<AccountPermission> accountPermissions;
-
-//   Contract({
-//     required this.id,
-//     required this.info,
-//     required this.startContractAt,
-//     required this.expiredAt,
-//     required this.companyId,
-//     required this.supplyType,
-//     required this.operatorType,
-//     required this.accountName,
-//     required this.durationType,
-//     required this.contractValue,
-//     this.createdAt,
-//     this.updatedAt,
-//     required this.screenIds,
-//     required this.accountPermissions,
-//   });
-// }
-
-// class AccountPermission {
-//   final String name;
-//   final bool canEdit;
-//   final bool canRead;
-
-//   AccountPermission({
-//     required this.name,
-//     required this.canEdit,
-//     required this.canRead,
-//   });
-// }
-
-  // Static fake data
-  // final List<Contract> contracts = [
-  //   Contract(
-  //     id: 1,
-  //     info: "qwe",
-  //     startContractAt: DateTime.parse("2025-07-01T15:53:13"),
-  //     expiredAt: DateTime.parse("2025-07-31T15:53:13"),
-  //     companyId: 1,
-  //     supplyType: "CELEBRITY_SYSTEMS",
-  //     operatorType: "OWNER",
-  //     accountName: "qwe",
-  //     durationType: "MONTHLY",
-  //     contractValue: 22,
-  //     screenIds: [],
-  //     accountPermissions: [],
-  //   ),
-  //   Contract(
-  //     id: 2,
-  //     info: "string",
-  //     startContractAt: DateTime.parse("2025-08-18T01:16:56"),
-  //     expiredAt: DateTime.parse("2026-08-18T01:16:56"),
-  //     companyId: 1,
-  //     supplyType: "CELEBRITY_SYSTEMS",
-  //     operatorType: "OWNER",
-  //     accountName: "string",
-  //     durationType: "WEEKLY",
-  //     contractValue: 0,
-  //     createdAt: DateTime.parse("2025-08-18T04:30:39"),
-  //     updatedAt: DateTime.parse("2025-08-18T04:30:39"),
-  //     screenIds: [
-  //       15,
-  //     ],
-  //     accountPermissions: [
-  //       AccountPermission(name: "string", canEdit: true, canRead: true),
-  //     ],
-  //   ),
-  // ];

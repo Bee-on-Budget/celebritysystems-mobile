@@ -296,7 +296,7 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.yellow[50],
-                      hintText: 'Ex: There was a screen offline.',
+                      hintText: 'ex_there_was_a_screen_offline'.tr(),
                       contentPadding: const EdgeInsets.only(
                           left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: const OutlineInputBorder(
@@ -356,7 +356,8 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                       filled: true,
                       fillColor: Colors.green[50],
                       hintText:
-                          'Ex: Restart the router and now is showing online.',
+                          'ex_restart_the_router_and_now_is_showing_online'
+                              .tr(),
                       contentPadding: const EdgeInsets.only(
                           left: 14.0, bottom: 8.0, top: 8.0),
                       focusedBorder: const OutlineInputBorder(
