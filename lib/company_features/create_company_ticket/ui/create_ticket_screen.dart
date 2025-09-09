@@ -272,7 +272,14 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
         items: widget.screensList.map((CompanyScreenModel screen) {
           return DropdownMenuItem<CompanyScreenModel>(
             value: screen,
-            child: Text(_getScreenDisplayName(screen)),
+            child: SizedBox(
+                width:
+                    MediaQuery.of(context).size.width * 0.6, // control width,
+                child: Text(
+                  _getScreenDisplayName(screen),
+                  overflow: TextOverflow.ellipsis, // show "..." if too long
+                  maxLines: 1,
+                )),
           );
         }).toList(),
         onChanged: _onScreenSelected,
