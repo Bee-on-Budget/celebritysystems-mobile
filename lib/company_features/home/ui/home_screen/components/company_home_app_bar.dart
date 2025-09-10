@@ -16,8 +16,9 @@ companyHomeAppBar(
   Future<void> handleLogout() async {
     final userCubit = context.read<UserCubit>();
 
+    final user = context.read<UserCubit>().state;
     // Clear user state
-    userCubit.logout();
+    userCubit.logout(user!.userId!);
 
     // Navigate to login screen
     if (context.mounted) {

@@ -1,10 +1,48 @@
+import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/helpers/user_model.dart';
+import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
 
 class UserCubit extends Cubit<UserModel?> {
+  // final LoginRepo loginRepo;
+
   UserCubit() : super(null);
+
+  Future<void> loadUserFromToken(String token) async {
+    try {
+      final payload = _decodeJWT(token);
+      final user = UserModel.fromPayload(payload);
+      print("Created user: $user");
+      emit(user);
+    } catch (e) {
+      print("Error in loadUserFromToken: $e");
+      emit(null);
+    }
+  }
+
+  void logout(int userId) async {
+    LoginCubit loginCubit = getIt();
+    await SharedPrefHelper.clearAllDataExceptOneSignalUserId();
+    await SharedPrefHelper.clearAllSecuredData();
+    print("userId is: $userId");
+    await loginCubit.sendSubscreptionId(" ", userId);
+    emit(null);
+  }
+
+  Map<String, dynamic> _decodeJWT(String token) {
+    final parts = token.split('.');
+    if (parts.length != 3) {
+      throw Exception('Invalid token');
+    }
+    final payload =
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+    return json.decode(payload);
+  }
+}
+
 
   // Future<void> loadUserFromToken(String token) async {
   //   try {
@@ -20,17 +58,6 @@ class UserCubit extends Cubit<UserModel?> {
   //   }
   // }
 
-  Future<void> loadUserFromToken(String token) async {
-    try {
-      final payload = _decodeJWT(token);
-      final user = UserModel.fromPayload(payload);
-      print("Created user: $user");
-      emit(user);
-    } catch (e) {
-      print("Error in loadUserFromToken: $e");
-      emit(null);
-    }
-  }
 
   // Future<void> loadUserFromToken(String token) async {
   //   try {
@@ -66,20 +93,3 @@ class UserCubit extends Cubit<UserModel?> {
   //     emit(null);
   //   }
   // }
-
-  void logout() async {
-    await SharedPrefHelper.clearAllDataExceptOneSignalUserId();
-    await SharedPrefHelper.clearAllSecuredData();
-    emit(null);
-  }
-
-  Map<String, dynamic> _decodeJWT(String token) {
-    final parts = token.split('.');
-    if (parts.length != 3) {
-      throw Exception('Invalid token');
-    }
-    final payload =
-        utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
-    return json.decode(payload);
-  }
-}

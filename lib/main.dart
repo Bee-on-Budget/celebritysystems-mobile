@@ -27,7 +27,7 @@ void main() async {
 
   final token =
       await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken);
-  final userCubit = UserCubit();
+  final userCubit = UserCubit(); //new
 
   print("=== APP INITIALIZATION ===");
   print("Token found: ${token != null ? "Yes" : "No"}");

@@ -60,13 +60,6 @@ class LoginCubit extends Cubit<LoginState> {
     await _loginRepo.patchSubscriptionId(userId, {
       "playerId": subscriptionId,
     });
-
-    // final result.ApiResult<LoginResponse> response = await _loginRepo.login(
-    //   LoginRequestBody(
-    //     email: emailController.text,
-    //     password: passwordController.text,
-    //   ),
-    // );
   }
 
   Future<void> saveUserToken(String token) async {
@@ -75,3 +68,11 @@ class LoginCubit extends Cubit<LoginState> {
         token); //to refresh token after creating Dio instance
   }
 }
+
+
+    // final result.ApiResult<LoginResponse> response = await _loginRepo.login(
+    //   LoginRequestBody(
+    //     email: emailController.text,
+    //     password: passwordController.text,
+    //   ),
+    // );
