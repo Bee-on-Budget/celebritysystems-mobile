@@ -12,6 +12,7 @@ abstract class ReportApiService {
   Future<void> sendReport(
     @Path('ticketId') int ticketId,
     @Body() FormData formData,
+    @DioOptions() Options? options, // Add options parameter
   );
 }
 

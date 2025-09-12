@@ -107,13 +107,13 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     });
   }
 
-  // Keep for backward compatibility if used elsewhere
-  void _onImageSelected(File? image) {
-    setState(() {
-      _selectedImage = image;
-      _selectedVideo = null; // Clear video when image is selected
-    });
-  }
+  // // Keep for backward compatibility if used elsewhere
+  // void _onImageSelected(File? image) {
+  //   setState(() {
+  //     _selectedImage = image;
+  //     _selectedVideo = null; // Clear video when image is selected
+  //   });
+  // }
 
   void _onScreenSelected(CompanyScreenModel? screen) {
     setState(() {

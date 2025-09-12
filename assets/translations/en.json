@@ -190,5 +190,6 @@
     "add_a_photo_or_video_to_help_us_understand_the_issue": "Add a photo or video to help us understand the issue",
     "video_compression_failed": "Video compression failed",
     "video_is_too_large_even_after_compression": "Video is too large even after compression",
-    "error_recording_video":"error recording video"
+    "error_recording_video": "error recording video",
+    "report_submitted_successfully": "Report submitted successfully"
 }

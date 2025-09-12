@@ -17,8 +17,7 @@ class ReportCubit extends Cubit<ReportState> {
   void sendReport(
     int ticketId,
     ReportRequest reportRequest,
-    File? solutionImage,
-    File? signatureImage,
+    File? mediaFile, // Single media file (image or video)
   ) async {
     emit(ReportState.loading());
 
@@ -29,12 +28,8 @@ class ReportCubit extends Cubit<ReportState> {
     print(reportRequest.toString());
 
     // ✅ Just call repo, repo handles File → MultipartFile conversion
-    final result.ApiResult<void> response = await _reportRepo.sendReport(
-      ticketId,
-      reportRequest,
-      solutionImage,
-      signatureImage,
-    );
+    final result.ApiResult<void> response =
+        await _reportRepo.sendReport(ticketId, reportRequest, mediaFile);
 
     print("******************************************");
     print("response is ");

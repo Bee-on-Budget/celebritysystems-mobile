@@ -18,8 +18,7 @@ class ReportRepo {
   Future<ApiResult<void>> sendReport(
     int ticketId,
     ReportRequest reportRequest,
-    File? solutionImage,
-    File? technicianSignature,
+    File? solutionMedia,
   ) async {
     try {
       final formData = FormData();
@@ -39,22 +38,63 @@ class ReportRepo {
       ]);
 
       // Add solution image if provided
-      if (solutionImage != null) {
+      // if (solutionMedia != null) {
+      //   final mimeType =
+      //       lookupMimeType(solutionMedia.path) ?? 'application/octet-stream';
+      //   final mimeSplit = mimeType.split('/');
+      //   formData.files.add(MapEntry(
+      //     'solutionImage',
+      //     await MultipartFile.fromFile(
+      //       solutionMedia.path,
+      //       contentType: MediaType(mimeSplit[0], mimeSplit[1]),
+      //     ),
+      //   ));
+      // }
+
+      // Add media file (image or video) if provided
+      if (solutionMedia != null) {
+        // Check file size
+        final fileSizeInBytes = await solutionMedia.length();
+        final fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+        print('📁 File size: ${fileSizeInMB.toStringAsFixed(2)} MB');
+
         final mimeType =
-            lookupMimeType(solutionImage.path) ?? 'application/octet-stream';
+            lookupMimeType(solutionMedia.path) ?? 'application/octet-stream';
         final mimeSplit = mimeType.split('/');
+
+        // Generate filename with timestamp
+        final extension = solutionMedia.path.split('.').last;
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final isVideo = ['mp4', 'mov', 'avi', 'mkv', '3gp', 'webm']
+            .contains(extension.toLowerCase());
+        final filename = isVideo
+            ? 'ticket_video_$timestamp.$extension'
+            : 'ticket_image_$timestamp.$extension';
+
         formData.files.add(MapEntry(
-          'solutionImage',
+          'solutionImage', // Backend expects 'ticketImage' for both image and video
           await MultipartFile.fromFile(
-            solutionImage.path,
+            solutionMedia.path,
+            filename: filename,
             contentType: MediaType(mimeSplit[0], mimeSplit[1]),
           ),
         ));
+
+        print('📤 Uploading ${isVideo ? 'video' : 'image'}: $filename');
       }
 
-      final response = await _reportApiService.sendReport(ticketId, formData);
+      // Make request with extended timeout
+      final options = Options(
+        receiveTimeout: const Duration(minutes: 5), // 5 minutes for large files
+        sendTimeout: const Duration(minutes: 5), // 5 minutes for uploads
+      );
+
+      final response = await _reportApiService.sendReport(
+        ticketId, formData, options, // Pass custom timeout options
+      );
       return ApiResult.success(response);
     } catch (error) {
+      print('❌ Upload error: $error');
       return ApiResult.failure(ErrorHandler.handle(error));
     }
   }
