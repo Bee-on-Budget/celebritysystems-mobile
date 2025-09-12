@@ -11,5 +11,6 @@ abstract class CreateTicketApiService {
   @POST('/tickets')
   Future<void> createTicket(
     @Body() FormData formData,
+    @DioOptions() Options? options, // Add options parameter
   );
 }

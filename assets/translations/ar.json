@@ -186,5 +186,9 @@
   "status": "حالة التذكرة",
   "ex_there_was_a_screen_offline": " مثال: كانت إحدى الشاشات غير متصلة",
   "ex_restart_the_router_and_now_is_showing_online": "مثال بعد إعادة تشغيل الراوتر، أصبح متصلاً الآن",
-  "contract": "العقد"
+  "contract": "العقد",
+  "add_a_photo_or_video_to_help_us_understand_the_issue": "أضف صورة أو فيديو لمساعدتنا على فهم المشكلة",
+  "video_compression_failed": "فشل ضغط الفيديو",
+  "video_is_too_large_even_after_compression": "الفيديو كبير جداً حتى بعد الضغط",
+  "error_recording_video": "خطأ في تسجيل الفيديو"
 }

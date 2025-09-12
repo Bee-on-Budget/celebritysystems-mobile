@@ -27,7 +27,7 @@ class UserCubit extends Cubit<UserModel?> {
     LoginCubit loginCubit = getIt();
     await SharedPrefHelper.clearAllDataExceptOneSignalUserId();
     await SharedPrefHelper.clearAllSecuredData();
-    print("userId is: $userId");
+    //delete playerId in DB
     await loginCubit.sendSubscreptionId(" ", userId);
     emit(null);
   }

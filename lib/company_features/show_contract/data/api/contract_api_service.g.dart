@@ -10,7 +10,7 @@ part of 'contract_api_service.dart';
 
 class _ContractApiService implements ContractApiService {
   _ContractApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://10.0.2.2:8080/api/';
+    baseUrl ??= 'http://192.168.1.103:8080/api/';
   }
 
   final Dio _dio;

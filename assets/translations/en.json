@@ -182,9 +182,13 @@
     "report_type": "Report Type",
     "total_components": "Total Components",
     "component_breakdown": "Component Breakdown",
-    "details":"Details",
-    "status":"Status",
-    "ex_there_was_a_screen_offline":"Ex: There was a screen offline.",
-    "ex_restart_the_router_and_now_is_showing_online":"Ex: Restart the router and now is showing online.",
-    "contract":"Contract"
+    "details": "Details",
+    "status": "Status",
+    "ex_there_was_a_screen_offline": "Ex: There was a screen offline.",
+    "ex_restart_the_router_and_now_is_showing_online": "Ex: Restart the router and now is showing online.",
+    "contract": "Contract",
+    "add_a_photo_or_video_to_help_us_understand_the_issue": "Add a photo or video to help us understand the issue",
+    "video_compression_failed": "Video compression failed",
+    "video_is_too_large_even_after_compression": "Video is too large even after compression",
+    "error_recording_video":"error recording video"
 }
