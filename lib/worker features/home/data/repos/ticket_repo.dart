@@ -34,4 +34,16 @@ class TicketRepo {
       return ApiResult.failure(ErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<dynamic>> downloadImage(int ticketId) async {
+    try {
+      final respone = await _ticketApiService.downloadImage(ticketId);
+
+      print("in repo try respone is " + respone.toString());
+      return ApiResult.success(respone);
+    } catch (error) {
+      print("in repo catch error is " + error.toString());
+      return ApiResult.failure(ErrorHandler.handle(error));
+    }
+  }
 }

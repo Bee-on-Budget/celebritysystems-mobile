@@ -1,6 +1,8 @@
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
+import 'package:celebritysystems_mobile/core/widgets/primary_button.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
+import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/logic/report%20cubit/report_cubit.dart';
 import 'package:celebritysystems_mobile/worker%20features/report/ui/report.dart';
 import 'package:flutter/material.dart';
@@ -320,35 +322,41 @@ class TicketDetailsScreen extends StatelessWidget {
                     ),
                     child: Stack(
                       children: [
-                        Image.network(
-                          ticket.ticketImageUrl ?? '',
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: const Color(0xFFF8FAFC),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.image_not_supported_outlined,
-                                    size: 48.sp,
-                                    color: ColorsManager.slateGray,
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  Text(
-                                    "Image not available",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: ColorsManager.slateGray,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
+                        PrimaryButton(
+                          text: "download image",
+                          onPressed: () {
+                            context.read<HomeCubit>().downloadImage(ticket.id!);
                           },
                         ),
+                        // Image.network(
+                        //   ticket.ticketImageUrl ?? '',
+                        //   width: double.infinity,
+                        //   height: double.infinity,
+                        //   fit: BoxFit.cover,
+                        //   errorBuilder: (context, error, stackTrace) {
+                        //     return Container(
+                        //       color: const Color(0xFFF8FAFC),
+                        //       child: Column(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: [
+                        //           Icon(
+                        //             Icons.image_not_supported_outlined,
+                        //             size: 48.sp,
+                        //             color: ColorsManager.slateGray,
+                        //           ),
+                        //           SizedBox(height: 8.h),
+                        //           Text(
+                        //             "Image not available",
+                        //             style: TextStyle(
+                        //               fontSize: 14.sp,
+                        //               color: ColorsManager.slateGray,
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                         Positioned(
                           bottom: 8.w,
                           right: 8.w,

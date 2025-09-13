@@ -16,4 +16,7 @@ abstract class TicketApiService {
 
   @GET('${ApiConstants.workerTickets}/{username}/count')
   Future<TicketsCount> getTicketsCount(@Path('username') String username);
+
+  @GET('tickets/{id}/image/download')
+  Future<dynamic> downloadImage(@Path('id') int ticketId);
 }

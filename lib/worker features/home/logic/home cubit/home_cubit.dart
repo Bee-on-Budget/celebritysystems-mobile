@@ -50,4 +50,16 @@ class HomeCubit extends Cubit<HomeState> {
 
     emit(Success<List<OneTicketResponse>>(tickets));
   }
+
+  Future<void> downloadImage(int ticketId) async {
+    final image = await _ticketRepo.downloadImage(ticketId);
+
+    switch (image) {
+      case result.Success(:final data):
+        print("data image");
+      case result.Failure(:final errorHandler):
+        final msg = "Failed to download image";
+        return;
+    }
+  }
 }
