@@ -35,7 +35,7 @@ class TicketRepo {
     }
   }
 
-  Future<ApiResult<dynamic>> downloadImage(int ticketId) async {
+  Future<ApiResult<String>> downloadImage(int ticketId) async {
     try {
       final respone = await _ticketApiService.downloadImage(ticketId);
 
