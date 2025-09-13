@@ -16,6 +16,13 @@ class TicketDetailsScreen extends StatelessWidget {
 
   const TicketDetailsScreen({super.key, required this.ticket});
 
+  // Add this method to handle download
+  void _downloadImage(BuildContext context, int ticketId) {
+    // Create a temporary HomeCubit instance for this operation
+    final homeCubit = HomeCubit(getIt());
+    homeCubit.downloadImage(ticketId);
+  }
+
   String _formatDate(String iso) {
     return DateFormat('MMM dd, yyyy • HH:mm').format(DateTime.parse(iso));
   }
@@ -291,7 +298,7 @@ class TicketDetailsScreen extends StatelessWidget {
                 ),
                 SizedBox(width: 8.w),
                 Text(
-                  "Ticket Image",
+                  "Ticket Media",
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -323,9 +330,9 @@ class TicketDetailsScreen extends StatelessWidget {
                     child: Stack(
                       children: [
                         PrimaryButton(
-                          text: "download image",
+                          text: "download media",
                           onPressed: () {
-                            context.read<HomeCubit>().downloadImage(ticket.id!);
+                            _downloadImage(context, ticket.id!);
                           },
                         ),
                         // Image.network(
