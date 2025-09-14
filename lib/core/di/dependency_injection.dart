@@ -3,8 +3,10 @@ import 'package:celebritysystems_mobile/company_features/company_profile/data/re
 import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/api/company_api_service.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/api/company_tickets_api_service.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/api/subcontract_api_service.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/company_repo.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/company_ticket_repo.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/repos/subcontract_repo.dart';
 import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/api/report_api_service.dart'
     as company_report;
@@ -63,9 +65,9 @@ Future<void> setupGetit() async {
       () => CompanyTicketRepo(getIt()));
   getIt.registerLazySingleton<CompanyRepo>(() => CompanyRepo(getIt()));
   getIt.registerFactory<CompanyHomeCubit>(() => CompanyHomeCubit(
-        companyRepo: getIt(),
-        companyTicketRepo: getIt(),
-      ));
+      companyRepo: getIt(),
+      companyTicketRepo: getIt(),
+      subcontractRepo: getIt()));
 
   //CreateTicket
   getIt.registerLazySingleton<CreateTicketApiService>(
@@ -98,6 +100,11 @@ Future<void> setupGetit() async {
   getIt.registerLazySingleton<ScreenDetailsRepo>(
       () => ScreenDetailsRepo(getIt()));
   getIt.registerFactory<ScreenCubit>(() => ScreenCubit(getIt()));
+
+  //subcontract
+  getIt.registerLazySingleton<SubcontractApiService>(
+      () => SubcontractApiService(dio));
+  getIt.registerLazySingleton<SubcontractRepo>(() => SubcontractRepo(getIt()));
 
   //LazySingleton will create the obj just once.
   //Factory will create new obj everytime I need it.

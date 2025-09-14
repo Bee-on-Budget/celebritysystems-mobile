@@ -34,15 +34,19 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
     _screens.addAll([
       CompanyHomeScreen(),
       BlocProvider(
-        create: (context) =>
-            CompanyHomeCubit(companyRepo: getIt(), companyTicketRepo: getIt()),
+        create: (context) => CompanyHomeCubit(
+            companyRepo: getIt(),
+            companyTicketRepo: getIt(),
+            subcontractRepo: getIt()),
         child: ScreenPage(
           companyId: _companyId,
         ),
       ),
       BlocProvider(
-        create: (context) =>
-            CompanyHomeCubit(companyRepo: getIt(), companyTicketRepo: getIt()),
+        create: (context) => CompanyHomeCubit(
+            companyRepo: getIt(),
+            companyTicketRepo: getIt(),
+            subcontractRepo: getIt()),
         child: ReportScreen(),
       ),
       // ReportScreen(),

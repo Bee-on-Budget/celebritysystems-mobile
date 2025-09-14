@@ -19,6 +19,7 @@ class CompanyHomeScreen extends StatefulWidget {
 
 class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   late final int _companyId;
+  String? selectedCompanyName;
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
     // print("****************************************************");
     // print(printList);
     // print("listOfCompanyScreen");
+    context.read<CompanyHomeCubit>().loadSubcontracts(_companyId);
   }
 
   Future<void> _onRefresh() async {
@@ -47,6 +49,13 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         context,
         ColorsManager.coralBlaze,
         setState,
+        selectedCompanyName, // Pass the current selected company
+        (String? newName) {
+          // Pass a callback to update it
+          setState(() {
+            selectedCompanyName = newName;
+          });
+        },
       ),
       body: companyHomeBody(_onRefresh),
       floatingActionButton: FloatingActionButton(

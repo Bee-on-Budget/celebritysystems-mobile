@@ -6,6 +6,8 @@ class SharedPrefKeys {
   static const String username = "username";
   static const String userId = "userId";
   static const String companyId = "companyId";
+  static const String subCompanyId = "subCompanyId";
+  static const String subCompanyContractsIds = "subCompanyContractsIds";
 }
 
 class Constants {

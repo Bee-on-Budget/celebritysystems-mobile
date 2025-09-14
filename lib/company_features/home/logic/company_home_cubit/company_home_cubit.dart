@@ -1,5 +1,7 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/models/subcontract_response.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/company_repo.dart';
+import 'package:celebritysystems_mobile/company_features/home/data/repos/subcontract_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,15 +13,20 @@ import 'company_home_state.dart';
 class CompanyHomeCubit extends Cubit<CompanyHomeState> {
   final CompanyTicketRepo _companyTicketRepo;
   final CompanyRepo _companyRepo;
+  final SubcontractRepo _subcontractRepo;
 
-  CompanyHomeCubit({
-    required CompanyRepo companyRepo,
-    required CompanyTicketRepo companyTicketRepo,
-  })  : _companyRepo = companyRepo,
+  CompanyHomeCubit(
+      {required CompanyRepo companyRepo,
+      required CompanyTicketRepo companyTicketRepo,
+      required SubcontractRepo subcontractRepo})
+      : _companyRepo = companyRepo,
         _companyTicketRepo = companyTicketRepo,
+        _subcontractRepo = subcontractRepo,
         super(CompanyHomeState.initial());
 
   List<CompanyScreenModel> listOfCompanyScreen = [];
+
+  List<SubcontractResponse> subcontractList = [];
 
   Future<void> loadCompanyHomeData(int companyId) async {
     emit(Loading<List<CompanyTicketResponse>>());
@@ -64,5 +71,23 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
     }
 
     emit(Success(ScreenList));
+  }
+
+  Future<void> loadSubcontracts(int controllerCompanyId) async {
+    // emit(Loading());
+
+    final result.ApiResult<List<SubcontractResponse>> listOfSubcontracts =
+        await _subcontractRepo.loadSubcontracts(controllerCompanyId);
+
+    // Extract ticket data
+    switch (listOfSubcontracts) {
+      case result.Success(:final data):
+        subcontractList = data;
+      case result.Failure(:final errorHandler):
+        final msg =
+            errorHandler.apiErrorModel.message ?? "failed_to_load_subcontract";
+        emit(Error(error: msg));
+        return;
+    }
   }
 }
