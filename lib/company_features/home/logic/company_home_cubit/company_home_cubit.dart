@@ -25,6 +25,7 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
         super(CompanyHomeState.initial());
 
   List<CompanyScreenModel> listOfCompanyScreen = [];
+  List<CompanyScreenModel> listOfScreensForSubcompany = [];
 
   List<SubcontractResponse> subcontractList = [];
 
@@ -89,5 +90,31 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
         emit(Error(error: msg));
         return;
     }
+  }
+
+  Future<void> loadCompanyScreensDataForSubcompany(
+      int subcompanyId, List<int> contractsIds) async {
+    emit(Loading());
+
+    final result.ApiResult<List<CompanyScreenModel>> listOfScreen =
+        await _companyRepo.getCompanyScreensForSubcompany(
+            subcompanyId, contractsIds);
+
+    List<CompanyScreenModel> ScreenList = [];
+
+    // Extract ticket data
+    switch (listOfScreen) {
+      case result.Success(:final data):
+        listOfScreensForSubcompany =
+            data; //maybe would cause issues ((I don't think so))
+        ScreenList = data;
+      case result.Failure(:final errorHandler):
+        final msg =
+            errorHandler.apiErrorModel.message ?? "failed_to_load_screens".tr();
+        emit(Error(error: msg));
+        return;
+    }
+
+    emit(Success(ScreenList));
   }
 }

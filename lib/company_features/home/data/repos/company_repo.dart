@@ -3,8 +3,6 @@ import 'package:celebritysystems_mobile/company_features/home/data/models/compan
 
 import '../../../../core/networking/api_error_handler.dart';
 import '../../../../core/networking/api_result.dart';
-import '../api/company_tickets_api_service.dart';
-import '../models/company_tickets_response.dart';
 
 class CompanyRepo {
   final CompanyApiService _companyApiService;
@@ -16,6 +14,17 @@ class CompanyRepo {
     try {
       final List<CompanyScreenModel> response =
           await _companyApiService.getCompanyScreens(companyId);
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<CompanyScreenModel>>> getCompanyScreensForSubcompany(
+      int subcompanyId, List<int> contractsIds) async {
+    try {
+      final List<CompanyScreenModel> response = await _companyApiService
+          .getCompanyScreensForSubcompany(subcompanyId, contractsIds);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ErrorHandler.handle(error));

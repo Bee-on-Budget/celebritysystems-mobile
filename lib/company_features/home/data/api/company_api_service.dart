@@ -20,4 +20,9 @@ abstract class CompanyApiService {
   Future<List<CompanyScreenModel>> getCompanyScreens(
     @Path('companyId') int companyId,
   );
+
+  @GET('contracts/company/{companyId}/contracts/{contractIds}/screens/active')
+  Future<List<CompanyScreenModel>> getCompanyScreensForSubcompany(
+      @Path('companyId') int subcompanyId,
+      @Path('contractIds') List<int> contractsIds);
 }
