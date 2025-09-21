@@ -20,10 +20,17 @@ class CompanyDetailsScreen extends StatefulWidget {
 }
 
 class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
+  late int subcompanyId;
+
   @override
   void initState() {
     super.initState();
+    _loadSubcompanyId();
     _loadCompanyProfile();
+  }
+
+  _loadSubcompanyId() async {
+    subcompanyId = await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
   }
 
   Future<void> _loadCompanyProfile() async {
@@ -50,32 +57,6 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
           final company = state.data;
 
           return Scaffold(
-              floatingActionButton: Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: FloatingActionButton.extended(
-                  heroTag: 'explore_contracts_button',
-                  onPressed: () {
-                    context.pushNamed(Routes.contractScreen);
-                  },
-                  label: Text(
-                    'explore_contracts'.tr(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  icon: Icon(
-                    Icons.pages,
-                    size: 24,
-                  ),
-                  backgroundColor: ColorsManager.royalIndigo,
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-              backgroundColor: ColorsManager.mistWhite,
               appBar: AppBar(
                 automaticallyImplyLeading: false,
                 elevation: 0,
@@ -119,12 +100,71 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                   ],
                 ),
               ),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(16.r),
-                  child: CompanyCard(company: company),
-                ),
-              ));
+              floatingActionButton: subcompanyId != 0
+                  ? null
+                  : Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: FloatingActionButton.extended(
+                        heroTag: 'explore_contracts_button',
+                        onPressed: () {
+                          context.pushNamed(Routes.contractScreen);
+                        },
+                        label: Text(
+                          'explore_contracts'.tr(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        icon: Icon(
+                          Icons.pages,
+                          size: 24,
+                        ),
+                        backgroundColor: ColorsManager.royalIndigo,
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+              backgroundColor: ColorsManager.mistWhite,
+              body: subcompanyId != 0
+                  ? Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      padding: EdgeInsets.all(8.r),
+                      decoration: BoxDecoration(
+                        color: ColorsManager.mistWhite,
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "As a controller user you don't have permission to view this page",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: ColorsManager.slateGray,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 20.h),
+                            Icon(
+                              Icons.lock,
+                              color: ColorsManager.coralBlaze,
+                              size: 44.r,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.r),
+                        child: CompanyCard(company: company),
+                      ),
+                    ));
         } else {
           return const SizedBox();
         }

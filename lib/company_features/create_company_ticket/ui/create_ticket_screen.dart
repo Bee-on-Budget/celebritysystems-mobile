@@ -45,13 +45,19 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     if (!_validateForm()) return;
 
     final companyId = await SharedPrefHelper.getInt(SharedPrefKeys.companyId);
+    int subcompanyId =
+        await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
 
     // Update the create ticket request object
     final cubit = context.read<CreateTicketCubit>();
     cubit.createCompanyTicketReq?.title = _titleController.text.trim();
     cubit.createCompanyTicketReq?.description =
         _descriptionController.text.trim();
-    cubit.createCompanyTicketReq?.companyId = companyId;
+    if (subcompanyId != 0) {
+      cubit.createCompanyTicketReq?.companyId = subcompanyId;
+    } else {
+      cubit.createCompanyTicketReq?.companyId = companyId;
+    }
     cubit.createCompanyTicketReq?.screenId = _selectedScreenModel!.id;
     cubit.createCompanyTicketReq?.status = "OPEN";
 
