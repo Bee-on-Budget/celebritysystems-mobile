@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/company_features/home/logic/company_home_cubit/company_home_state.dart';
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/extenstions.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
@@ -29,8 +33,7 @@ class _ScreenPageState extends State<ScreenPage> {
   void initState() {
     super.initState();
     // _companyId = context.read<UserCubit>().state?.companyId ?? 0;
-    context.read<CompanyHomeCubit>().loadCompanyScreensData(widget.companyId);
-
+    _loadCompanyScreens();
     // _loadCompanyScreens();
   }
 
@@ -39,6 +42,28 @@ class _ScreenPageState extends State<ScreenPage> {
   //   if (!mounted) return; // ✅ ensures widget is still in the tree
   //   context.read<CompanyHomeCubit>().loadCompanyScreensData(companyId);
   // }
+
+  Future<void> _loadCompanyScreens() async {
+    int subcompanyId =
+        await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
+    if (!mounted) return; // ✅ ensures widget is still in the tree
+    if (subcompanyId != 0) {
+      print("contractsIds in initial:");
+
+      String contractsIdsString = await SharedPrefHelper.getString(
+          SharedPrefKeys.subCompanyContractsIds);
+
+      List<int> contractsIds = jsonDecode(contractsIdsString).cast<int>();
+      print("company@: $contractsIds");
+      await context
+          .read<CompanyHomeCubit>()
+          .loadCompanyScreensDataForSubcompany(subcompanyId, contractsIds);
+    } else {
+      await context
+          .read<CompanyHomeCubit>()
+          .loadCompanyScreensData(widget.companyId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

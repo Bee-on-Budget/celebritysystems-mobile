@@ -65,7 +65,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (context) => getIt<CompanyHomeCubit>(),
-            child: const CompanyHomeScreen(),
+            child: CompanyHomeScreen(),
           ),
           settings: settings,
         );

@@ -15,7 +15,8 @@ import 'components/company_home_app_bar.dart';
 import 'components/company_home_body.dart';
 
 class CompanyHomeScreen extends StatefulWidget {
-  const CompanyHomeScreen({super.key});
+  String? selectedCompanyName;
+  CompanyHomeScreen({super.key});
 
   static _CompanyHomeScreenState? of(BuildContext context) {
     return context.findAncestorStateOfType<_CompanyHomeScreenState>();
@@ -27,7 +28,6 @@ class CompanyHomeScreen extends StatefulWidget {
 
 class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   late final int _companyId;
-  String? selectedCompanyName;
 
   @override
   void initState() {
@@ -81,10 +81,10 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         context,
         ColorsManager.coralBlaze,
         setState,
-        selectedCompanyName,
+        widget.selectedCompanyName,
         (String? newName) {
           setState(() {
-            selectedCompanyName = newName;
+            widget.selectedCompanyName = newName;
           });
         },
         _initialRequests, // Pass the _initialRequests method as callback

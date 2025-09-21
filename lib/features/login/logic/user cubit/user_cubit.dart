@@ -1,5 +1,4 @@
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
-import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/helpers/user_model.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';

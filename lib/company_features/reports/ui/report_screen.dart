@@ -73,9 +73,15 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Future<void> _loadCompanyScreens() async {
+    int subcompanyId =
+        await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
     int companyId = await SharedPrefHelper.getInt(SharedPrefKeys.companyId);
     if (!mounted) return; // ✅ ensures widget is still in the tree
-    context.read<CompanyHomeCubit>().loadCompanyScreensData(companyId);
+    if (subcompanyId != 0) {
+      context.read<CompanyHomeCubit>().loadCompanyScreensData(subcompanyId);
+    } else {
+      context.read<CompanyHomeCubit>().loadCompanyScreensData(companyId);
+    }
   }
 
   @override

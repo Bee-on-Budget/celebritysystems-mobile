@@ -8,23 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-// Models
-// class CompanyScreenModelTest {
-//   int? id;
-//   String? name;
-//   String? screenType;
-//   String? location;
-//   String? solutionType;
-
-//   CompanyScreenModelTest({
-//     this.id,
-//     this.name,
-//     this.screenType,
-//     this.location,
-//     this.solutionType,
-//   });
-// }
-
 class ScreenHistoryPage extends StatefulWidget {
   final CompanyScreenModel screen;
 
@@ -136,14 +119,14 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                           ],
                         ),
                         SizedBox(height: 16),
-                        _buildDetailRow(
-                            'screen_name'.tr(), widget.screen.name, Icons.label),
-                        _buildDetailRow(
-                            'type'.tr(), widget.screen.screenType, Icons.category),
+                        _buildDetailRow('screen_name'.tr(), widget.screen.name,
+                            Icons.label),
+                        _buildDetailRow('type'.tr(), widget.screen.screenType,
+                            Icons.category),
                         _buildDetailRow('location'.tr(), widget.screen.location,
                             Icons.location_on),
-                        _buildDetailRow('solution_type'.tr(), widget.screen.solutionType,
-                            Icons.build),
+                        _buildDetailRow('solution_type'.tr(),
+                            widget.screen.solutionType, Icons.build),
                       ],
                     ),
                   ),
@@ -390,8 +373,14 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
           _buildInfoGrid([
             {'label': 'assigned_by'.tr(), 'value': ticket.createdBy},
             {'label': 'assigned_to'.tr(), 'value': ticket.assignedToWorkerName},
-            {'label': 'assigned_by'.tr(), 'value': ticket.assignedBySupervisorName},
-            {'label': 'service_type'.tr(), 'value': ticket.serviceTypeDisplayName},
+            {
+              'label': 'assigned_by'.tr(),
+              'value': ticket.assignedBySupervisorName
+            },
+            {
+              'label': 'service_type'.tr(),
+              'value': ticket.serviceTypeDisplayName
+            },
           ]),
 
           SizedBox(height: 16),
@@ -401,7 +390,8 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
           // Worker Report Section
           if (ticket.workerReport != null) ...[
             SizedBox(height: 24),
-            _buildSectionHeader('service_report'.tr(), Icons.assignment_turned_in),
+            _buildSectionHeader(
+                'service_report'.tr(), Icons.assignment_turned_in),
             SizedBox(height: 12),
             _buildWorkerReport(ticket.workerReport!),
           ],
@@ -460,14 +450,26 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
 
   Widget _buildTimelineInfo(TicketHistoryResponse ticket) {
     final timeline = [
-      {'label': 'created_at'.tr(), 'time': ticket.openedAt, 'icon': Icons.schedule},
+      {
+        'label': 'created_at'.tr(),
+        'time': ticket.openedAt,
+        'icon': Icons.schedule
+      },
       {
         'label': 'assigned'.tr(),
         'time': ticket.inProgressAt,
         'icon': Icons.play_arrow
       },
-      {'label': 'completed'.tr(), 'time': ticket.resolvedAt, 'icon': Icons.check},
-      {'label': 'completed'.tr(), 'time': ticket.closedAt, 'icon': Icons.check_circle},
+      {
+        'label': 'completed'.tr(),
+        'time': ticket.resolvedAt,
+        'icon': Icons.check
+      },
+      {
+        'label': 'completed'.tr(),
+        'time': ticket.closedAt,
+        'icon': Icons.check_circle
+      },
     ];
 
     return Column(

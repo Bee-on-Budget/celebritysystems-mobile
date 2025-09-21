@@ -27,9 +27,15 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   }
 
   Future<void> _loadCompanyProfile() async {
+    int subcompanyId =
+        await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
     int companyId = await SharedPrefHelper.getInt(SharedPrefKeys.companyId);
     if (!mounted) return; // ✅ ensures widget is still in the tree
-    context.read<ProfileCubit>().getCompanyProfile(companyId);
+    if (subcompanyId != 0) {
+      context.read<ProfileCubit>().getCompanyProfile(subcompanyId);
+    } else {
+      context.read<ProfileCubit>().getCompanyProfile(companyId);
+    }
   }
 
   @override
