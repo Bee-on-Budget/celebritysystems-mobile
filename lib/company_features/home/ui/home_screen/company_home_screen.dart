@@ -28,6 +28,7 @@ class CompanyHomeScreen extends StatefulWidget {
 
 class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
   late final int _companyId;
+  late final bool _canEdit = context.read<UserCubit>().state?.canEdit ?? false;
 
   @override
   void initState() {
@@ -90,32 +91,35 @@ class _CompanyHomeScreenState extends State<CompanyHomeScreen> {
         _initialRequests, // Pass the _initialRequests method as callback
       ),
       body: companyHomeBody(_onRefresh),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'add_ticket_button',
-        onPressed: () async {
-          int subcompanyId =
-              await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
-          if (subcompanyId != 0) {
-            List<CompanyScreenModel> listOfScreensForSubcompany =
-                context.read<CompanyHomeCubit>().listOfScreensForSubcompany;
+      floatingActionButton: _canEdit
+          ? FloatingActionButton(
+              heroTag: 'add_ticket_button',
+              onPressed: () async {
+                int subcompanyId =
+                    await SharedPrefHelper.getInt(SharedPrefKeys.subCompanyId);
+                if (subcompanyId != 0) {
+                  List<CompanyScreenModel> listOfScreensForSubcompany = context
+                      .read<CompanyHomeCubit>()
+                      .listOfScreensForSubcompany;
 
-            context.pushNamed(Routes.createCompanyTicketScreen,
-                arguments: listOfScreensForSubcompany);
-          } else {
-            List<CompanyScreenModel> listOfCompanyScreen =
-                context.read<CompanyHomeCubit>().listOfCompanyScreen;
+                  context.pushNamed(Routes.createCompanyTicketScreen,
+                      arguments: listOfScreensForSubcompany);
+                } else {
+                  List<CompanyScreenModel> listOfCompanyScreen =
+                      context.read<CompanyHomeCubit>().listOfCompanyScreen;
 
-            context.pushNamed(Routes.createCompanyTicketScreen,
-                arguments: listOfCompanyScreen);
-          }
-          // List<CompanyScreenModel> listOfCompanyScreen =
-          //     context.read<CompanyHomeCubit>().listOfCompanyScreen;
+                  context.pushNamed(Routes.createCompanyTicketScreen,
+                      arguments: listOfCompanyScreen);
+                }
+                // List<CompanyScreenModel> listOfCompanyScreen =
+                //     context.read<CompanyHomeCubit>().listOfCompanyScreen;
 
-          // context.pushNamed(Routes.createCompanyTicketScreen,
-          //     arguments: listOfCompanyScreen);
-        },
-        child: const Icon(Icons.add),
-      ),
+                // context.pushNamed(Routes.createCompanyTicketScreen,
+                //     arguments: listOfCompanyScreen);
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
