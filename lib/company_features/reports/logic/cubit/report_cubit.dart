@@ -1,4 +1,5 @@
 import 'package:celebritysystems_mobile/company_features/reports/data/models/analytics_request.dart';
+import 'package:celebritysystems_mobile/company_features/reports/data/models/analytics_response.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/repos/report_repo.dart';
@@ -34,22 +35,28 @@ class ReportCubit extends Cubit<ReportState> {
     }
   }
 
-  Future<void> getAnalytics(AnalyticsRequest request) async {
+  Future<AnalyticsResponse?> getAnalytics(AnalyticsRequest request) async {
     emit(const ReportState.loading());
 
     final result.ApiResult<AnalyticsResponse> analyticsResult =
         await _reportRepo.analyticsTickets(request);
 
+    final AnalyticsResponse analyticsResponse;
+
     switch (analyticsResult) {
       case result.Success(:final data):
         emit(ReportState<AnalyticsResponse>.success(data));
-        break;
+        return data;
+      // break;
       case result.Failure(:final errorHandler):
         final msg =
             errorHandler.apiErrorModel.message ?? "Failed to Analytics Report";
         emit(ReportState.error(error: msg));
-        break;
+        return null;
+      // break;
     }
+
+    // return analyticsResponse;
   }
 
   void resetState() {
