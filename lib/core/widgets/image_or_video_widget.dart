@@ -250,7 +250,10 @@ class _ImageOrVideoWidgetState extends State<ImageOrVideoWidget> {
                         Navigator.pop(context);
                         _pickImage(ImageSource.camera);
                       },
-                      icon: const Icon(Icons.camera_alt),
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        color: ColorsManager.mistWhite,
+                      ),
                       label: Text('camera'.tr()),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorsManager.coralBlaze,

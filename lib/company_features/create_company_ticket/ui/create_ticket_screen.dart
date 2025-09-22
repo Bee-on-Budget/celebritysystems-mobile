@@ -143,7 +143,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
           if (state is Success) {
             _showSuccessSnackBar('support_ticket_created_successfully'.tr());
             context.pushNamedAndRemoveUntil(
-              Routes.companyHomeScreen,
+              Routes.companyDashboardScreen,
               predicate: (route) => false,
             );
           } else if (state is Error) {

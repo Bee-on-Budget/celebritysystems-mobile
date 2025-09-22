@@ -191,5 +191,10 @@
   "video_compression_failed": "فشل ضغط الفيديو",
   "video_is_too_large_even_after_compression": "الفيديو كبير جداً حتى بعد الضغط",
   "error_recording_video": "خطأ في تسجيل الفيديو",
-  "report_submitted_successfully": "تم إرسال التقرير بنجاح"
+  "report_submitted_successfully": "تم إرسال التقرير بنجاح",
+  "ticket_media": "وسائط التذكرة",
+  "add_media": "إضافة وسائط",
+  "record_video": "تسجيل فيديو",
+  "video_limit_10s": "حد الفيديو 10 ثواني",
+  "description": "الوصف"
 }
