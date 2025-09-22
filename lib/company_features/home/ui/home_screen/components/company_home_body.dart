@@ -30,7 +30,7 @@ Widget companyHomeBody(Future<void> Function() onRefresh) {
       }
 
       if (state is Success<List<CompanyTicketResponse>>) {
-        final tickets = state.data;
+        final tickets = state.data.reversed.toList();
 
         if (tickets.isEmpty) {
           return Center(
