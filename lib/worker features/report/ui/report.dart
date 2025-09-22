@@ -186,10 +186,10 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
                           label: 'company_name'.tr(),
                           value: widget.ticket.companyName ?? ""),
                       const SizedBox(height: 12),
-                      InfoRowWidget(
-                          icon: Icons.location_on,
-                          label: 'location'.tr(),
-                          value: widget.ticket.location ?? '_'),
+                      // InfoRowWidget(
+                      //     icon: Icons.location_on,
+                      //     label: 'location'.tr(),
+                      //     value: widget.ticket.location ?? '_'),
                     ],
                   ),
                 ),

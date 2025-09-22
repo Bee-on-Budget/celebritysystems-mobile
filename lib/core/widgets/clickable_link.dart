@@ -6,12 +6,14 @@ Widget clickableLinkWidget({
   required String title,
   required String? url,
   Color? iconColor,
+  Color? cardColor,
 }) {
   final uri = Uri.tryParse(url ?? "");
   final isValid =
       uri != null && (uri.isScheme("http") || uri.isScheme("https"));
 
   return Card(
+    color: cardColor,
     elevation: 1.5,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     margin: const EdgeInsets.symmetric(vertical: 6),

@@ -2,6 +2,7 @@ import 'package:celebritysystems_mobile/company_features/home/data/models/compan
 import 'package:celebritysystems_mobile/company_features/screens/data/models/ticket_history_response.dart';
 import 'package:celebritysystems_mobile/company_features/screens/logic/screen_cubit/screen_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/screens/logic/screen_cubit/screen_state.dart';
+import 'package:celebritysystems_mobile/core/widgets/clickable_link.dart';
 import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -123,10 +124,17 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                             Icons.label),
                         _buildDetailRow('type'.tr(), widget.screen.screenType,
                             Icons.category),
-                        _buildDetailRow('location'.tr(), widget.screen.location,
-                            Icons.location_on),
+                        // _buildDetailRow('location'.tr(), widget.screen.location,
+                        //     Icons.location_on),
+
                         _buildDetailRow('solution_type'.tr(),
                             widget.screen.solutionType, Icons.build),
+                        SizedBox(height: 8),
+
+                        clickableLinkWidget(
+                            icon: Icons.location_on,
+                            title: 'location'.tr(),
+                            url: widget.screen.location),
                       ],
                     ),
                   ),
