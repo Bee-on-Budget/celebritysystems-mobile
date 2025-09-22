@@ -1,7 +1,6 @@
 import 'package:celebritysystems_mobile/company_features/reports/data/models/analytics_response.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
-import 'package:celebritysystems_mobile/company_features/reports/ui/report_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

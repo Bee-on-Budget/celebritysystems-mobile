@@ -3,7 +3,6 @@ import 'package:celebritysystems_mobile/company_features/reports/data/models/ana
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_request.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/models/generate_report_response.dart';
 import 'package:celebritysystems_mobile/company_features/reports/data/repos/report_repo.dart';
-import 'package:celebritysystems_mobile/company_features/reports/ui/report_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/networking/api_result.dart' as result;
@@ -41,8 +40,6 @@ class ReportCubit extends Cubit<ReportState> {
     final result.ApiResult<AnalyticsResponse> analyticsResult =
         await _reportRepo.analyticsTickets(request);
 
-    final AnalyticsResponse analyticsResponse;
-
     switch (analyticsResult) {
       case result.Success(:final data):
         emit(ReportState<AnalyticsResponse>.success(data));
@@ -55,6 +52,7 @@ class ReportCubit extends Cubit<ReportState> {
         return null;
       // break;
     }
+    return null;
 
     // return analyticsResponse;
   }
