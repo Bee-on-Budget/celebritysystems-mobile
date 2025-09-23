@@ -1,3 +1,4 @@
+import 'package:video_player/video_player.dart';
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/core/widgets/clickable_link.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'dart:async';
 
 class TicketDetailsScreen extends StatefulWidget {
   final OneTicketResponse ticket;
@@ -24,6 +26,18 @@ class TicketDetailsScreen extends StatefulWidget {
 class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   String? mediaLink;
   bool isDownloading = false; // Add loading state
+
+  bool _showControls = true;
+  Timer? _hideControlsTimer;
+
+  @override
+  void dispose() {
+    _hideControlsTimer?.cancel();
+    if (_videoController != null) {
+      _videoController!.dispose();
+    }
+    super.dispose();
+  }
 
   // Add this method to handle download
   void _downloadImage(BuildContext context, int ticketId) async {
@@ -391,6 +405,65 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
     );
   }
 
+  // Helper to check if the link is a video
+  bool _isVideo(String? url) {
+    if (url == null || url.isEmpty) return false;
+
+    // Convert to lowercase for case-insensitive comparison
+    final lowerUrl = url.toLowerCase();
+
+    // Check for common video file extensions
+    final videoExtensions = [
+      '.mp4',
+      '.mov',
+      '.avi',
+      '.mkv',
+      '.webm',
+      '.flv',
+      '.wmv',
+      '.m4v',
+      '.3gp',
+      '.ogv'
+    ];
+
+    // Check if URL ends with any video extension
+    for (final ext in videoExtensions) {
+      if (lowerUrl.endsWith(ext)) {
+        return true;
+      }
+    }
+
+    // Check for video extensions with query parameters
+    for (final ext in videoExtensions) {
+      if (lowerUrl.contains(ext)) {
+        final index = lowerUrl.indexOf(ext);
+        final afterExt = lowerUrl.substring(index + ext.length);
+        // If after extension there's only query params or nothing, it's likely a video
+        if (afterExt.isEmpty ||
+            afterExt.startsWith('?') ||
+            afterExt.startsWith('#')) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  VideoPlayerController? _videoController;
+  bool _videoInitialized = false;
+
+  Future<void> _initializeVideo(String url) async {
+    if (_videoController != null) {
+      await _videoController!.dispose();
+    }
+    _videoController = VideoPlayerController.network(url);
+    await _videoController!.initialize();
+    setState(() {
+      _videoInitialized = true;
+    });
+  }
+
   Widget _buildImageContent() {
     if (isDownloading) {
       return Container(
@@ -404,7 +477,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
             ),
             SizedBox(height: 16.h),
             Text(
-              "Downloading image...",
+              "Downloading media...",
               style: TextStyle(
                 fontSize: 14.sp,
                 color: ColorsManager.slateGray,
@@ -439,6 +512,261 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
       );
     }
 
+    // Check if it's a video first
+    if (_isVideo(mediaLink)) {
+      // Initialize video if not already initialized or if URL changed
+      if (!_videoInitialized ||
+          _videoController == null ||
+          _videoController!.dataSource != mediaLink) {
+        _videoInitialized = false;
+        _initializeVideo(mediaLink!);
+        return Container(
+          color: const Color(0xFFF8FAFC),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(ColorsManager.coralBlaze),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                "Loading video...",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: ColorsManager.slateGray,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      if (!_videoController!.value.isInitialized) {
+        return Container(
+          color: const Color(0xFFF8FAFC),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(ColorsManager.coralBlaze),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                "Initializing video...",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: ColorsManager.slateGray,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      return GestureDetector(
+        onTap: _toggleControls,
+        child: Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _videoController!.value.size.width,
+                  height: _videoController!.value.size.height,
+                  child: VideoPlayer(_videoController!),
+                ),
+              ),
+            ),
+
+            // Video controls overlay
+            if (_showControls)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.3),
+                        Colors.transparent,
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.5),
+                      ],
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // Top controls - Video indicator
+                      Padding(
+                        padding: EdgeInsets.all(12.w),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w, vertical: 4.h),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.play_circle_outline,
+                                    color: Colors.white,
+                                    size: 16.sp,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    "VIDEO",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Spacer(),
+
+                      // Center play/pause button
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            iconSize: 48.sp,
+                            icon: Icon(
+                              _videoController!.value.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              color: Colors.white,
+                            ),
+                            onPressed: _togglePlayPause,
+                          ),
+                        ),
+                      ),
+
+                      Spacer(),
+
+                      // Bottom controls
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        child: Column(
+                          children: [
+                            // Progress bar
+                            VideoProgressIndicator(
+                              _videoController!,
+                              allowScrubbing: true,
+                              colors: VideoProgressColors(
+                                playedColor: ColorsManager.coralBlaze,
+                                bufferedColor: Colors.white.withOpacity(0.3),
+                                backgroundColor: Colors.white.withOpacity(0.1),
+                              ),
+                            ),
+
+                            SizedBox(height: 1.h),
+
+                            // Time display and controls
+                            Row(
+                              children: [
+                                // Current time / Total time
+                                Text(
+                                  "${_formatDuration(_videoController!.value.position)} / ${_formatDuration(_videoController!.value.duration)}",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+
+                                Spacer(),
+
+                                // Replay button
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.6),
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.replay,
+                                      color: Colors.white,
+                                      size: 20.sp,
+                                    ),
+                                    onPressed: _replayVideo,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // Show/hide controls on video end
+            if (_videoController!.value.position >=
+                    _videoController!.value.duration &&
+                _videoController!.value.duration.inSeconds > 0)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.replay,
+                          color: Colors.white,
+                          size: 64.sp,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          "Video Ended",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        ElevatedButton.icon(
+                          onPressed: _replayVideo,
+                          icon: Icon(Icons.replay),
+                          label: Text("Replay"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorsManager.coralBlaze,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    // Default: show image
     return Stack(
       children: [
         Image.network(
@@ -449,6 +777,7 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) return child;
             return Container(
+              width: double.infinity,
               color: const Color(0xFFF8FAFC),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -659,8 +988,10 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
   }
 
   void _showFullScreenImage(BuildContext context) {
-    // Only show if mediaLink is available
+    // Only show if mediaLink is available & not a video
+
     if (mediaLink == null) return;
+    if (_isVideo(mediaLink)) return;
 
     showDialog(
       context: context,
@@ -775,6 +1106,59 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
         return const Color(0xFF10B981); // Emerald
       default:
         return const Color(0xFF6B7280); // Gray
+    }
+  }
+// Add these helper methods to your class:
+
+  void _toggleControls() {
+    setState(() {
+      _showControls = !_showControls;
+    });
+    _resetHideTimer();
+  }
+
+  void _togglePlayPause() {
+    setState(() {
+      if (_videoController!.value.isPlaying) {
+        _videoController!.pause();
+      } else {
+        _videoController!.play();
+      }
+    });
+    _resetHideTimer();
+  }
+
+  void _replayVideo() {
+    _videoController!.seekTo(Duration.zero);
+    _videoController!.play();
+    setState(() {
+      _showControls = true;
+    });
+    _resetHideTimer();
+  }
+
+  void _resetHideTimer() {
+    _hideControlsTimer?.cancel();
+    if (_videoController!.value.isPlaying) {
+      _hideControlsTimer = Timer(Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            _showControls = false;
+          });
+        }
+      });
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+
+    if (duration.inHours > 0) {
+      return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+    } else {
+      return "$twoDigitMinutes:$twoDigitSeconds";
     }
   }
 }
