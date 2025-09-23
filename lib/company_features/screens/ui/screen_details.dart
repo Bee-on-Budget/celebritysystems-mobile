@@ -360,23 +360,23 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
           _buildSectionHeader('ticket_details'.tr(), Icons.info_outline),
           SizedBox(height: 12),
 
-          if (ticket.ticketImageUrl != null) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                ticket.ticketImageUrl!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 200,
-                  color: Colors.grey[200],
-                  child: Center(child: Icon(Icons.image_not_supported)),
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-          ],
+          // if (ticket.ticketImageUrl != null) ...[
+          //   ClipRRect(
+          //     borderRadius: BorderRadius.circular(8),
+          //     child: Image.network(
+          //       ticket.ticketImageUrl!,
+          //       height: 200,
+          //       width: double.infinity,
+          //       fit: BoxFit.cover,
+          //       errorBuilder: (context, error, stackTrace) => Container(
+          //         height: 200,
+          //         color: Colors.grey[200],
+          //         child: Center(child: Icon(Icons.image_not_supported)),
+          //       ),
+          //     ),
+          //   ),
+          //   SizedBox(height: 16),
+          // ],
 
           _buildInfoGrid([
             {'label': 'assigned_by'.tr(), 'value': ticket.createdBy},
@@ -604,29 +604,29 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
         SizedBox(height: 16),
 
         // Solution image
-        Text(
-          'ticket_image'.tr(),
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-            color: Colors.grey[800],
-          ),
-        ),
-        SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            report.solutionImage,
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              height: 200,
-              color: Colors.grey[200],
-              child: Center(child: Icon(Icons.image_not_supported)),
-            ),
-          ),
-        ),
+        // Text(
+        //   'ticket_image'.tr(),
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.w600,
+        //     fontSize: 16,
+        //     color: Colors.grey[800],
+        //   ),
+        // ),
+        // SizedBox(height: 8),
+        // ClipRRect(
+        //   borderRadius: BorderRadius.circular(8),
+        //   child: Image.network(
+        //     report.solutionImage,
+        //     height: 200,
+        //     width: double.infinity,
+        //     fit: BoxFit.cover,
+        //     errorBuilder: (context, error, stackTrace) => Container(
+        //       height: 200,
+        //       color: Colors.grey[200],
+        //       child: Center(child: Icon(Icons.image_not_supported)),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

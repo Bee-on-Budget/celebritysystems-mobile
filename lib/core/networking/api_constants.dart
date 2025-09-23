@@ -1,11 +1,11 @@
 class ApiConstants {
-  static const String apiBaseUrl = "http://192.168.1.103:8080/api/";
+  // static const String apiBaseUrl = "http://192.168.1.103:8080/api/";
   // static const String apiBaseUrl =
   //     "https://dashboard-be.celebritysystems.com/api/";
   // static const String apiBaseUrl = "http://127.0.0.1:8080/api/";
 
   // static const String apiBaseUrl = "http://localhost:8080/api/";
-  // static const String apiBaseUrl = "http://10.0.2.2:8080/api/";
+  static const String apiBaseUrl = "http://10.0.2.2:8080/api/";
 
   static const String login = "auth/login";
   static const String tickets = "tickets";
