@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:celebritysystems_mobile/core/helpers/constants.dart';
+import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/networking/api_result.dart'
     as result;
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_count.dart';
@@ -64,5 +68,18 @@ class HomeCubit extends Cubit<HomeState> {
         final msg = "Failed to download image";
     }
     return "nth";
+  }
+
+  Future<void> sendImage(int ticketId, File fileImage) async {
+    String userId = await SharedPrefHelper.getString(SharedPrefKeys.userId);
+    final image = await _ticketRepo.sendImage(ticketId, fileImage, userId);
+
+    switch (image) {
+      case result.Success():
+        break;
+      case result.Failure(:final errorHandler):
+        final msg = "Failed to download image";
+        break;
+    }
   }
 }

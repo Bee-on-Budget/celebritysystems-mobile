@@ -8,11 +8,13 @@ import '../theming/colors.dart';
 class ImagePickerWidget extends StatefulWidget {
   final Function(File? image) onImageSelected;
   final String? initialImagePath;
+  final bool? cameraOnly;
 
   const ImagePickerWidget({
     super.key,
     required this.onImageSelected,
     this.initialImagePath,
+    this.cameraOnly = false,
   });
 
   @override
@@ -94,21 +96,23 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _pickImage(ImageSource.gallery);
-                      },
-                      icon: const Icon(Icons.photo_library),
-                      label: Text('gallery'.tr()),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorsManager.coralBlaze,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
+                  widget.cameraOnly == true
+                      ? const SizedBox.shrink()
+                      : Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _pickImage(ImageSource.gallery);
+                            },
+                            icon: const Icon(Icons.photo_library),
+                            label: Text('gallery'.tr()),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorsManager.coralBlaze,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
+                        ),
                 ],
               ),
               const SizedBox(height: 16),

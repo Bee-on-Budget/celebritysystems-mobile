@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:celebritysystems_mobile/core/widgets/image_picker_widget.dart';
 import 'package:video_player/video_player.dart';
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/theming/colors.dart';
@@ -72,35 +75,61 @@ class _TicketDetailsScreenState extends State<TicketDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: _buildModernAppBar(context),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                children: [
-                  _buildTicketHeader(),
-                  SizedBox(height: 16.h),
-                  _buildDetailsCard(),
-                  SizedBox(height: 16.h),
-                  clickableLinkWidget(
-                      icon: Icons.location_on,
-                      title: 'location'.tr(),
-                      url: widget.ticket.location ?? "",
-                      cardColor: Colors.white),
-                  SizedBox(height: 16.h),
-                  _buildImageCard(context),
-                  SizedBox(height: 16.h),
-                  _buildStatusAndActionCard(context),
-                  SizedBox(height: 24.h),
-                ],
+    return BlocProvider(
+      create: (context) => HomeCubit(getIt()),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF8FAFC),
+        appBar: _buildModernAppBar(context),
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  children: [
+                    _buildTicketHeader(),
+                    SizedBox(height: 16.h),
+                    _buildDetailsCard(),
+                    SizedBox(height: 16.h),
+                    clickableLinkWidget(
+                        icon: Icons.location_on,
+                        title: 'location'.tr(),
+                        url: widget.ticket.location ?? "",
+                        cardColor: Colors.white),
+                    SizedBox(height: 16.h),
+                    _buildImageCard(context),
+                    SizedBox(height: 16.h),
+                    ImagePickerWidget(
+                      cameraOnly: true,
+                      onImageSelected: (image) async {
+                        try {
+                          // Create HomeCubit instance directly
+                          final homeCubit = HomeCubit(getIt());
+                          await homeCubit.sendImage(widget.ticket.id!, image!);
+
+                          // Optionally show success message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Image uploaded successfully')),
+                          );
+                        } catch (e) {
+                          // Handle error
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Failed to upload image: $e')),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 16.h),
+                    _buildStatusAndActionCard(context),
+                    SizedBox(height: 24.h),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

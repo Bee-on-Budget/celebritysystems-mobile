@@ -19,4 +19,9 @@ abstract class TicketApiService {
 
   @GET('tickets/{id}/image/download')
   Future<String> downloadImage(@Path('id') int ticketId);
+
+  @POST('/attachments')
+  Future<void> sendImage(
+    @Body() FormData formData,
+  );
 }
