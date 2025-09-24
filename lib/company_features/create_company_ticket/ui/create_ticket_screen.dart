@@ -650,7 +650,8 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     return PrimaryButton(
       text:
           isLoading ? 'creating_ticket...'.tr() : 'create_support_ticket'.tr(),
-      onPressed: _submitTicket,
+      onPressed: isLoading ? () {} : _submitTicket,
+      isExpanded: true,
     );
   }
 

@@ -100,11 +100,11 @@ class _ContractScreenState extends State<ContractScreen>
                           child: _buildStatItem('total_contracts'.tr(),
                               '${contracts.length}', Icons.description),
                         ),
-                        Container(width: 1, height: 40, color: Colors.white24),
-                        Expanded(
-                          child: _buildStatItem(
-                              'active'.tr(), '2', Icons.check_circle),
-                        ),
+                        // Container(width: 1, height: 40, color: Colors.white24),
+                        // Expanded(
+                        //   child: _buildStatItem(
+                        //       'active'.tr(), '2', Icons.check_circle),
+                        // ),
                         Container(width: 1, height: 40, color: Colors.white24),
                         Expanded(
                           child: _buildStatItem(
