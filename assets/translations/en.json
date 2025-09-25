@@ -196,5 +196,6 @@
     "add_media": "Add Media",
     "record_video": "Record Video",
     "video_limit_10s": "Video limit 10s",
-    "description": "description"
+    "description": "description",
+    "ticket": "Ticket"
 }

@@ -152,7 +152,7 @@ class CompanyTicketDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Ticket #${ticket.id}',
+                    '${"ticket".tr()} #${ticket.id}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
