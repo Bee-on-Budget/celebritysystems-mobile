@@ -8,15 +8,15 @@ part of 'contract_response.dart';
 
 Contract _$ContractFromJson(Map<String, dynamic> json) => Contract(
       id: (json['id'] as num).toInt(),
-      info: json['info'] as String,
+      info: json['info'] as String?,
       startContractAt: DateTime.parse(json['startContractAt'] as String),
       expiredAt: DateTime.parse(json['expiredAt'] as String),
       companyId: (json['companyId'] as num).toInt(),
-      supplyType: json['supplyType'] as String,
-      operatorType: json['operatorType'] as String,
-      accountName: json['accountName'] as String,
-      durationType: json['durationType'] as String,
-      contractValue: (json['contractValue'] as num).toInt(),
+      supplyType: json['supplyType'] as String?,
+      operatorType: json['operatorType'] as String?,
+      accountName: json['accountName'] as String?,
+      durationType: json['durationType'] as String?,
+      contractValue: (json['contractValue'] as num?)?.toInt(),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),

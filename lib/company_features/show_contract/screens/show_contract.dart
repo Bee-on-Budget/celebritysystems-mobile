@@ -238,7 +238,7 @@ class _ContractScreenState extends State<ContractScreen>
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            contract.accountName,
+                            contract.accountName ?? "account Name is Null",
                             style: const TextStyle(
                               fontSize: 14,
                               color: Color(0xFF64748B),
@@ -264,25 +264,27 @@ class _ContractScreenState extends State<ContractScreen>
                         Expanded(
                           child: _buildInfoItem(
                             'duration'.tr(),
-                            contract.durationType.toLowerCase().replaceFirst(
-                                contract.durationType[0],
-                                contract.durationType[0].toUpperCase()),
+                            contract.durationType?.toLowerCase().replaceFirst(
+                                    contract.durationType![0],
+                                    contract.durationType![0].toUpperCase()) ??
+                                "durationType is Null",
                             Icons.schedule,
                           ),
                         ),
                         Expanded(
                           child: _buildInfoItem(
                             'value'.tr(),
-                            '\$${contract.contractValue.toStringAsFixed(0)}',
+                            '\$${contract.contractValue?.toStringAsFixed(0) ?? "Null"}',
                             Icons.attach_money,
                           ),
                         ),
                         Expanded(
                           child: _buildInfoItem(
                             'type'.tr(),
-                            contract.operatorType.toLowerCase().replaceFirst(
-                                contract.operatorType[0],
-                                contract.operatorType[0].toUpperCase()),
+                            contract.operatorType?.toLowerCase().replaceFirst(
+                                    contract.operatorType![0],
+                                    contract.operatorType![0].toUpperCase()) ??
+                                "operatorType is Null",
                             Icons.business,
                           ),
                         ),

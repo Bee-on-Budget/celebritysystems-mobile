@@ -5,15 +5,15 @@ part 'contract_response.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Contract {
   final int id;
-  final String info;
+  final String? info;
   final DateTime startContractAt;
   final DateTime expiredAt;
   final int companyId;
-  final String supplyType;
-  final String operatorType;
-  final String accountName;
-  final String durationType;
-  final int contractValue;
+  final String? supplyType;
+  final String? operatorType;
+  final String? accountName;
+  final String? durationType;
+  final int? contractValue;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<int> screenIds;
