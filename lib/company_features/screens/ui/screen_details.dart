@@ -2,6 +2,7 @@ import 'package:celebritysystems_mobile/company_features/home/data/models/compan
 import 'package:celebritysystems_mobile/company_features/screens/data/models/ticket_history_response.dart';
 import 'package:celebritysystems_mobile/company_features/screens/logic/screen_cubit/screen_cubit.dart';
 import 'package:celebritysystems_mobile/company_features/screens/logic/screen_cubit/screen_state.dart';
+import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/core/widgets/clickable_link.dart';
 import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
@@ -39,13 +40,13 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
   Color getStatusColor(String status) {
     switch (status) {
       case 'OPEN':
-        return Colors.red;
+        return const Color(0xFF4A90E2); // Blue;
       case 'IN_PROGRESS':
-        return Colors.orange;
+        return const Color(0xFF7B68EE); // Purple-ish
       case 'RESOLVED':
-        return Colors.blue;
+        return const Color(0xFF8E8E93); // Grey
       case 'CLOSED':
-        return Colors.green;
+        return const Color(0xFF28C76F); // Green
       default:
         return Colors.grey;
     }
@@ -88,14 +89,18 @@ class _ScreenHistoryPageState extends State<ScreenHistoryPage> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.blue[600]!, Colors.blue[800]!],
+                        // colors: [Colors.blue[600]!, Colors.blue[800]!],
+                        colors: [
+                          ColorsManager.royalIndigo!,
+                          ColorsManager.coralBlaze!,
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.blue.withOpacity(0.3),
+                          color: Colors.green.withOpacity(0.3),
                           blurRadius: 10,
                           offset: Offset(0, 5),
                         ),

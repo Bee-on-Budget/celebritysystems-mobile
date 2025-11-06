@@ -3,6 +3,7 @@ import 'package:celebritysystems_mobile/company_features/show_contract/logic/con
 import 'package:celebritysystems_mobile/company_features/show_contract/logic/contract_cubit/contract_state.dart';
 import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+import 'package:celebritysystems_mobile/core/theming/colors.dart';
 import 'package:celebritysystems_mobile/core/widgets/error_widget.dart';
 import 'package:celebritysystems_mobile/core/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -83,12 +84,15 @@ class _ContractScreenState extends State<ContractScreen>
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                        colors: [
+                          ColorsManager.royalIndigo,
+                          ColorsManager.coralBlaze,
+                        ],
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF3B82F6).withOpacity(0.3),
+                          color: ColorsManager.royalIndigo.withOpacity(0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
