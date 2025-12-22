@@ -82,7 +82,8 @@ class _TicketApiService implements TicketApiService {
   Future<String> downloadImage(int ticketId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Accept': '*/*'};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<String>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -122,31 +123,6 @@ class _TicketApiService implements TicketApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     await _dio.fetch<void>(_options);
-  }
-
-  RequestOptions newRequestOptions(Object? options) {
-    if (options is RequestOptions) {
-      return options as RequestOptions;
-    }
-    if (options is Options) {
-      return RequestOptions(
-        method: options.method,
-        sendTimeout: options.sendTimeout,
-        receiveTimeout: options.receiveTimeout,
-        extra: options.extra,
-        headers: options.headers,
-        responseType: options.responseType,
-        contentType: options.contentType.toString(),
-        validateStatus: options.validateStatus,
-        receiveDataWhenStatusError: options.receiveDataWhenStatusError,
-        followRedirects: options.followRedirects,
-        maxRedirects: options.maxRedirects,
-        requestEncoder: options.requestEncoder,
-        responseDecoder: options.responseDecoder,
-        path: '',
-      );
-    }
-    return RequestOptions(path: '');
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

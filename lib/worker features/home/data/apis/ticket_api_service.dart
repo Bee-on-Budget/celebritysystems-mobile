@@ -1,6 +1,6 @@
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_count.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' hide Headers;
 import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/networking/api_constants.dart';
@@ -18,6 +18,7 @@ abstract class TicketApiService {
   Future<TicketsCount> getTicketsCount(@Path('username') String username);
 
   @GET('tickets/{id}/image/download')
+  @Headers({'Accept': '*/*'})
   Future<String> downloadImage(@Path('id') int ticketId);
 
   @POST('/attachments')
