@@ -19,6 +19,12 @@ class LoginCubit extends Cubit<LoginState> {
   final TextEditingController passwordController = TextEditingController();
 
   void emitLoginStates() async {
+    // Reset to initial state first to ensure clean state transitions
+    emit(LoginState.initial());
+
+    // Small delay to ensure state change is registered
+    await Future.delayed(const Duration(milliseconds: 50));
+
     emit(LoginState.loading());
 
     print("******************************************");
@@ -53,6 +59,10 @@ class LoginCubit extends Cubit<LoginState> {
           error: errorHandler.apiErrorModel.message ?? 'failure happened',
         ));
     }
+  }
+
+  void resetState() {
+    emit(LoginState.initial());
   }
 
   Future<void> sendSubscreptionId(String subscriptionId, int userId) async {

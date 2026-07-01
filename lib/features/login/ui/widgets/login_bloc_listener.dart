@@ -26,9 +26,33 @@ class LoginBlocListener extends StatelessWidget {
           case Loading():
             showDialog(
               context: context,
-              builder: (context) => const Center(
-                child: CircularProgressIndicator(
-                  color: ColorsManager.royalIndigo,
+              barrierDismissible: false,
+              builder: (context) => PopScope(
+                canPop: false,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(
+                          color: ColorsManager.royalIndigo,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'logging_in'.tr(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             );
@@ -104,6 +128,12 @@ class LoginBlocListener extends StatelessWidget {
           case Error(:final error):
             setupErrorState(
                 context, "invalid_credential_check_email_password".tr());
+            // Reset cubit state after error is shown
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (context.mounted) {
+                context.read<LoginCubit>().resetState();
+              }
+            });
             break;
 
           default:

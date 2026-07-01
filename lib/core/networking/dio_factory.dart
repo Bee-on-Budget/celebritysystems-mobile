@@ -10,13 +10,17 @@ class DioFactory {
   static Dio? dio;
 
   static Dio getDio() {
-    Duration timeOut = const Duration(seconds: 30);
+    // Aggressive timeout for fast error responses
+    Duration connectTimeout = const Duration(seconds: 5);
+    Duration receiveTimeout = const Duration(seconds: 5);
+    Duration sendTimeout = const Duration(seconds: 5);
 
     if (dio == null) {
       dio = Dio();
       dio!
-        ..options.connectTimeout = timeOut
-        ..options.receiveTimeout = timeOut;
+        ..options.connectTimeout = connectTimeout
+        ..options.receiveTimeout = receiveTimeout
+        ..options.sendTimeout = sendTimeout;
       addDioHeaders();
       addDioInterceptor();
       return dio!;
@@ -26,6 +30,22 @@ class DioFactory {
   }
 
   static void addDioInterceptor() {
+    // Add error interceptor first to handle errors quickly
+    dio?.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) {
+          // Handle specific error types for faster feedback
+          if (error.type == DioExceptionType.connectionTimeout ||
+              error.type == DioExceptionType.sendTimeout ||
+              error.type == DioExceptionType.receiveTimeout) {
+            print('⚠️ Request timeout - returning error immediately');
+          }
+          return handler.next(error);
+        },
+      ),
+    );
+
+    // Add logger
     dio?.interceptors.add(
       PrettyDioLogger(
         requestBody: true,
@@ -49,5 +69,12 @@ class DioFactory {
     dio?.options.headers = {
       'Authorization': 'Bearer $token',
     };
+  }
+
+  /// Reset Dio instance after logout to clear all state
+  static void resetDioAfterLogout() {
+    dio?.interceptors.clear();
+    dio?.close(force: true);
+    dio = null;
   }
 }

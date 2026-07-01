@@ -1,6 +1,7 @@
 import 'package:celebritysystems_mobile/core/di/dependency_injection.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/helpers/user_model.dart';
+import 'package:celebritysystems_mobile/core/networking/dio_factory.dart';
 import 'package:celebritysystems_mobile/features/login/logic/login%20cubit/login_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
@@ -28,6 +29,8 @@ class UserCubit extends Cubit<UserModel?> {
     await SharedPrefHelper.clearAllSecuredData();
     //delete playerId in DB
     await loginCubit.sendSubscreptionId(" ", userId);
+    // Reset Dio instance to clear all network state
+    DioFactory.resetDioAfterLogout();
     emit(null);
   }
 

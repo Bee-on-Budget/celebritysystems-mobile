@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version:*)",
+      "Bash(flutter pub get:*)",
+      "Bash(git checkout:*)",
+      "Bash(flutter channel:*)",
+      "Bash(flutter upgrade:*)",
+      "Bash(flutter build:*)",
+      "Bash(tasklist:*)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Mohammed Skouti\\\\celebritysystems-mobile\\\\lib\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(mkdir -p /c/Android/Sdk && echo \"Directory created\")",
+      "PowerShell(robocopy \"C:\\\\Users\\\\Mohammed Skouti\\\\AppData\\\\Local\\\\Android\\\\Sdk\" \"C:\\\\Android\\\\Sdk\" /E /NFL /NDL /NJH /NJS /nc /ns /np)",
+      "PowerShell(\\(Get-ChildItem \"C:\\\\Android\\\\Sdk\" -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum\\).Sum / 1GB)",
+      "PowerShell(\\(Get-ChildItem \"C:\\\\Users\\\\Mohammed Skouti\\\\AppData\\\\Local\\\\Android\\\\Sdk\" -Recurse -ErrorAction SilentlyContinue | Measure-Object -Property Length -Sum\\).Sum / 1GB)",
+      "PowerShell(Invoke-WebRequest -Uri \"https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip\" -OutFile \"C:\\\\Android\\\\cmdline-tools.zip\" -UseBasicParsing)",
+      "PowerShell(\\(Get-Item \"C:\\\\Android\\\\cmdline-tools.zip\" -ErrorAction SilentlyContinue\\).Length / 1MB)",
+      "PowerShell(Expand-Archive -Path \"C:\\\\Android\\\\cmdline-tools.zip\" -DestinationPath \"C:\\\\Android\\\\cmdline-tools-temp\" -Force)",
+      "PowerShell(flutter config --android-sdk \"C:\\\\Android\\\\Sdk\")",
+      "Bash(flutter config *)",
+      "PowerShell(& \"C:\\\\src\\\\flutter\\\\bin\\\\flutter.bat\" config --android-sdk \"C:\\\\Android\\\\Sdk\")",
+      "Bash(keytool -genkey -v -keystore \"C:\\\\Users\\\\Mohammed Skouti\\\\celebritysystems-mobile\\\\android\\\\app\\\\release.keystore\" -alias celebrity -keyalg RSA -keysize 2048 -validity 10000 -storepass \"Poiasd!03\" -keypass \"Poiasd!03\" -dname \"CN=Celebrity Systems, OU=Mobile, O=Celebrity Systems, L=Unknown, S=Unknown, C=US\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Mohammed Skouti\\\\celebritysystems-mobile\\\\android\\\\app\\\\src\\\\main\\\\kotlin\\\\com\\\\celebritysystems_mobile\")",
+      "PowerShell(Move-Item -Path \"C:\\\\Users\\\\Mohammed Skouti\\\\celebritysystems-mobile\\\\android\\\\app\\\\src\\\\main\\\\kotlin\\\\com\\\\example\\\\celebritysystems_mobile\\\\MainActivity.kt\" -Destination \"C:\\\\Users\\\\Mohammed Skouti\\\\celebritysystems-mobile\\\\android\\\\app\\\\src\\\\main\\\\kotlin\\\\com\\\\celebritysystems_mobile\\\\MainActivity.kt\")",
+      "PowerShell(Get-Process -Name \"java\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)"
+    ],
+    "additionalDirectories": [
+      "C:\\Android",
+      "C:\\Android\\cmdline-tools-temp\\cmdline-tools",
+      "C:\\Users\\Mohammed Skouti\\AppData\\Local\\Android\\Sdk\\cmdline-tools"
+    ]
+  }
+}

@@ -10,7 +10,7 @@ part of 'report_api_service.dart';
 
 class _ReportApiService implements ReportApiService {
   _ReportApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://10.0.2.2:8080/api/';
+    baseUrl ??= 'https://dashboard-be.celebritysystems.com/api/';
   }
 
   final Dio _dio;

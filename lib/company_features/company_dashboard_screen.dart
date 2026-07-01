@@ -23,15 +23,18 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
   late final int _companyId;
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [];
+  // Use late final for screens to avoid recreating them
+  late final List<Widget> _screens;
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _companyId = context.read<UserCubit>().state?.companyId ?? 0;
+    _pageController = PageController(initialPage: 0);
 
-    // Initialize screens list
-    _screens.addAll([
+    // Initialize screens list once
+    _screens = [
       CompanyHomeScreen(),
       BlocProvider(
         create: (context) => CompanyHomeCubit(
@@ -49,12 +52,17 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
             subcontractRepo: getIt()),
         child: ReportScreen(),
       ),
-      // ReportScreen(),
       BlocProvider(
         create: (context) => ProfileCubit(getIt()),
         child: CompanyDetailsScreen(),
       ),
-    ]);
+    ];
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   // @override
@@ -89,38 +97,47 @@ class _CompanyDashboardScreenState extends State<CompanyDashboardScreen> {
       },
       child: Scaffold(
         backgroundColor: ColorsManager.mistWhite,
-        body: _screens[_currentIndex],
-        bottomNavigationBar: Builder(builder: (context) {
-          final locale = context.locale; // force dependency on locale
-          return BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _currentIndex,
-            onTap: _onTabTapped,
-            selectedItemColor: ColorsManager.coralBlaze,
-            unselectedItemColor: Colors.grey,
-            backgroundColor: Colors.white,
-            elevation: 8,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.confirmation_number),
-                label: 'tickets'.tr(),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.screen_share),
-                label: 'screens'.tr(),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.assessment),
-                label: 'reports'.tr(),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.business),
-                label: 'company'.tr(),
-              ),
-            ],
-          );
-        }),
+        // Use IndexedStack to preserve state and avoid rebuilding screens
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _screens,
+        ),
+        bottomNavigationBar: _buildBottomNavigationBar(),
       ),
     );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Builder(builder: (context) {
+      // Rebuild when locale changes
+      context.locale;
+      return BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
+        selectedItemColor: ColorsManager.coralBlaze,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
+        elevation: 8,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.confirmation_number),
+            label: 'tickets'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.screen_share),
+            label: 'screens'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assessment),
+            label: 'reports'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business),
+            label: 'company'.tr(),
+          ),
+        ],
+      );
+    });
   }
 }
