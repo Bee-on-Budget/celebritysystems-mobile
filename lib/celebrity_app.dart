@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'dart:async';
 import 'package:celebritysystems_mobile/core/routing/app_router.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:celebritysystems_mobile/core/theming/app_theme.dart';
@@ -21,7 +22,18 @@ class _CelebrityAppState extends State<CelebrityApp> {
   @override
   void initState() {
     super.initState();
-    setupOneSignalHandlers();
+    unawaited(_initializeNotifications());
+  }
+
+  Future<void> _initializeNotifications() async {
+    await initOneSignal();
+    if (!mounted) return;
+
+    try {
+      setupOneSignalHandlers();
+    } catch (e) {
+      debugPrint("OneSignal handlers skipped: $e");
+    }
   }
 
   void setupOneSignalHandlers() {

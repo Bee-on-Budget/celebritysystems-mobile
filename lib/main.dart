@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'dart:async';
 import 'dart:math' as math;
 import 'core/helpers/constants.dart';
 import 'core/helpers/shared_pref_helper.dart';
@@ -19,11 +20,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  // Load environment variables
-  // await dotenv.load(fileName: ".env");
-
-  // Initialize OneSignal first (basic setup only)
-  await initOneSignal();
 
   final token =
       await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken);
@@ -39,7 +35,7 @@ void main() async {
 
   if (!token.toString().isNullOrEmpty()) {
     print("Loading user from existing token...");
-    await userCubit.loadUserFromToken(token!);
+    await userCubit.loadUserFromToken(token);
     final user = userCubit.state;
     print("User loaded: ${user != null ? "Yes" : "No"}");
     if (user != null) {
@@ -77,20 +73,30 @@ void main() async {
 }
 
 Future<void> initOneSignal() async {
-  // Replace with your actual OneSignal App ID
-  OneSignal.initialize("18424b3e-8fed-4057-875a-9a9b2137df00");
+  try {
+    // Replace with your actual OneSignal App ID
+    OneSignal.initialize("18424b3e-8fed-4057-875a-9a9b2137df00");
 
-  // Store subscription ID after initialization
-  Future.delayed(Duration(seconds: 3), () async {
-    String? subscriptionId = OneSignal.User.pushSubscription.id;
-    print("Subscription ID: $subscriptionId");
+    // Store subscription ID after initialization.
+    unawaited(Future.delayed(const Duration(seconds: 3), () async {
+      try {
+        String? subscriptionId = OneSignal.User.pushSubscription.id;
+        print("Subscription ID: $subscriptionId");
 
-    await SharedPrefHelper.setData(
-        SharedPrefKeys.oneSignalUserId, subscriptionId);
-  });
+        if (subscriptionId != null && subscriptionId.isNotEmpty) {
+          await SharedPrefHelper.setData(
+              SharedPrefKeys.oneSignalUserId, subscriptionId);
+        }
+      } catch (e) {
+        debugPrint("Unable to store OneSignal subscription ID: $e");
+      }
+    }));
 
-  // Request permission for notifications
-  OneSignal.Notifications.requestPermission(true);
+    // Request permission for notifications without blocking app launch.
+    unawaited(OneSignal.Notifications.requestPermission(false));
+  } catch (e) {
+    debugPrint("OneSignal initialization skipped: $e");
+  }
 
   // Note: Detailed handlers are now set up in CelebrityApp class
   // This keeps the main.dart clean and allows access to navigation context
