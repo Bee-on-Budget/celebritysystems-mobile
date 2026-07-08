@@ -1,5 +1,6 @@
 import 'package:celebritysystems_mobile/company_features/home/data/models/company_screen_model.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/models/subcontract_response.dart';
+import 'package:celebritysystems_mobile/core/helpers/review_content_filter.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/company_repo.dart';
 import 'package:celebritysystems_mobile/company_features/home/data/repos/subcontract_repo.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,7 +40,14 @@ class CompanyHomeCubit extends Cubit<CompanyHomeState> {
     // Extract ticket data
     switch (ticketsResult) {
       case result.Success(:final data):
-        tickets = data;
+        tickets = data
+            .where((ticket) => !ReviewContentFilter.hasPlaceholderContent([
+                  ticket.title,
+                  ticket.description,
+                  ticket.screenName,
+                  ticket.companyName,
+                ]))
+            .toList();
         break;
       case result.Failure(:final errorHandler):
         final msg = errorHandler.apiErrorModel.message ??

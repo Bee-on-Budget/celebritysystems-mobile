@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:celebritysystems_mobile/core/helpers/constants.dart';
 import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
+import 'package:celebritysystems_mobile/core/helpers/review_content_filter.dart';
 import 'package:celebritysystems_mobile/core/networking/api_result.dart'
     as result;
-import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_count.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/models/tickets_response.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/data/repos/ticket_repo.dart';
 import 'package:celebritysystems_mobile/worker%20features/home/logic/home%20cubit/home_state.dart';
@@ -21,15 +21,20 @@ class HomeCubit extends Cubit<HomeState> {
     emit(Loading<List<OneTicketResponse>>());
 
     final ticketsResult = await _ticketRepo.getTickets(username);
-    final countResult = await _ticketRepo.getTicketsCount(username);
 
     List<OneTicketResponse> tickets = [];
-    TicketsCount? count;
 
     // Extract ticket data
     switch (ticketsResult) {
       case result.Success(:final data):
-        tickets = data;
+        tickets = data
+            .where((ticket) => !ReviewContentFilter.hasPlaceholderContent([
+                  ticket.title,
+                  ticket.description,
+                  ticket.screenName,
+                  ticket.companyName,
+                ]))
+            .toList();
       case result.Failure(:final errorHandler):
         final msg =
             errorHandler.apiErrorModel.message ?? "Failed to load tickets";
@@ -37,20 +42,14 @@ class HomeCubit extends Cubit<HomeState> {
         return;
     }
 
-    // Extract count data
-    switch (countResult) {
-      case result.Success(:final data):
-        count = data;
-      case result.Failure(:final errorHandler):
-        final msg =
-            errorHandler.apiErrorModel.message ?? "Failed to load counts";
-        emit(Error<List<OneTicketResponse>>(error: msg));
-        return;
-    }
 
-    // Assign count values
-    assignedCount = count?.assignedCount ?? 0;
-    completedCount = count?.completedCount ?? 0;
+    // Keep counters aligned with the tickets visible in the app.
+    assignedCount = tickets
+        .where((ticket) => ticket.status?.toLowerCase() != 'closed')
+        .length;
+    completedCount = tickets
+        .where((ticket) => ticket.status?.toLowerCase() == 'closed')
+        .length;
 
     emit(Success<List<OneTicketResponse>>(tickets));
   }
