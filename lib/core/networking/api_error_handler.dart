@@ -142,26 +142,47 @@ ApiErrorModel _handleError(DioException error) {
     case DioExceptionType.receiveTimeout:
       return DataSource.RECIEVE_TIMEOUT.getFailure();
     case DioExceptionType.badResponse:
-      if (error.response != null &&
-          error.response?.statusCode != null &&
-          error.response?.statusMessage != null) {
-        return ApiErrorModel.fromJson(error.response!.data);
-      } else {
-        return DataSource.DEFAULT.getFailure();
-      }
+      return _mapResponseError(error);
     case DioExceptionType.unknown:
-      if (error.response != null &&
-          error.response?.statusCode != null &&
-          error.response?.statusMessage != null) {
-        return ApiErrorModel.fromJson(error.response!.data);
-      } else {
-        return DataSource.DEFAULT.getFailure();
-      }
+      return _mapResponseError(error);
     case DioExceptionType.cancel:
       return DataSource.CANCEL.getFailure();
     case DioExceptionType.connectionError:
       return DataSource.DEFAULT.getFailure();
     case DioExceptionType.badCertificate:
+      return DataSource.DEFAULT.getFailure();
+  }
+}
+
+/// Safely turns a Dio response error into an [ApiErrorModel].
+///
+/// The server may return an error (e.g. 401) with a null body or a non-JSON
+/// body (plain text / HTML). Calling [ApiErrorModel.fromJson] on that throws
+/// `type 'Null' is not a subtype of type 'Map<String, dynamic>'`, which used to
+/// crash the app on failed logins. This maps by HTTP status code as a fallback.
+ApiErrorModel _mapResponseError(DioException error) {
+  final data = error.response?.data;
+
+  if (data is Map<String, dynamic>) {
+    try {
+      return ApiErrorModel.fromJson(data);
+    } catch (_) {
+      // Body wasn't shaped like an ApiErrorModel — fall back to status code.
+    }
+  }
+
+  switch (error.response?.statusCode) {
+    case ResponseCode.BAD_REQUEST:
+      return DataSource.BAD_REQUEST.getFailure();
+    case ResponseCode.UNAUTORISED:
+      return DataSource.UNAUTORISED.getFailure();
+    case ResponseCode.FORBIDDEN:
+      return DataSource.FORBIDDEN.getFailure();
+    case ResponseCode.NOT_FOUND:
+      return DataSource.NOT_FOUND.getFailure();
+    case ResponseCode.INTERNAL_SERVER_ERROR:
+      return DataSource.INTERNAL_SERVER_ERROR.getFailure();
+    default:
       return DataSource.DEFAULT.getFailure();
   }
 }

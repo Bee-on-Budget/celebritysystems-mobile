@@ -4,10 +4,7 @@ import 'package:celebritysystems_mobile/core/helpers/shared_pref_helper.dart';
 import 'package:celebritysystems_mobile/core/helpers/token_data_extractor.dart';
 import 'package:celebritysystems_mobile/core/routing/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -18,7 +15,6 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   bool _isRedirecting = false;
-  bool _isSupervisor = false;
 
   @override
   void initState() {
@@ -84,14 +80,11 @@ class _SplashPageState extends State<SplashPage> {
       print('Splash: Navigating to company dashboard screen');
       if (mounted) context.pushReplacementNamed(Routes.companyDashboardScreen);
     } else if (role == Constants.SUPERVISOR) {
-      print("Splash: Redirecting supervisor to web app...");
-      // Set the supervisor flag for UI updates
-      if (mounted) {
-        setState(() {
-          _isSupervisor = true;
-        });
-      }
-      await _launchWebApp();
+      print("Splash: Navigating supervisor to in-app dashboard");
+      // Open the dashboard inside the app (WebView) instead of an external
+      // browser — the homeScreen route detects the supervisor role and shows
+      // SupervisorWebAppScreen.
+      if (mounted) context.pushReplacementNamed(Routes.homeScreen);
     } else {
       print("Splash: Unknown role '$role', navigating to login");
       _navigateToLogin();
@@ -116,106 +109,9 @@ class _SplashPageState extends State<SplashPage> {
               width: 200.h,
               child: Image.asset('assets/images/logo.png'),
             ),
-            // Show loading indicator for supervisor redirect
-            if (_isRedirecting && _isSupervisor)
-              Padding(
-                padding: EdgeInsets.only(top: 50.h),
-                child: Column(
-                  children: [
-                    const CircularProgressIndicator(),
-                    SizedBox(height: 20.h),
-                    Text(
-                      'redirecting_to_dashboard'.tr(),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _launchWebApp() async {
-    final Uri url = Uri.parse('https://dashboard.celebritysystems.com/');
-
-    try {
-      print("Attempting to launch: $url");
-
-      final bool launched = await launchUrl(
-        url,
-        mode: LaunchMode.externalApplication,
-      );
-
-      if (launched) {
-        print("Successfully launched webapp");
-
-        // Show a dialog asking if they want to close the app
-        if (mounted) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('redirected_to_dashboard'.tr()),
-                content: const Text(
-                  'You have been redirected to the web dashboard. You can now close this app or return to login.',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      context.pushReplacementNamed(Routes.loginScreen);
-                    },
-                    child: Text('back_to_login'.tr()),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      SystemNavigator.pop(); // Close the app
-                    },
-                    child: Text('close_app'.tr()),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      } else {
-        print('Failed to launch $url');
-        _handleLaunchFailure();
-      }
-    } catch (e) {
-      print('Error launching web app: $e');
-      _handleLaunchFailure();
-    }
-  }
-
-  void _handleLaunchFailure() {
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('cannot_open_dashboard'.tr()),
-            content: const Text(
-              'Unable to open the web dashboard. Please check your internet connection or contact support.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  context.pushReplacementNamed(Routes.loginScreen);
-                },
-                child: Text('back_to_login'.tr()),
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 }

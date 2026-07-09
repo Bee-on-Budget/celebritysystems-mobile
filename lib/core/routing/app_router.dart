@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:celebritysystems_mobile/company_features/company_profile/logic/cubit/profile_cubit.dart';
@@ -189,7 +190,7 @@ class AppRouter {
           if (snapshot.data == true) {
             // 🔥 Supervisor -> Open in WebView
             return const SupervisorWebAppScreen(
-              url: "https://dashboard.celebritysystems.com/",
+              url: "https://dashboard.celebritysystems.com/dashboard",
             );
           }
 
@@ -236,6 +237,12 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   bool _shouldBlockBackButton = false;
   DateTime? _lastBackPressTime;
 
+  // Loading / error state so the supervisor never sees a blank white screen.
+  bool _isLoading = true;
+  bool _hasError = false;
+  Timer? _loadTimeoutTimer;
+  static const Duration _loadTimeout = Duration(seconds: 20);
+
   @override
   void initState() {
     super.initState();
@@ -248,6 +255,15 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
             print("onPageStarted $url");
             if (url.contains("/login")) {
               _onLogout();
+              return;
+            }
+            _startLoading();
+          },
+          onProgress: (progress) {
+            // Any real progress means the page is responding, so clear the
+            // error state if we had shown it.
+            if (progress > 0 && _hasError && mounted) {
+              setState(() => _hasError = false);
             }
           },
           onUrlChange: (url) {
@@ -275,8 +291,31 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
             return NavigationDecision.navigate;
           },
           onPageFinished: (url) {
+            _stopLoading();
             // Inject JavaScript to monitor logout button clicks
             _injectLogoutMonitor();
+            // Guard against pages that return HTTP 200 but render an empty
+            // body (e.g. auth not accepted in the webview) — that's a blank
+            // screen to the user even though no error fired.
+            _verifyContentRendered();
+          },
+          onWebResourceError: (error) {
+            print(
+                "onWebResourceError: ${error.description} (mainFrame: ${error.isForMainFrame})");
+            // Only surface errors for the main document; ignore failures of
+            // sub-resources (analytics, fonts, etc.) that don't break the page.
+            if (error.isForMainFrame ?? true) {
+              _showError();
+            }
+          },
+          onHttpError: (error) {
+            print(
+                "onHttpError: ${error.response?.statusCode} for ${error.request?.uri}");
+            final status = error.response?.statusCode ?? 0;
+            // A failed main-document request leaves a blank page.
+            if (status >= 400) {
+              _showError();
+            }
           },
         ),
       )
@@ -312,6 +351,75 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     } catch (e) {
       print("Error setting cookie: $e");
       controller.loadRequest(Uri.parse(widget.url));
+    }
+  }
+
+  void _startLoading() {
+    _loadTimeoutTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+    }
+    // Watchdog: if the page never finishes loading, show a retry UI instead
+    // of leaving the reviewer on a blank white screen.
+    _loadTimeoutTimer = Timer(_loadTimeout, () {
+      if (mounted && _isLoading) {
+        _showError();
+      }
+    });
+  }
+
+  void _stopLoading() {
+    _loadTimeoutTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showError() {
+    _loadTimeoutTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
+    }
+  }
+
+  void _retry() {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+    _setCookieAndLoad();
+  }
+
+  /// Checks whether the loaded page actually rendered any content. A page can
+  /// return HTTP 200 yet display nothing (empty body / failed client-side
+  /// auth), which the reviewer perceives as a blank screen.
+  Future<void> _verifyContentRendered() async {
+    try {
+      // Give SPA frameworks a moment to render into the DOM.
+      await Future.delayed(const Duration(milliseconds: 1500));
+      if (!mounted || _hasError) return;
+
+      final raw = await controller.runJavaScriptReturningResult(
+        "(function(){var b=document.body;if(!b)return 0;"
+        "var t=(b.innerText||'').trim().length;"
+        "var c=b.childElementCount||0;return t+c;})()",
+      );
+
+      final score = int.tryParse(raw.toString().replaceAll('"', '')) ?? 0;
+      if (score == 0 && mounted && !_hasError) {
+        print("Dashboard rendered empty content, showing retry UI");
+        _showError();
+      }
+    } catch (e) {
+      print("content check failed: $e");
     }
   }
 
@@ -444,9 +552,76 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
           await _handleBackPress();
         },
         child: Scaffold(
-          body: WebViewWidget(controller: controller),
+          backgroundColor: Colors.white,
+          body: Stack(
+            children: [
+              // Hide the webview while it errors so a half-loaded blank page
+              // isn't shown behind the error UI.
+              if (!_hasError) WebViewWidget(controller: controller),
+              if (_isLoading && !_hasError)
+                const ColoredBox(
+                  color: Colors.white,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              if (_hasError) _buildErrorView(),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildErrorView() {
+    return ColoredBox(
+      color: Colors.white,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.cloud_off, size: 64, color: Colors.grey),
+              const SizedBox(height: 16),
+              const Text(
+                'Unable to load the dashboard',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Please check your internet connection and try again.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: _retry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(Routes.loginScreen);
+                },
+                child: const Text('Back to login'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _loadTimeoutTimer?.cancel();
+    super.dispose();
   }
 }
