@@ -249,6 +249,21 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   int _autoRetryCount = 0;
   static const int _maxAutoRetries = 3;
 
+  // On iOS the first load can also reach the dashboard WITHOUT the jwt cookie
+  // (WKWebView commits it late), making the web app redirect to /login. That
+  // redirect does NOT mean the user logged out — so before treating it as a
+  // logout, re-set the cookie and reload a few times. Only a persistent
+  // /login bounce (or an explicit logout signal from the page) logs out.
+  int _loginRedirectRetries = 0;
+  static const int _maxLoginRedirectRetries = 3;
+  bool _handlingLoginRedirect = false;
+
+  // Once the dashboard has rendered real content, a later /login navigation
+  // is a REAL logout (the web app's logout only expires the jwt cookie — it
+  // never touches localStorage, so the FlutterLogout monitor won't fire).
+  // Repairing the cookie after that would make logging out impossible.
+  bool _dashboardRenderedOnce = false;
+
   @override
   void initState() {
     super.initState();
@@ -259,10 +274,8 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
         NavigationDelegate(
           onPageStarted: (url) {
             print("onPageStarted $url");
-            if (url.contains("/login")) {
-              _onLogout();
-              return;
-            }
+            // Keep the loading overlay up even while a /login bounce is being
+            // repaired, so the user never sees the web login page flash by.
             _startLoading();
           },
           onProgress: (progress) {
@@ -276,27 +289,25 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
             print("onUrlChange ${url.url}");
             if (url.url?.contains("/login") ?? false) {
               print("This is the new url ${url.url}");
-              _onLogout();
+              // SPA client-side route change to /login — the document exists,
+              // so we can repair the cookie from inside the page.
+              _handleLoginRedirect("onUrlChange: ${url.url}");
             }
           },
           onNavigationRequest: (request) {
             print("onNavigationRequest ${request.url}");
-            if (request.url.contains("/login")) {
-              setState(() {
-                _shouldBlockBackButton = true;
-              });
-              _onLogout();
-              return NavigationDecision.prevent;
-            }
-            // Reset back button blocking for other pages
-            if (_shouldBlockBackButton) {
-              setState(() {
-                _shouldBlockBackButton = false;
-              });
-            }
+            // IMPORTANT: allow the /login navigation instead of blocking it.
+            // We need the page to actually be on the dashboard origin so we
+            // can set the auth cookie from inside it via JavaScript (the
+            // native cookie API is unreliable on iOS). The loading overlay
+            // hides the login page while we repair and bounce back.
             return NavigationDecision.navigate;
           },
           onPageFinished: (url) {
+            if (url.contains("/login")) {
+              _handleLoginRedirect("onPageFinished: $url");
+              return;
+            }
             _stopLoading();
             // Inject JavaScript to monitor logout button clicks
             _injectLogoutMonitor();
@@ -307,7 +318,14 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
           },
           onWebResourceError: (error) {
             print(
-                "onWebResourceError: ${error.description} (mainFrame: ${error.isForMainFrame})");
+                "onWebResourceError: ${error.errorCode} ${error.description} (mainFrame: ${error.isForMainFrame})");
+            // Ignore cancellations (iOS NSURLErrorCancelled = -999): our own
+            // retry/redirect reloads cancel the in-flight load, and counting
+            // those as failures burns the retry budget instantly.
+            final desc = error.description.toLowerCase();
+            if (error.errorCode == -999 || desc.contains('cancel')) {
+              return;
+            }
             // Only surface errors for the MAIN document. On iOS WKWebView
             // `isForMainFrame` is often null for harmless sub-resource failures
             // (fonts, analytics, cancelled requests); treating those as fatal
@@ -417,9 +435,84 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     }
   }
 
+  /// Called when the web app redirects to /login. On iOS this usually means
+  /// the request went out without the jwt cookie (WKWebView's native cookie
+  /// store is unreliable) — NOT that the user logged out. Since the /login
+  /// page is on the dashboard's own origin, we can set the cookie from INSIDE
+  /// the page with document.cookie (which iOS honors) and bounce straight
+  /// back to the dashboard. Only log out after several consecutive bounces.
+  void _handleLoginRedirect(String source) async {
+    if (_handlingLoginRedirect) return; // debounce overlapping callbacks
+    if (!mounted) return;
+
+    if (_dashboardRenderedOnce) {
+      // The user was inside the dashboard and navigated to /login — that's a
+      // real logout (the web logout just expires the jwt cookie). Repairing
+      // the cookie here would trap the user in the dashboard forever.
+      print("Post-render /login navigation ($source) — real logout");
+      _onLogout();
+      return;
+    }
+
+    if (_loginRedirectRetries >= _maxLoginRedirectRetries) {
+      print("Login redirect persisted after retries ($source) — logging out");
+      _onLogout();
+      return;
+    }
+
+    _handlingLoginRedirect = true;
+    _loginRedirectRetries++;
+    print(
+        "Login redirect ($source). Re-auth attempt $_loginRedirectRetries/$_maxLoginRedirectRetries");
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+
+    try {
+      final token =
+          await SharedPrefHelper.getSecuredString(SharedPrefKeys.userToken);
+
+      if (token == null || token.isEmpty) {
+        // Genuinely no session — this is a real logout.
+        _onLogout();
+        return;
+      }
+
+      // Also refresh the native store (harmless, helps Android).
+      await WebViewCookieManager().setCookie(
+        WebViewCookie(
+          name: "jwt",
+          value: token,
+          domain: Uri.parse(widget.url).host,
+          path: "/",
+        ),
+      );
+
+      // Set the cookie from inside the page — same-origin, so document.cookie
+      // lands in WKWebView's real cookie jar — then go back to the dashboard.
+      // Attributes mirror the web app's own setToken() exactly. JWTs are
+      // base64url + dots, safe to interpolate.
+      await controller.runJavaScript(
+        'document.cookie = "jwt=$token; path=/; max-age=86400; Secure; SameSite=Strict";'
+        'window.location.replace("${widget.url}");',
+      );
+    } catch (e) {
+      print("Login redirect repair failed: $e — falling back to reload");
+      await _setCookieAndLoad();
+    } finally {
+      // Small delay before accepting the next /login event so the redirect
+      // above has a chance to happen before we count another bounce.
+      Future.delayed(const Duration(seconds: 2), () {
+        _handlingLoginRedirect = false;
+      });
+    }
+  }
+
   void _retry() {
     // Manual retry from the error screen — give the auto-retries a fresh budget.
     _autoRetryCount = 0;
+    _loginRedirectRetries = 0;
     setState(() {
       _isLoading = true;
       _hasError = false;
@@ -450,9 +543,12 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
         );
         final score = int.tryParse(raw.toString().replaceAll('"', '')) ?? 0;
         // Any content at all → the page rendered successfully. Clear the
-        // auto-retry budget so a later, unrelated hiccup gets its own retries.
+        // retry budgets so a later, unrelated hiccup gets its own retries,
+        // and mark the handshake done: from now on /login means real logout.
         if (score > 0) {
           _autoRetryCount = 0;
+          _loginRedirectRetries = 0;
+          _dashboardRenderedOnce = true;
           return;
         }
       } catch (e) {
