@@ -247,7 +247,7 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   // (connection-lost / cookie not yet committed); a reload then succeeds. So we
   // silently auto-retry a few times before ever showing the error screen.
   int _autoRetryCount = 0;
-  static const int _maxAutoRetries = 3;
+  static const int _maxAutoRetries = 4;
 
   // On iOS the first load can also reach the dashboard WITHOUT the jwt cookie
   // (WKWebView commits it late), making the web app redirect to /login. That
@@ -304,10 +304,21 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
             return NavigationDecision.navigate;
           },
           onPageFinished: (url) {
-            if (url.contains("/login")) {
+            final path = Uri.tryParse(url)?.path ?? '';
+
+            if (path.startsWith('/login')) {
               _handleLoginRedirect("onPageFinished: $url");
               return;
             }
+
+            // The local bootstrap page (path '/') redirects to the dashboard
+            // immediately — keep the spinner up and don't treat it as the
+            // rendered dashboard (its <script> body would fool the content
+            // check and close the login-repair window prematurely).
+            if (!path.startsWith('/dashboard')) {
+              return;
+            }
+
             _stopLoading();
             // Inject JavaScript to monitor logout button clicks
             _injectLogoutMonitor();
@@ -352,30 +363,61 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     _setCookieAndLoad();
   }
 
+  /// Boots the WebView through a local bootstrap page instead of hitting the
+  /// dashboard directly. loadHtmlString with a baseUrl on the dashboard's
+  /// origin gives the page that origin, so `document.cookie` inside it sets
+  /// the jwt cookie SYNCHRONOUSLY in the real cookie jar — no native-store
+  /// race (the iOS WKWebView cookie API commits late/never, which is what
+  /// made the first dashboard load land without auth and bounce to /login).
+  /// Only after the cookie is provably set does it navigate to the dashboard.
   Future<void> _setCookieAndLoad() async {
     try {
       final token = await SharedPrefHelper.getSecuredString(
         SharedPrefKeys.userToken,
       );
 
-      if (token != null && token.isNotEmpty) {
-        final cookie = WebViewCookie(
-          name: "jwt",
-          value: token,
-          domain: Uri.parse(widget.url).host,
-          path: "/",
-        );
-
-        await WebViewCookieManager().setCookie(cookie);
-        // On iOS WKWebView setCookie resolves before the cookie is actually
-        // committed to the shared store; give it a beat so the first request
-        // carries the auth cookie instead of racing without it.
-        await Future.delayed(const Duration(milliseconds: 150));
+      if (token == null || token.isEmpty) {
+        // No session at all — nothing to authenticate with.
+        _onLogout();
+        return;
       }
 
-      controller.loadRequest(Uri.parse(widget.url));
+      final origin = Uri.parse(widget.url);
+
+      // Belt-and-suspenders: also seed the native store (reliable on Android).
+      try {
+        await WebViewCookieManager().setCookie(
+          WebViewCookie(
+            name: "jwt",
+            value: token,
+            domain: origin.host,
+            path: "/",
+          ),
+        );
+      } catch (e) {
+        print("Native cookie set failed (continuing via bootstrap): $e");
+      }
+
+      // Same-origin bootstrap: set the cookie from inside a page on the
+      // dashboard's origin, then enter the dashboard with auth in place.
+      final bootstrapHtml = '''
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+<script>
+  document.cookie = "jwt=$token; path=/; max-age=86400; Secure; SameSite=Strict";
+  window.location.replace("${widget.url}");
+</script>
+</body>
+</html>''';
+
+      await controller.loadHtmlString(
+        bootstrapHtml,
+        baseUrl: "${origin.scheme}://${origin.host}/",
+      );
     } catch (e) {
-      print("Error setting cookie: $e");
+      print("Bootstrap load failed, falling back to direct load: $e");
       controller.loadRequest(Uri.parse(widget.url));
     }
   }
@@ -422,8 +464,12 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
         _isLoading = true;
         _hasError = false;
       });
-      // Small backoff so the connection settles and the cookie is committed.
-      Future.delayed(const Duration(milliseconds: 800), () {
+      // Exponential backoff: 1.5s, 3s, 4.5s, 6s. On iOS the network stack is
+      // often not ready for the first seconds after a cold launch — rapid
+      // retries all fail in that window while a retry a few seconds later
+      // succeeds (which is why a manual Retry always worked).
+      final delay = Duration(milliseconds: 1500 * _autoRetryCount);
+      Future.delayed(delay, () {
         if (mounted) _setCookieAndLoad();
       });
     } else {
