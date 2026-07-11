@@ -241,7 +241,7 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   bool _isLoading = true;
   bool _hasError = false;
   Timer? _loadTimeoutTimer;
-  static const Duration _loadTimeout = Duration(seconds: 20);
+  static const Duration _loadTimeout = Duration(seconds: 35);
 
   @override
   void initState() {
@@ -302,21 +302,19 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
           onWebResourceError: (error) {
             print(
                 "onWebResourceError: ${error.description} (mainFrame: ${error.isForMainFrame})");
-            // Only surface errors for the main document; ignore failures of
-            // sub-resources (analytics, fonts, etc.) that don't break the page.
-            if (error.isForMainFrame ?? true) {
+            // Only surface errors for the MAIN document. On iOS WKWebView
+            // `isForMainFrame` is often null for harmless sub-resource failures
+            // (fonts, analytics, cancelled requests); treating those as fatal
+            // would wrongly show a network-error screen over a working page.
+            // So require an explicit true here.
+            if (error.isForMainFrame == true) {
               _showError();
             }
           },
-          onHttpError: (error) {
-            print(
-                "onHttpError: ${error.response?.statusCode} for ${error.request?.uri}");
-            final status = error.response?.statusCode ?? 0;
-            // A failed main-document request leaves a blank page.
-            if (status >= 400) {
-              _showError();
-            }
-          },
+          // NOTE: intentionally not treating onHttpError as fatal. A 4xx/5xx on
+          // a single sub-resource (an API widget, an image) must not blank the
+          // whole dashboard behind an error screen. We only rely on main-frame
+          // navigation failures and the load timeout below.
         ),
       )
       ..addJavaScriptChannel(
@@ -402,24 +400,37 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   /// return HTTP 200 yet display nothing (empty body / failed client-side
   /// auth), which the reviewer perceives as a blank screen.
   Future<void> _verifyContentRendered() async {
-    try {
-      // Give SPA frameworks a moment to render into the DOM.
-      await Future.delayed(const Duration(milliseconds: 1500));
+    // A single-page app can take several seconds to hydrate, especially on a
+    // slow network. Poll a few times before deciding the page is truly empty,
+    // so we never show a network-error screen over a page that is just still
+    // rendering.
+    const attempts = 4;
+    const interval = Duration(seconds: 2);
+
+    for (var i = 0; i < attempts; i++) {
+      await Future.delayed(interval);
       if (!mounted || _hasError) return;
 
-      final raw = await controller.runJavaScriptReturningResult(
-        "(function(){var b=document.body;if(!b)return 0;"
-        "var t=(b.innerText||'').trim().length;"
-        "var c=b.childElementCount||0;return t+c;})()",
-      );
-
-      final score = int.tryParse(raw.toString().replaceAll('"', '')) ?? 0;
-      if (score == 0 && mounted && !_hasError) {
-        print("Dashboard rendered empty content, showing retry UI");
-        _showError();
+      try {
+        final raw = await controller.runJavaScriptReturningResult(
+          "(function(){var b=document.body;if(!b)return 0;"
+          "var t=(b.innerText||'').trim().length;"
+          "var c=b.childElementCount||0;return t+c;})()",
+        );
+        final score = int.tryParse(raw.toString().replaceAll('"', '')) ?? 0;
+        // Any content at all → the page rendered, we're done.
+        if (score > 0) return;
+      } catch (e) {
+        // If we can't even evaluate JS, don't assume failure — the page may
+        // still be initializing. Just try again.
+        print("content check attempt ${i + 1} failed: $e");
       }
-    } catch (e) {
-      print("content check failed: $e");
+    }
+
+    // Still completely empty after several seconds → genuinely blank.
+    if (mounted && !_hasError) {
+      print("Dashboard still empty after $attempts checks, showing retry UI");
+      _showError();
     }
   }
 
