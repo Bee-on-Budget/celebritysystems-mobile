@@ -56,6 +56,12 @@
 		<string>This app needs camera access to take photos for tickets</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>This app needs photo library access to select images for tickets</string>
+		<!-- Required because bundled SDKs reference these APIs (ITMS-90683),
+		     even though the app does not actively request them. -->
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app does not actively use your location. A bundled notification SDK references location APIs, which requires this notice.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>This app needs microphone access when recording videos for service tickets</string>
 		<key>CFBundleLocalizations</key>
 		<array>
 			<string>en</string>

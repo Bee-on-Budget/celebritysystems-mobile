@@ -582,6 +582,15 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
       if (!mounted || _hasError) return;
 
       try {
+        // The SPA may have client-side-navigated away (e.g. to /login)
+        // between polls — never score a page other than the dashboard, or
+        // we'd mark the handshake done on the login form itself.
+        final currentUrl = await controller.currentUrl();
+        final currentPath = Uri.tryParse(currentUrl ?? '')?.path ?? '';
+        if (!currentPath.startsWith('/dashboard')) {
+          return; // navigation handlers own this situation now
+        }
+
         final raw = await controller.runJavaScriptReturningResult(
           "(function(){var b=document.body;if(!b)return 0;"
           "var t=(b.innerText||'').trim().length;"
@@ -612,10 +621,32 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   }
 
   Future<void> _injectLogoutMonitor() async {
-    // Method 4: Monitor for JWT token removal from localStorage/sessionStorage
+    // The dashboard's logout ONLY expires the jwt cookie (it never touches
+    // localStorage/sessionStorage), so the storage hooks below never fire for
+    // a real logout. The reliable signal is the cookie itself: watch it, and
+    // when it transitions from present to gone, that IS a logout.
     const String jsCode = '''
       (function() {
         console.log("Token removal monitor injected");
+
+        // Watch the jwt cookie: present -> gone means the user logged out.
+        if (!window.__jwtCookieWatch) {
+          window.__jwtCookieWatch = true;
+          var readJwt = function() {
+            var m = document.cookie.match(/(?:^|;\\s*)jwt=([^;]*)/);
+            return !!(m && m[1] && m[1].length > 0);
+          };
+          var hadJwt = readJwt();
+          console.log("jwt cookie watcher installed, present:", hadJwt);
+          setInterval(function() {
+            var has = readJwt();
+            if (hadJwt && !has) {
+              console.log("jwt cookie removed - logout detected");
+              FlutterLogout.postMessage('jwt_cookie_removed');
+            }
+            hadJwt = has;
+          }, 700);
+        }
         
         // Monitor localStorage.removeItem()
         const originalLocalRemoveItem = localStorage.removeItem;
