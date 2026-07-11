@@ -243,6 +243,12 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   Timer? _loadTimeoutTimer;
   static const Duration _loadTimeout = Duration(seconds: 35);
 
+  // iOS WKWebView frequently fails the very FIRST request after a cold launch
+  // (connection-lost / cookie not yet committed); a reload then succeeds. So we
+  // silently auto-retry a few times before ever showing the error screen.
+  int _autoRetryCount = 0;
+  static const int _maxAutoRetries = 3;
+
   @override
   void initState() {
     super.initState();
@@ -308,7 +314,7 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
             // would wrongly show a network-error screen over a working page.
             // So require an explicit true here.
             if (error.isForMainFrame == true) {
-              _showError();
+              _handleLoadFailure("web resource error: ${error.description}");
             }
           },
           // NOTE: intentionally not treating onHttpError as fatal. A 4xx/5xx on
@@ -343,6 +349,10 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
         );
 
         await WebViewCookieManager().setCookie(cookie);
+        // On iOS WKWebView setCookie resolves before the cookie is actually
+        // committed to the shared store; give it a beat so the first request
+        // carries the auth cookie instead of racing without it.
+        await Future.delayed(const Duration(milliseconds: 150));
       }
 
       controller.loadRequest(Uri.parse(widget.url));
@@ -364,7 +374,7 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     // of leaving the reviewer on a blank white screen.
     _loadTimeoutTimer = Timer(_loadTimeout, () {
       if (mounted && _isLoading) {
-        _showError();
+        _handleLoadFailure("load timeout");
       }
     });
   }
@@ -378,9 +388,28 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
     }
   }
 
-  void _showError() {
+  /// Called on any load failure. Silently reloads a few times before ever
+  /// showing the error screen, because the first attempt on iOS often fails
+  /// while a retry succeeds — automating that retry keeps the reviewer from
+  /// ever seeing the "Unable to load" screen on a transient hiccup.
+  void _handleLoadFailure(String reason) {
     _loadTimeoutTimer?.cancel();
-    if (mounted) {
+    if (!mounted) return;
+
+    if (_autoRetryCount < _maxAutoRetries) {
+      _autoRetryCount++;
+      print(
+          "Dashboard load failed ($reason). Auto-retry $_autoRetryCount/$_maxAutoRetries");
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+      // Small backoff so the connection settles and the cookie is committed.
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) _setCookieAndLoad();
+      });
+    } else {
+      print("Dashboard load failed ($reason). Auto-retries exhausted.");
       setState(() {
         _isLoading = false;
         _hasError = true;
@@ -389,6 +418,8 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
   }
 
   void _retry() {
+    // Manual retry from the error screen — give the auto-retries a fresh budget.
+    _autoRetryCount = 0;
     setState(() {
       _isLoading = true;
       _hasError = false;
@@ -418,8 +449,12 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
           "var c=b.childElementCount||0;return t+c;})()",
         );
         final score = int.tryParse(raw.toString().replaceAll('"', '')) ?? 0;
-        // Any content at all → the page rendered, we're done.
-        if (score > 0) return;
+        // Any content at all → the page rendered successfully. Clear the
+        // auto-retry budget so a later, unrelated hiccup gets its own retries.
+        if (score > 0) {
+          _autoRetryCount = 0;
+          return;
+        }
       } catch (e) {
         // If we can't even evaluate JS, don't assume failure — the page may
         // still be initializing. Just try again.
@@ -427,10 +462,10 @@ class _SupervisorWebAppScreenState extends State<SupervisorWebAppScreen> {
       }
     }
 
-    // Still completely empty after several seconds → genuinely blank.
+    // Still completely empty after several seconds → treat as a failed load
+    // (auto-retry first, error screen only as a last resort).
     if (mounted && !_hasError) {
-      print("Dashboard still empty after $attempts checks, showing retry UI");
-      _showError();
+      _handleLoadFailure("empty content after $attempts checks");
     }
   }
 
